@@ -1,0 +1,25 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+	button,
+	.btn {
+		@apply rounded bg-emerald-700 p-2 text-stone-50 transition;
+		@apply hover:brightness-90;
+		@apply disabled:cursor-not-allowed disabled:bg-stone-400;
+		@apply active:scale-[97%];
+	}
+	input {
+		@apply rounded border border-stone-200 bg-stone-50 py-2 px-3;
+	}
+	a {
+		@apply underline decoration-emerald-700 underline-offset-2;
+	}
+}
+
+@layer components {
+	.btn-s {
+		@apply bg-stone-700;
+	}
+}

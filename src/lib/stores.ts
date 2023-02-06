@@ -1,23 +1,23 @@
 import { persisted } from "svelte-local-storage-store";
 
-export const categories = persisted("categories", [
+export const criteria = persisted("criteria", [
 	{
-		name: "Category #1",
+		name: "Criteria #1",
 		weight: 0.5,
 	},
 	{
-		name: "Category #2",
+		name: "Criteria #2",
 		weight: 0.5,
 	},
 ]);
 
-export const items = persisted("items", [
+export const alternatives = persisted("alternatives", [
 	{
-		name: "Item #1",
+		name: "Alternative #1",
 		scores: [5, 5],
 	},
 	{
-		name: "Item #2",
+		name: "Alternative #2",
 		scores: [5, 5],
 	},
 ]);

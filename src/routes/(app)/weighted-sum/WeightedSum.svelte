@@ -76,7 +76,8 @@
 								type="text"
 								name="{alt.name}{i}"
 								id="{alt.name}{i}"
-								bind:value={alt.name} />
+								bind:value={alt.name}
+							/>
 						</td>
 						{#each alt.scores as score, j}
 							<td>
@@ -87,7 +88,8 @@
 									bind:value={alt.scores[j]}
 									min="0"
 									max="10"
-									class="w-20" />
+									class="w-20"
+								/>
 							</td>
 						{/each}
 						<td>

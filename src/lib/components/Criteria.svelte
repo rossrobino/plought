@@ -41,7 +41,8 @@
 							name="name"
 							id="name{i}"
 							class="w-full"
-							bind:value={name} />
+							bind:value={name}
+						/>
 					</td>
 					<td>
 						<input
@@ -52,7 +53,8 @@
 							step="0.01"
 							min="0"
 							max="1"
-							class="w-full" />
+							class="w-full"
+						/>
 					</td>
 					<td>
 						<button class="btn-s" on:click={() => removeCriteria(i)}>

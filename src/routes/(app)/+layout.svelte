@@ -16,13 +16,15 @@
 		<a
 			class="rounded-tr px-4 py-3"
 			class:bg-stone-300={$page.url.pathname === app.path}
-			href={app.path}>
+			href={app.path}
+		>
 			App
 		</a>
 		<a
 			class="rounded-tl px-4 py-3"
 			class:bg-stone-300={$page.url.pathname === `${app.path}/about`}
-			href="{app.path}/about">
+			href="{app.path}/about"
+		>
 			Learn
 		</a>
 	</div>

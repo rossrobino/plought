@@ -1,8 +1,9 @@
 <script lang="ts">
-	import { apps } from "$lib/info";
+	import { info, apps } from "$lib/info";
+	import Head from "$lib/components/Head.svelte";
 </script>
 
-<h1 class="">Reduce Noise in Decision Making</h1>
+<Head desc="Reduce Noise in Decision Making" />
 
 <h2>Applications</h2>
 <div class="grid gap-4 sm:grid-cols-2">

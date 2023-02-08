@@ -1,45 +1,25 @@
 <script lang="ts">
-	import { criteria, alternatives } from "$lib/stores";
+	import { alternatives } from "$lib/stores";
+	import { getWeightedSum } from "$lib/util/alternative";
 
 	let sortedAlternatives: Alternative[];
 	$: sortedAlternatives = [...$alternatives].sort((a, b) => {
-		return scoreWeightedSum(b.scores) - scoreWeightedSum(a.scores);
+		return getWeightedSum(b) - getWeightedSum(a);
 	});
-
-	/**
-	 * Takes the weights of each criteria and the scores of an item,
-	 * multiplies them together, and sums the list, returns total score
-	 *
-	 * @param scores - list of scores for a particular item
-	 */
-	const scoreWeightedSum = (scores: number[]): number => {
-		const weights = $criteria.map(({ weight }) => {
-			return weight;
-		});
-		const weighted = [];
-		for (let i = 0; i < weights.length; i++) {
-			weighted.push(weights[i] * scores[i]);
-		}
-		const total = weighted.reduce(
-			(accumulator, currentValue) => accumulator + currentValue,
-			0,
-		);
-		return Number(total.toFixed(2));
-	};
 </script>
 
 <section>
-	<h2>Score</h2>
+	<h2>Scores</h2>
 	<table>
 		<thead>
 			<th>Alternative</th>
-			<th>Score</th>
+			<th>Weighted Sum</th>
 		</thead>
 		<tbody>
 			{#each sortedAlternatives as alt}
 				<tr>
 					<td>{alt.name}</td>
-					<td class="font-bold">{scoreWeightedSum(alt.scores)}</td>
+					<td class="font-bold">{getWeightedSum(alt)}</td>
 				</tr>
 			{/each}
 		</tbody>

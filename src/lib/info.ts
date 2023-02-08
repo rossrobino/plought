@@ -1,6 +1,9 @@
+import { capitalize } from "$lib/util/capitalize";
+
 export const info = {
 	author: { name: "Ross Robino", url: "https://robino.dev" },
 	name: "Plought",
+	tagline: "",
 	github: "https://github.com/rossrobino/plought",
 };
 
@@ -18,7 +21,7 @@ class App {
 	}
 
 	getTitle() {
-		return this.path.replace(/[^A-Z]/gi, " ");
+		return capitalize(this.path.replace(/[^A-Z]/gi, " "));
 	}
 }
 

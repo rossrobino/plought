@@ -1,50 +1,7 @@
 <script lang="ts">
 	import { criteria, alternatives } from "$lib/stores";
+	import { addAlternative, removeAlternative } from "$lib/util/alternative";
 	import XMark from "$lib/svg/XMark.svelte";
-
-	const addAlternative = () => {
-		const scores: number[] = new Array($criteria.length).fill(0);
-		$alternatives.push({ name: "Alternative", scores });
-		$alternatives = $alternatives;
-	};
-
-	const removeAlternative = (index: number) => {
-		$alternatives.splice(index, 1);
-		$alternatives = $alternatives;
-	};
-
-	/**
-	 * Checks if the number of scores for each item match
-	 * the number of criteria.
-	 *
-	 * If there's more criteria, push a score (0)
-	 *
-	 * If there's less criteria, pop a score
-	 *
-	 * @param criteria - list of criteria
-	 * @param alternatives - list of alternatives
-	 */
-	const syncScores = (criteria: Criteria[], alternatives: Alternative[]) => {
-		const needed = criteria.length - alternatives[0].scores.length;
-		if (needed > -1) {
-			alternatives.forEach((alt) => {
-				for (let i = 0; i < needed; i++) {
-					alt.scores.push(0);
-					console.log(alt.scores);
-				}
-			});
-		} else {
-			alternatives.forEach((alt) => {
-				for (let i = 0; i < Math.abs(needed); i++) {
-					alt.scores.pop();
-				}
-			});
-		}
-		$alternatives = $alternatives;
-	};
-
-	// called any time $criteria or $alternatives change
-	$: syncScores($criteria, $alternatives);
 </script>
 
 <section>

@@ -13,7 +13,7 @@
 			</a>
 		</header>
 		<main
-			class="prose prose-stone max-w-full p-4 prose-h1:text-indigo-900 prose-a:font-semibold prose-a:decoration-rose-800"
+			class="prose prose-stone max-w-full p-4 prose-h1:text-indigo-900 prose-a:font-semibold prose-a:decoration-rose-800 prose-a:underline-offset-2 hover:prose-a:brightness-95"
 		>
 			<slot />
 		</main>

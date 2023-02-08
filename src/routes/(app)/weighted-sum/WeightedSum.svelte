@@ -34,6 +34,7 @@
 								name="{alt.name}{i}"
 								id="{alt.name}{i}"
 								bind:value={alt.name}
+								required
 							/>
 						</td>
 						{#each alt.scores as score, j}
@@ -46,6 +47,8 @@
 									min="0"
 									max="10"
 									class="w-20"
+									required
+									inputmode="decimal"
 								/>
 							</td>
 						{/each}

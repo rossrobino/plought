@@ -42,6 +42,7 @@
 							id="name{i}"
 							class="w-full"
 							bind:value={name}
+							required
 						/>
 					</td>
 					<td>
@@ -54,6 +55,8 @@
 							min="0"
 							max="1"
 							class="w-full"
+							required
+							inputmode="decimal"
 						/>
 					</td>
 					<td>

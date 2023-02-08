@@ -3,7 +3,7 @@
 	import Head from "$lib/components/Head.svelte";
 </script>
 
-<Head desc="Reduce Noise in Decision Making" />
+<Head desc="{info.tagline}" />
 
 <h2>Applications</h2>
 <div class="grid gap-4 sm:grid-cols-2">

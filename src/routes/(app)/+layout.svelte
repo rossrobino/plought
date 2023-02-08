@@ -49,14 +49,14 @@
 
 	<div class="-mx-4 grid grid-flow-col border-b-4 border-stone-700">
 		<a
-			class="rounded-tr px-4 py-3"
+			class="rounded-tr bg-stone-100 px-4 py-3"
 			class:bg-stone-300={$page.url.pathname === app.path}
 			href={app.path}
 		>
 			App
 		</a>
 		<a
-			class="rounded-tl px-4 py-3"
+			class="rounded-tl bg-stone-100 px-4 py-3"
 			class:bg-stone-300={$page.url.pathname === `${app.path}/about`}
 			href="{app.path}/about"
 		>

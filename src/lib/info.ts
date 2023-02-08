@@ -3,7 +3,7 @@ import { capitalize } from "$lib/util/capitalize";
 export const info = {
 	author: { name: "Ross Robino", url: "https://robino.dev" },
 	name: "Plought",
-	tagline: "",
+	tagline: "Reduce Noise in Decision Making",
 	github: "https://github.com/rossrobino/plought",
 };
 

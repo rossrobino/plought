@@ -1,21 +1,21 @@
 <script lang="ts">
-	import Criteria from "$lib/components/Criteria.svelte";
-	import WeightedSum from "./WeightedSum.svelte";
+	import Criteria from "$lib/components/criteria/Criteria.svelte";
 	import Reset from "$lib/components/Reset.svelte";
-	import WeightedSumScore from "./WeightedSumScore.svelte";
+	import Scores from "$lib/components/scores/Scores.svelte";
+	import Alternatives from "$lib/components/alternatives/Alternatives.svelte";
 </script>
 
 <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
 	<Criteria />
 	<div class="hidden sm:block">
-		<WeightedSumScore />
+		<Scores sortBy="weightedSum" weightedSum={true} />
 	</div>
 </div>
 
-<WeightedSum />
+<Alternatives showCriteria={true} />
 
 <div class="sm:hidden">
-	<WeightedSumScore />
+	<Scores sortBy="weightedSum" weightedSum={true} />
 </div>
 
 <div class="mt-4">

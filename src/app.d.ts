@@ -9,7 +9,9 @@ declare global {
 	interface Alternative {
 		name: string;
 		scores: number[];
+		pairwise: number[];
 	}
+
 	interface Criteria {
 		name: string;
 		weight: number;

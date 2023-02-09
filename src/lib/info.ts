@@ -27,4 +27,8 @@ class App {
 
 export const apps = [
 	new App("/weighted-sum", "Evaluate alternatives based on weighted criteria."),
+	new App(
+		"/pairwise-comparison",
+		"Compare alternatives against each possible option.",
+	),
 ];

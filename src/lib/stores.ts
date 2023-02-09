@@ -15,9 +15,11 @@ export const alternatives = persisted("alternatives", [
 	{
 		name: "Alternative #1",
 		scores: [5, 5],
+		pairwise: [0.5, 0.5],
 	},
 	{
 		name: "Alternative #2",
 		scores: [5, 5],
+		pairwise: [0.5, 0.5],
 	},
 ]);

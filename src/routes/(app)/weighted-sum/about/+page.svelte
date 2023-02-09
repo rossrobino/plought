@@ -1,5 +1,9 @@
+<script lang="ts">
+	import AboutAlternatives from "$lib/components/alternatives/AboutAlternatives.svelte";
+</script>
+
 <section>
-	<h2>Criteria</h2>
+	<h2>Add Criteria</h2>
 	<p>
 		Create <b>criteria</b>
 		for each factor impacting a decision. Give each
@@ -24,17 +28,10 @@
 		would make up 50% of the decision.
 	</p>
 </section>
+
+<AboutAlternatives />
 <section>
-	<h2>Alternatives</h2>
-	<p>
-		Create <b>alternatives</b>
-		for each option available. In this case we might use:
-	</p>
-	<ul>
-		<li>Ford F-150</li>
-		<li>Aston Martin DB9</li>
-		<li>Volvo XC60</li>
-	</ul>
+	<h2>Score</h2>
 	<p>
 		Give each <b>alternative</b>
 		a score (0 - 10) for each
@@ -48,9 +45,6 @@
 		<b>criteria</b>
 		is the most important.
 	</p>
-</section>
-<section>
-	<h2>Score</h2>
 	<p>
 		Each <b>alternative</b>
 		is scored by multiplying the score for each

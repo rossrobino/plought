@@ -80,7 +80,11 @@
 							</td>
 						{/if}
 						<td>
-							<button class="btn-s" on:click={() => removeCriteria(i)}>
+							<button
+								class="btn-s"
+								on:click={() => removeCriteria(i)}
+								disabled={$criteria.length < 2}
+							>
 								<XMark />
 							</button>
 						</td>

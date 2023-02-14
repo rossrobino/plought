@@ -1,6 +1,5 @@
 <script lang="ts">
-	import { alternatives } from "$lib/stores";
-	import { getPairwiseScore, getWeightedSum } from "$lib/util/alternative";
+	import { alternatives, criteria } from "$lib/stores";
 
 	export let weightedSum = false;
 	export let pairwise = false;
@@ -11,13 +10,60 @@
 	let sortedAlternatives: Alternative[];
 	$: sortedAlternatives = [...$alternatives].sort((a, b) => {
 		if (sortBy === "weightedSum") {
-			return getWeightedSum(b) - getWeightedSum(a);
+			return getWeightedSum(b, $criteria) - getWeightedSum(a, $criteria);
 		} else if (sortBy === "pairwise") {
 			return getPairwiseScore(b) - getPairwiseScore(a);
 		} else {
 			return 1;
 		}
 	});
+
+	/**
+	 * Calculates the weighted sum score of an alternative
+	 *
+	 * @param alt - alternative
+	 * @param criteria - array of criteria
+	 */
+	const getWeightedSum = (alt: Alternative, criteria: Criteria[]): number => {
+		// get the current weights of each criteria
+		const weights = criteria.map(({ weight }) => {
+			return weight;
+		});
+
+		// multiply each score by its corresponding weight
+		const weighted = [];
+		for (let i = 0; i < weights.length; i++) {
+			weighted.push(weights[i] * alt.scores[i]);
+		}
+
+		// sum the list to create the total score
+		const total = weighted.reduce(
+			(accumulator, currentValue) => accumulator + currentValue,
+			0,
+		);
+		return Number(total.toFixed(2));
+	};
+
+	/**
+	 * Calculates the pairwise score of an alternative
+	 *
+	 * @param alt - alternative
+	 * @returns pairwise score
+	 */
+	const getPairwiseScore = (alt: Alternative) => {
+		// find index of alt
+		const skipIndex = $alternatives.indexOf(alt);
+
+		// sum all pairwise scores besides the index
+		let total = 0;
+		alt.pairwise.forEach((score, i) => {
+			if (i !== skipIndex) {
+				total += score;
+			}
+		});
+
+		return total;
+	};
 </script>
 
 <section>
@@ -40,7 +86,7 @@
 					<tr>
 						<td>{alt.name}</td>
 						{#if weightedSum}
-							<td class="font-bold">{getWeightedSum(alt)}</td>
+							<td class="font-bold">{getWeightedSum(alt, $criteria)}</td>
 						{/if}
 						{#if pairwise}
 							<td class="font-bold">{getPairwiseScore(alt)}</td>

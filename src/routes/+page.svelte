@@ -8,7 +8,7 @@
 
 <div id="apps" class="grid gap-4 sm:grid-cols-2">
 	{#each apps as app}
-		<div class="rounded bg-stone-200 p-4">
+		<div class="rounded bg-slate-200 p-4">
 			<a class="text-xl capitalize" href={app.path}>
 				{app.title}
 			</a>

@@ -12,17 +12,17 @@
 
 {#if app}
 	<Head title={app.title} desc={app.desc} />
-	<div class="-mx-4 grid grid-flow-col border-b-4 border-stone-900">
+	<div class="-mx-4 grid grid-flow-col border-b-4 border-slate-900">
 		<a
-			class="rounded-tr bg-stone-100 px-4 py-3"
-			class:bg-stone-300={$page.url.pathname === app.path}
+			class="rounded-tr bg-slate-100 px-4 py-3"
+			class:bg-slate-300={$page.url.pathname === app.path}
 			href={app.path}
 		>
 			App
 		</a>
 		<a
-			class="rounded-tl bg-stone-100 px-4 py-3"
-			class:bg-stone-300={$page.url.pathname === `${app.path}/about`}
+			class="rounded-tl bg-slate-100 px-4 py-3"
+			class:bg-slate-300={$page.url.pathname === `${app.path}/about`}
 			href="{app.path}/about"
 		>
 			Learn

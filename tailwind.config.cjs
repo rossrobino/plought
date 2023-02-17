@@ -2,7 +2,11 @@ const config = {
 	content: ["./src/**/*.{html,js,svelte,ts}"],
 
 	theme: {
-		extend: {},
+		extend: {
+			colors: {
+				p: "#30E013",
+			},
+		},
 	},
 
 	plugins: [require("@tailwindcss/typography")],

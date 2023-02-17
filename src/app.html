@@ -2,14 +2,23 @@
 <html lang="en">
 	<head>
 		<meta charset="utf-8" />
-		<link rel="icon" href="%sveltekit.assets%/favicon.png" />
+		<link
+			href="favicon-light.png"
+			rel="icon"
+			media="(prefers-color-scheme: dark)"
+		/>
+		<link
+			href="favicon-dark.png"
+			rel="icon"
+			media="(prefers-color-scheme: light)"
+		/>
 		<meta
 			name="viewport"
 			content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1"
 		/>
 		%sveltekit.head%
 	</head>
-	<body data-sveltekit-preload-data="hover" class="bg-stone-100">
+	<body data-sveltekit-preload-data="hover" class="bg-slate-100">
 		<div style="display: contents">%sveltekit.body%</div>
 	</body>
 </html>

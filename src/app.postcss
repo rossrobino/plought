@@ -5,22 +5,22 @@
 @layer base {
 	button,
 	.btn {
-		@apply rounded bg-emerald-700 p-2 text-stone-50 transition;
+		@apply rounded bg-p p-2 text-slate-900 transition;
 		@apply hover:brightness-90;
-		@apply disabled:cursor-not-allowed disabled:bg-stone-400;
+		@apply disabled:cursor-not-allowed disabled:bg-slate-400;
 		@apply active:scale-[97%];
 	}
 	input,
 	select {
-		@apply rounded border border-stone-200 bg-stone-50 py-2 px-3 invalid:outline invalid:outline-2 invalid:-outline-offset-2 invalid:outline-rose-900;
+		@apply rounded border border-slate-200 bg-slate-50 py-2 px-3 invalid:outline invalid:outline-2 invalid:-outline-offset-2 invalid:outline-rose-700;
 	}
 }
 
 @layer components {
 	.btn-s {
-		@apply bg-stone-800;
+		@apply bg-slate-800 text-slate-50;
 	}
 	.btn-t {
-		@apply bg-rose-900;
+		@apply bg-rose-700 text-slate-50;
 	}
 }

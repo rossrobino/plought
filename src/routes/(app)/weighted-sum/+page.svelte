@@ -18,6 +18,4 @@
 	<Scores sortBy="weightedSum" weightedSum={true} />
 </div>
 
-<div class="mt-4">
-	<Reset />
-</div>
+<Reset />

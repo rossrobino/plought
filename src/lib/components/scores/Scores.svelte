@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { alternatives, criteria } from "$lib/stores";
+	import { Icon } from "@liquidiqq/iconkit";
 
 	export let weightedSum = false;
 	export let pairwise = false;
@@ -67,8 +68,11 @@
 </script>
 
 <section>
-	<h2>Scores</h2>
-	<div class="overflow-x-auto">
+	<h2>
+		<span class="icon"><Icon name="chart-bar-square" /></span>
+		Scores
+	</h2>
+	<div class="mt-4 overflow-x-auto">
 		<table>
 			<thead>
 				<tr>

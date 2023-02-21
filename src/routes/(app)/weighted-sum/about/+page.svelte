@@ -1,9 +1,13 @@
 <script lang="ts">
 	import AboutAlternatives from "$lib/components/alternatives/AboutAlternatives.svelte";
+	import { Icon } from "@liquidiqq/iconkit";
 </script>
 
 <section>
-	<h2>Add Criteria</h2>
+	<h2>
+		<span class="icon"><Icon name="scale" /></span>
+		Add Criteria
+	</h2>
 	<p>
 		Create <b>criteria</b>
 		for each factor impacting a decision. Give each
@@ -31,7 +35,10 @@
 
 <AboutAlternatives />
 <section>
-	<h2>Score</h2>
+	<h2>
+		<span class="icon"><Icon name="chart-bar-square" /></span>
+		Score
+	</h2>
 	<p>
 		Give each <b>alternative</b>
 		a score (0 - 10) for each

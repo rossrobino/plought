@@ -3,24 +3,62 @@
 @tailwind utilities;
 
 @layer base {
+	body {
+		@apply font-archivo;
+	}
 	button,
 	.btn {
-		@apply rounded bg-p p-2 text-slate-900 transition;
+		@apply inline-block rounded-xl bg-p p-2 text-content no-underline shadow transition;
 		@apply hover:brightness-90;
 		@apply disabled:cursor-not-allowed disabled:bg-slate-400;
 		@apply active:scale-[97%];
 	}
 	input,
 	select {
-		@apply rounded border border-slate-200 bg-slate-50 py-2 px-3 invalid:outline invalid:outline-2 invalid:-outline-offset-2 invalid:outline-rose-700;
+		@apply rounded-xl border border-slate-200 bg-slate-50 py-2 px-3 invalid:outline invalid:outline-2 invalid:-outline-offset-2 invalid:outline-rose-700;
+	}
+	section {
+		@apply mt-8 rounded-xl border border-s border-opacity-50 p-4 shadow;
+	}
+	h2 {
+		@apply mb-2 inline-flex items-center gap-4 rounded-xl py-1 text-lg font-semibold;
+	}
+	.icon {
+		@apply h-fit rounded-xl bg-p-100 p-2 text-p;
+	}
+	table {
+		@apply w-full;
+	}
+	thead th {
+		@apply border-b-2 border-s border-opacity-25;
+	}
+	th {
+		@apply text-left;
+	}
+	td,
+	th {
+		@apply py-2 pr-5 text-sm last:pr-0;
+	}
+	tr {
+		@apply border-b border-s border-opacity-25 last:border-b-2;
+	}
+	a {
+		@apply font-semibold underline decoration-2 hover:decoration-dotted;
+	}
+	p,
+	ul {
+		@apply mb-4 last:mb-0;
+	}
+	li {
+		@apply ml-6 list-disc;
 	}
 }
 
 @layer components {
-	.btn-s {
-		@apply bg-slate-800 text-slate-50;
+	.btn-o {
+		@apply border-2 border-s bg-transparent text-s;
 	}
-	.btn-t {
-		@apply bg-rose-700 text-slate-50;
+	.btn-s {
+		@apply bg-s text-base;
 	}
 }

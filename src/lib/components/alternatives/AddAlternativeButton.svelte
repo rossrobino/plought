@@ -25,4 +25,4 @@
 	};
 </script>
 
-<button class="w-full" on:click={addAlternative}>Add</button>
+<button class="mt-4 w-full" on:click={addAlternative}>Add</button>

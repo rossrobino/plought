@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { criteria, alternatives } from "$lib/stores";
+	import { Icon } from "@liquidiqq/iconkit";
 	import AddAlternativeButton from "$lib/components/alternatives/AddAlternativeButton.svelte";
 	import RemoveAlternativeButton from "$lib/components/alternatives/RemoveAlternativeButton.svelte";
 
@@ -8,8 +9,11 @@
 </script>
 
 <section>
-	<h2>Alternatives</h2>
-	<div class="overflow-x-auto">
+	<h2>
+		<span class="icon"><Icon name="square-3-stack-3d" /></span>
+		Alternatives
+	</h2>
+	<div class="mt-4 overflow-x-auto">
 		<table>
 			<thead>
 				<tr>

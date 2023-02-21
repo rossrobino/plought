@@ -12,17 +12,19 @@
 
 {#if app}
 	<Head title={app.title} desc={app.desc} />
-	<div class="-mx-4 grid grid-flow-col border-b-4 border-slate-900">
+	<div class="-mx-4 grid grid-flow-col border-b border-s">
 		<a
-			class="rounded-tr bg-slate-100 px-4 py-3"
-			class:bg-slate-300={$page.url.pathname === app.path}
+			class="rounded-tr-xl px-4 py-3"
+			class:bg-s={$page.url.pathname === app.path}
+			class:text-base={$page.url.pathname === app.path}
 			href={app.path}
 		>
 			App
 		</a>
 		<a
-			class="rounded-tl bg-slate-100 px-4 py-3"
-			class:bg-slate-300={$page.url.pathname === `${app.path}/about`}
+			class="rounded-tl-xl px-4 py-3"
+			class:bg-s={$page.url.pathname === `${app.path}/about`}
+			class:text-base={$page.url.pathname !== app.path}
 			href="{app.path}/about"
 		>
 			Learn
@@ -30,8 +32,8 @@
 	</div>
 	<slot />
 	{#if $page.url.pathname === `${app.path}/about`}
-		<div>
-			<p><a href={app.path}>Try it out</a></p>
+		<div class="mt-8">
+			<a href={app.path} class="btn btn-s px-4">Try it out</a>
 		</div>
 	{/if}
 {/if}

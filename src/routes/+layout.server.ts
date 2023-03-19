@@ -1,7 +1,6 @@
-import type { LayoutServerLoad } from "./$types";
 import { dev } from "$app/environment";
 
-export const load: LayoutServerLoad = async () => {
+export const load = async () => {
 	return { contributors: fetchContributors() };
 };
 

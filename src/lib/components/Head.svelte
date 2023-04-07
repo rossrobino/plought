@@ -38,7 +38,7 @@
 				<img src="/plought-text-logo-dark.svg" alt="Plought" class="w-32" />
 			</a>
 			<h1
-				class="hidden rounded-xl bg-s-100 py-1 px-2 text-lg font-semibold sm:block"
+				class="hidden rounded-xl bg-s-100 px-2 py-1 text-lg font-semibold sm:block"
 			>
 				{title ? title : desc}
 			</h1>
@@ -48,7 +48,7 @@
 		</a>
 	</div>
 	<div class="mt-4 block sm:hidden">
-		<h1 class="rounded-xl bg-s-100 py-1 px-2 text-center text-lg font-semibold">
+		<h1 class="rounded-xl bg-s-100 px-2 py-1 text-center text-lg font-semibold">
 			{title ? title : desc}
 		</h1>
 	</div>

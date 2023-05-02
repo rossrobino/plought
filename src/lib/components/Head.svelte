@@ -16,19 +16,6 @@
 	<title>{headTitle}</title>
 	<meta name="description" content={desc} />
 	<meta name="keywords" content="decision, making, weighted, sum" />
-	<script
-		async
-		src="https://www.googletagmanager.com/gtag/js?id=G-10Y495MZDX"
-	></script>
-	<script>
-		window.dataLayer = window.dataLayer || [];
-		function gtag() {
-			dataLayer.push(arguments);
-		}
-		gtag("js", new Date());
-
-		gtag("config", "G-10Y495MZDX");
-	</script>
 </svelte:head>
 
 <header class="-mx-4 mb-8 bg-base px-4 pb-4 text-content">

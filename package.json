@@ -36,6 +36,7 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"@sveltejs/adapter-vercel": "^2.4.3",
 		"@vercel/analytics": "^1.0.0",
 		"svelte-local-storage-store": "^0.4.0"
 	}

@@ -103,7 +103,7 @@
 						<td>
 							<span
 								class:text-rose-800={Math.round(
-									sumArray(getWeights($criteria)) * 100,
+									sumArray(getWeights($criteria)) * 100
 								) !== 100}
 							>
 								{(sumArray(getWeights($criteria)) * 100).toFixed()}

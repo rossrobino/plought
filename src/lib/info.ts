@@ -31,11 +31,11 @@ export const apps = [
 	new App(
 		"/weighted-sum",
 		"Evaluate alternatives based on weighted criteria.",
-		"scale",
+		"scale"
 	),
 	new App(
 		"/pairwise-comparison",
 		"Compare alternatives against each possible option.",
-		"adjustments-horizontal",
+		"adjustments-horizontal"
 	),
 ];

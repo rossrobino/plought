@@ -40,7 +40,7 @@
 		// sum the list to create the total score
 		const total = weighted.reduce(
 			(accumulator, currentValue) => accumulator + currentValue,
-			0,
+			0
 		);
 		return Number(total.toFixed(2));
 	};

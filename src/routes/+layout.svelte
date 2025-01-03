@@ -6,7 +6,7 @@
 
 	inject({ mode: dev ? "development" : "production" });
 
-	let { data, children } = $props();
+	let { children } = $props();
 </script>
 
 <div
@@ -16,23 +16,8 @@
 		{@render children?.()}
 	</main>
 	<footer
-		class="mt-8 flex max-w-full items-center justify-between p-4 text-content"
+		class="mt-8 flex max-w-full items-center justify-end p-4 text-content"
 	>
-		<div class="flex gap-1">
-			{#await data.contributors}
-				loading...
-			{:then contributors}
-				{#each contributors as { login, html_url }}
-					<a href={html_url} aria-label="{login}'s GitHub">
-						<img
-							src="https://github.com/{login}.png"
-							class="h-8 rounded-full"
-							alt={login}
-						/>
-					</a>
-				{/each}
-			{/await}
-		</div>
 		<a href={info.github}>
 			<img src="/plought-text-logo-dark.svg" alt="Plought" class="w-24" />
 		</a>

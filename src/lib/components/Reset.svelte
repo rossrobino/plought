@@ -27,4 +27,4 @@
 	};
 </script>
 
-<button class="btn-s mt-8 w-full" on:click={reset}>Reset</button>
+<button class="btn-s mt-8 w-full" onclick={reset}>Reset</button>

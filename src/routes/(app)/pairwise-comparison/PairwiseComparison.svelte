@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { alternatives } from "$lib/stores";
-	import { Icon } from "@liquidiqq/iconkit";
 
 	const updateInverse = (i: number, j: number) => {
 		const newScore = $alternatives[i].pairwise[j];
@@ -11,15 +10,12 @@
 </script>
 
 <section>
-	<h2>
-		<span class="icon"><Icon name="adjustments-horizontal" /></span>
-		Comparisons
-	</h2>
+	<h2>Comparisons</h2>
 	<div class="mt-4 overflow-x-auto">
 		<table>
 			<thead>
 				<tr>
-					<th />
+					<th></th>
 					{#each $alternatives as { name }}
 						<th>{name}</th>
 					{/each}
@@ -29,13 +25,13 @@
 				{#each $alternatives as alt, i}
 					<tr>
 						<th>{alt.name}</th>
-						{#each alt.pairwise as score, j}
+						{#each alt.pairwise as _, j}
 							<td>
 								{#if $alternatives[i] !== $alternatives[j]}
 									{#if i < j}
 										<select
 											bind:value={$alternatives[i].pairwise[j]}
-											on:change={() => updateInverse(i, j)}
+											onchange={() => updateInverse(i, j)}
 										>
 											<option value={1}>
 												{$alternatives[i].name}

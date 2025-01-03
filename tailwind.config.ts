@@ -1,6 +1,7 @@
-const config = {
-	content: ["./src/**/*.{html,js,svelte,ts}"],
+import type { Config } from "tailwindcss";
 
+export default {
+	content: ["./src/**/*.{html,js,svelte,ts}"],
 	theme: {
 		extend: {
 			colors: {
@@ -11,7 +12,7 @@ const config = {
 					DEFAULT: "#0D1C3A",
 				},
 				p: {
-					DEFAULT: "#30D015",
+					DEFAULT: "#7af066",
 					100: "#DEFBEB",
 				},
 				s: {
@@ -19,11 +20,6 @@ const config = {
 					100: "#D6F4FA",
 				},
 			},
-			fontFamily: {
-				archivo: ["Archivo", "sans-serif"],
-			},
 		},
 	},
-};
-
-module.exports = config;
+} satisfies Config;

@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { alternatives, criteria } from "$lib/stores";
-	import { Icon } from "@liquidiqq/iconkit";
 
 	export let weightedSum = false;
 	export let pairwise = false;
@@ -40,7 +39,7 @@
 		// sum the list to create the total score
 		const total = weighted.reduce(
 			(accumulator, currentValue) => accumulator + currentValue,
-			0
+			0,
 		);
 		return Number(total.toFixed(2));
 	};
@@ -68,10 +67,7 @@
 </script>
 
 <section>
-	<h2>
-		<span class="icon"><Icon name="chart-bar-square" /></span>
-		Scores
-	</h2>
+	<h2>Scores</h2>
 	<div class="mt-4 overflow-x-auto">
 		<table>
 			<thead>

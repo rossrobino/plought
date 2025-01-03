@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { criteria, alternatives } from "$lib/stores";
-	import { Icon } from "@liquidiqq/iconkit";
 	import XMark from "$lib/svg/XMark.svelte";
 
 	/** controls if weights column is displayed*/
@@ -36,20 +35,17 @@
 </script>
 
 <section>
-	<h2>
-		<span class="icon"><Icon name="scale" /></span>
-		Criteria
-	</h2>
+	<h2>Criteria</h2>
 	<div class="mt-4 overflow-x-auto">
 		<table>
 			<thead>
 				<tr>
-					<th />
+					<th></th>
 					<th>Name</th>
 					{#if weights}
 						<th>Weight</th>
 					{/if}
-					<th />
+					<th></th>
 				</tr>
 			</thead>
 			<tbody>
@@ -98,12 +94,12 @@
 				{#if weights}
 					<tr>
 						<th>Total</th>
-						<td />
+						<td></td>
 
 						<td>
 							<span
 								class:text-rose-800={Math.round(
-									sumArray(getWeights($criteria)) * 100
+									sumArray(getWeights($criteria)) * 100,
 								) !== 100}
 							>
 								{(sumArray(getWeights($criteria)) * 100).toFixed()}
@@ -111,7 +107,7 @@
 							/ 100
 						</td>
 
-						<td />
+						<td></td>
 					</tr>
 				{/if}
 			</tbody>

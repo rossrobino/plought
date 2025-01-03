@@ -2,20 +2,19 @@
 	import "../app.postcss";
 	import { dev } from "$app/environment";
 	import { inject } from "@vercel/analytics";
+	import { info } from "$lib/info";
 
 	inject({ mode: dev ? "development" : "production" });
 
-	export let data;
+	let { data, children } = $props();
 </script>
 
 <div
-	class="flex h-[100dvh] flex-col justify-between selection:bg-content selection:text-base"
+	class="mx-auto flex h-[100dvh] max-w-[90ch] flex-col justify-between selection:bg-content selection:text-base"
 >
-	<div>
-		<main class="max-w-full p-4">
-			<slot />
-		</main>
-	</div>
+	<main class="p-4">
+		{@render children?.()}
+	</main>
 	<footer
 		class="mt-8 flex max-w-full items-center justify-between p-4 text-content"
 	>
@@ -34,7 +33,7 @@
 				{/each}
 			{/await}
 		</div>
-		<a href="/">
+		<a href={info.github}>
 			<img src="/plought-text-logo-dark.svg" alt="Plought" class="w-24" />
 		</a>
 	</footer>

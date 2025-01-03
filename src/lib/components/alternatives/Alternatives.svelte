@@ -1,30 +1,30 @@
 <script lang="ts">
 	import { criteria, alternatives } from "$lib/stores";
-	import { Icon } from "@liquidiqq/iconkit";
 	import AddAlternativeButton from "$lib/components/alternatives/AddAlternativeButton.svelte";
 	import RemoveAlternativeButton from "$lib/components/alternatives/RemoveAlternativeButton.svelte";
 
-	/** controls if criteria are displayed */
-	export let showCriteria = false;
+	interface Props {
+		/** controls if criteria are displayed */
+		showCriteria?: boolean;
+	}
+
+	let { showCriteria = false }: Props = $props();
 </script>
 
 <section>
-	<h2>
-		<span class="icon"><Icon name="square-3-stack-3d" /></span>
-		Alternatives
-	</h2>
+	<h2>Alternatives</h2>
 	<div class="mt-4 overflow-x-auto">
 		<table>
 			<thead>
 				<tr>
-					<th />
+					<th></th>
 					<th>Name</th>
 					{#if showCriteria}
 						{#each $criteria as { name }}
 							<th>{name}</th>
 						{/each}
 					{/if}
-					<th />
+					<th></th>
 				</tr>
 			</thead>
 			<tbody>
@@ -44,7 +44,7 @@
 							/>
 						</td>
 						{#if showCriteria}
-							{#each alt.scores as score, j}
+							{#each alt.scores as _, j}
 								<td>
 									<input
 										type="number"

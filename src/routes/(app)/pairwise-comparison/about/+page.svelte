@@ -1,15 +1,11 @@
 <script lang="ts">
 	import AboutAlternatives from "$lib/components/alternatives/AboutAlternatives.svelte";
-	import { Icon } from "@liquidiqq/iconkit";
 </script>
 
 <AboutAlternatives />
 
 <section>
-	<h2>
-		<span class="icon"><Icon name="adjustments-horizontal" /></span>
-		Compare
-	</h2>
+	<h2>Compare</h2>
 	<p>
 		Compare each <b>alternative</b>
 		against each of the other
@@ -26,10 +22,7 @@
 	</p>
 </section>
 <section>
-	<h2>
-		<span class="icon"><Icon name="chart-bar-square" /></span>
-		Score
-	</h2>
+	<h2>Score</h2>
 	<p>
 		Each
 		<b>alternative</b>

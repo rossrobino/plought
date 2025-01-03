@@ -2,7 +2,11 @@
 	import XMark from "$lib/svg/XMark.svelte";
 	import { alternatives } from "$lib/stores";
 
-	export let index: number;
+	interface Props {
+		index: number;
+	}
+
+	let { index }: Props = $props();
 
 	const removeAlternative = (index: number) => {
 		$alternatives.splice(index, 1);
@@ -15,7 +19,7 @@
 
 <button
 	class="btn-s"
-	on:click={() => removeAlternative(index)}
+	onclick={() => removeAlternative(index)}
 	disabled={$alternatives.length < 2}
 >
 	<XMark />

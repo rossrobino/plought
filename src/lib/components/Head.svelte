@@ -1,11 +1,14 @@
 <script lang="ts">
 	import { info } from "$lib/info";
-	import { Icon } from "@liquidiqq/iconkit";
 
-	export let title = "";
-	export let desc = "";
+	interface Props {
+		title?: string;
+		desc?: string;
+	}
 
-	let headTitle = info.name;
+	let { title = "", desc = "" }: Props = $props();
+
+	let headTitle = $state(info.name);
 
 	if (title) {
 		headTitle = `${info.name} - ` + title;
@@ -30,9 +33,6 @@
 				{title ? title : desc}
 			</h1>
 		</div>
-		<a href={info.github} aria-label="GitHub repository" class="w-6">
-			<Icon name="github-logo" />
-		</a>
 	</div>
 	<div class="mt-4 block sm:hidden">
 		<h1 class="rounded-xl bg-s-100 px-2 py-1 text-center text-lg font-semibold">

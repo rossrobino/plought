@@ -1,12 +1,5 @@
-<script lang="ts">
-	import { Icon } from "@liquidiqq/iconkit";
-</script>
-
 <section>
-	<h2>
-		<span class="icon"><Icon name="square-3-stack-3d" /></span>
-		Add Alternatives
-	</h2>
+	<h2>Add Alternatives</h2>
 	<p>
 		Create <b>alternatives</b>
 		for each option:

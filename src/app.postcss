@@ -3,9 +3,6 @@
 @tailwind utilities;
 
 @layer base {
-	body {
-		@apply font-archivo;
-	}
 	button,
 	.btn {
 		@apply inline-block rounded-xl bg-p p-2 text-content no-underline shadow transition;
@@ -21,10 +18,7 @@
 		@apply mt-8 rounded-xl border border-s border-opacity-50 p-4 shadow;
 	}
 	h2 {
-		@apply mb-2 inline-flex items-center gap-4 rounded-xl py-1 text-lg font-semibold;
-	}
-	.icon {
-		@apply h-fit rounded-xl bg-p-100 p-2 text-p;
+		@apply mb-2 rounded-xl py-1 text-lg font-semibold;
 	}
 	table {
 		@apply w-full;

@@ -10,12 +10,10 @@ export const info = {
 class App {
 	path: string;
 	desc: string;
-	icon: string;
 
-	constructor(path: string, desc: string, icon: string) {
+	constructor(path: string, desc: string) {
 		this.path = path;
 		this.desc = desc;
-		this.icon = icon;
 	}
 
 	get title() {
@@ -28,14 +26,9 @@ class App {
 }
 
 export const apps = [
-	new App(
-		"/weighted-sum",
-		"Evaluate alternatives based on weighted criteria.",
-		"scale"
-	),
+	new App("/weighted-sum", "Evaluate alternatives based on weighted criteria."),
 	new App(
 		"/pairwise-comparison",
 		"Compare alternatives against each possible option.",
-		"adjustments-horizontal"
 	),
 ];

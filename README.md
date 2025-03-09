@@ -1,3 +1,5 @@
-# [Plought](https://plought.vercel.app)
+# Plought
+
+WIP
 
 Reduce Noise in Decision Making

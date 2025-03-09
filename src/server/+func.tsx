@@ -4,6 +4,7 @@ import type { State } from "@/lib/types";
 import { About } from "@/pages/about";
 import { Home } from "@/pages/home";
 import { Layout } from "@/pages/layout";
+import { Login } from "@/pages/login";
 import { Page } from "@robino/html";
 import { Router } from "@robino/router";
 import { html } from "client:page";
@@ -49,11 +50,7 @@ app.get("/login", auth.setAuth, (c) => {
 	c.res = c.state.page
 		.body(
 			<Layout user={c.state.auth.user}>
-				<div class="border rounded-xl p-6">
-					<a class="button" href="/login/google">
-						Login with Google
-					</a>
-				</div>
+				<Login />
 			</Layout>,
 		)
 		.toResponse();

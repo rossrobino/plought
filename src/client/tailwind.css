@@ -73,6 +73,5 @@
 @layer base {
 	:root {
 		--accent: blue;
-		--border-radius: 18px;
 	}
 }

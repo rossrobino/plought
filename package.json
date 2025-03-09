@@ -15,6 +15,7 @@
 		"db:studio": "drizzle-kit studio"
 	},
 	"devDependencies": {
+		"@domcojs/vercel": "^1.1.1",
 		"@robino/prettier": "^1.0.2",
 		"@tailwindcss/vite": "^4.0.12",
 		"@types/node": "^22.13.10",

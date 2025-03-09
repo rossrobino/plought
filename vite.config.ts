@@ -1,3 +1,4 @@
+import { adapter } from "@domcojs/vercel";
 import { Processor } from "@robino/md";
 import tailwindcss from "@tailwindcss/vite";
 import { domco } from "domco";
@@ -7,7 +8,7 @@ const processor = new Processor();
 
 export default defineConfig({
 	plugins: [
-		domco(),
+		domco({ adapter: adapter() }),
 		tailwindcss(),
 		{
 			name: "local:markdown",

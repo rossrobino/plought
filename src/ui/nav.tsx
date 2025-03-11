@@ -4,7 +4,7 @@ const links: { text: string; href: string }[] = [
 	{ text: "About", href: "/about" },
 	{ text: "Dashboard", href: "/" },
 	{ text: "Explore", href: "/explore" },
-	{ text: "Studies", href: "/studies" },
+	{ text: "Study", href: "/study" },
 	{ text: "Research", href: "/research" },
 ] as const;
 

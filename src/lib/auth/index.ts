@@ -109,31 +109,43 @@ export const deleteSessionTokenCookie = (res: Response) => {
 	res.headers.append("Set-Cookie", setCookie.toString());
 };
 
-export const setAuth: Middleware<any, State> = async (c, next) => {
-	// csrf
-	if (c.req.method !== "GET") {
-		if (c.req.headers.get("Origin") !== constants.origin) {
-			c.res = new Response("Forbidden", { status: 403 });
+export const setAuth = (loginRedirect = false) => {
+	const mw: Middleware<any, State> = async (c, next) => {
+		// csrf
+		if (c.req.method !== "GET") {
+			if (c.req.headers.get("Origin") !== constants.origin) {
+				c.res = new Response("Forbidden", { status: 403 });
+				return;
+			}
+		}
+
+		const headers = new SuperHeaders(c.req.headers);
+		const sessionToken = headers.cookie.get(sessionCookieName);
+
+		c.state.auth = await validateSessionToken(sessionToken);
+
+		if (loginRedirect && !c.state.auth.session) {
+			c.res = new Response(null, {
+				status: 302,
+				headers: { Location: "/login" },
+			});
 			return;
 		}
-	}
 
-	const headers = new SuperHeaders(c.req.headers);
-	const sessionToken = headers.cookie.get(sessionCookieName);
+		await next();
 
-	c.state.auth = await validateSessionToken(sessionToken);
-
-	await next();
-
-	if (c.res) {
-		if (c.state.auth.session && sessionToken) {
-			setSessionTokenCookie(
-				c.res,
-				sessionToken,
-				c.state.auth.session.expiresAt,
-			);
-		} else {
-			deleteSessionTokenCookie(c.res);
+		if (c.res) {
+			if (c.state.auth.session && sessionToken) {
+				setSessionTokenCookie(
+					c.res,
+					sessionToken,
+					c.state.auth.session.expiresAt,
+				);
+			} else {
+				deleteSessionTokenCookie(c.res);
+			}
 		}
-	}
+	};
+
+	return mw;
 };

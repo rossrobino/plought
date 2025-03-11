@@ -13,12 +13,6 @@ const timestamps = {
 		.$onUpdate(() => sql`now()`),
 };
 
-export const studyStatus = t.pgEnum("study_status", [
-	"draft",
-	"active",
-	"complete",
-]);
-
 export const user = t.pgTable("user", {
 	id: t.serial().primaryKey(),
 	googleId: t.text().notNull().unique(),
@@ -47,6 +41,12 @@ export const session = t.pgTable("session", {
 
 export type Session = typeof session.$inferSelect;
 
+export const studyStatus = t.pgEnum("study_status", [
+	"draft",
+	"active",
+	"complete",
+]);
+
 export const study = t.pgTable("study", {
 	id: t.serial().primaryKey(),
 	title: t.text().notNull(),
@@ -56,9 +56,11 @@ export const study = t.pgTable("study", {
 		.notNull()
 		.references(() => user.id, { onDelete: "cascade" }),
 	status: studyStatus().default("draft").notNull(),
-	public: t.boolean().default(false),
+	public: t.boolean().default(false).notNull(),
 	...timestamps,
 });
+
+export type Study = typeof study.$inferSelect;
 
 export const instrument = t.pgTable("instrument", {
 	id: t.serial().primaryKey(),
@@ -66,7 +68,7 @@ export const instrument = t.pgTable("instrument", {
 	description: t.text().notNull().default(""),
 });
 
-/** Junction table connecting studies to their research instruments */
+/** Junction table connecting studies to instruments */
 export const studyInstrument = t.pgTable("study_instrument", {
 	id: t.serial().primaryKey(),
 	studyId: t
@@ -81,7 +83,6 @@ export const studyInstrument = t.pgTable("study_instrument", {
 	config: t.json(),
 });
 
-/** Responses to instruments without requiring a participation record */
 export const response = t.pgTable("response", {
 	id: t.serial().primaryKey(),
 	studyId: t

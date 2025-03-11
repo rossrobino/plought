@@ -18,8 +18,14 @@ export const session = {
 };
 
 export const study = {
-	Insert: createInsertSchema(table.study),
-	Update: createUpdateSchema(table.study),
+	Insert: createInsertSchema(table.study, {
+		title: (s) => s.min(1).max(100),
+		description: (s) => s.min(1).max(300),
+	}),
+	Update: createUpdateSchema(table.study, {
+		title: (s) => s.min(1).max(100),
+		description: (s) => s.min(1).max(300),
+	}),
 	Select: createSelectSchema(table.study),
 };
 

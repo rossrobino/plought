@@ -3,9 +3,9 @@ import type { User } from "@/lib/db/table";
 const links: { text: string; href: string }[] = [
 	{ text: "About", href: "/about" },
 	{ text: "Dashboard", href: "/" },
-	{ text: "Explore", href: "/explore" },
 	{ text: "Study", href: "/study" },
-	{ text: "Research", href: "/research" },
+	// { text: "Explore", href: "/explore" },
+	// { text: "Research", href: "/research" },
 ] as const;
 
 export const Nav = (props: { user: User | null }) => {

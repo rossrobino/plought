@@ -1,8 +1,7 @@
-import type { State } from "../types";
+import type { GenericContext, State } from "../types";
 import * as constants from "@/lib/constants";
 import { db } from "@/lib/db";
 import * as table from "@/lib/db/table";
-import SuperHeaders, { SetCookie } from "@mjackson/headers";
 import { sha256 } from "@oslojs/crypto/sha2";
 import {
 	encodeBase32LowerCaseNoPadding,
@@ -78,11 +77,11 @@ export const invalidateAllSessions = async (userId: table.User["id"]) =>
 	db.delete(table.session).where(eq(table.session.userId, userId));
 
 export const setSessionTokenCookie = (
-	res: Response,
+	c: GenericContext,
 	token: string,
 	expiresAt: Date,
 ) => {
-	const setCookie = new SetCookie({
+	c.res.headers.setCookie = {
 		name: sessionCookieName,
 		value: token,
 		httpOnly: true,
@@ -90,13 +89,11 @@ export const setSessionTokenCookie = (
 		expires: expiresAt,
 		path: "/",
 		secure: import.meta.env.DEV ? undefined : true,
-	});
-
-	res.headers.append("Set-Cookie", setCookie.toString());
+	};
 };
 
-export const deleteSessionTokenCookie = (res: Response) => {
-	const setCookie = new SetCookie({
+export const deleteSessionTokenCookie = (c: GenericContext) => {
+	c.res.headers.setCookie = {
 		name: sessionCookieName,
 		value: "",
 		httpOnly: true,
@@ -104,9 +101,7 @@ export const deleteSessionTokenCookie = (res: Response) => {
 		maxAge: 0,
 		path: "/",
 		secure: import.meta.env.DEV ? undefined : true,
-	});
-
-	res.headers.append("Set-Cookie", setCookie.toString());
+	};
 };
 
 export const setAuth = (loginRedirect = false) => {
@@ -114,21 +109,17 @@ export const setAuth = (loginRedirect = false) => {
 		// csrf
 		if (c.req.method !== "GET") {
 			if (c.req.headers.get("Origin") !== constants.origin) {
-				c.res = new Response("Forbidden", { status: 403 });
+				c.res.set("Forbidden", { status: 403 });
 				return;
 			}
 		}
 
-		const headers = new SuperHeaders(c.req.headers);
-		const sessionToken = headers.cookie.get(sessionCookieName);
+		const sessionToken = c.req.headers.cookie.get(sessionCookieName);
 
 		c.state.auth = await validateSessionToken(sessionToken);
 
 		if (loginRedirect && !c.state.auth.session) {
-			c.res = new Response(null, {
-				status: 302,
-				headers: { Location: "/login" },
-			});
+			c.res.redirect("/login");
 			return;
 		}
 
@@ -136,13 +127,9 @@ export const setAuth = (loginRedirect = false) => {
 
 		if (c.res) {
 			if (c.state.auth.session && sessionToken) {
-				setSessionTokenCookie(
-					c.res,
-					sessionToken,
-					c.state.auth.session.expiresAt,
-				);
+				setSessionTokenCookie(c, sessionToken, c.state.auth.session.expiresAt);
 			} else {
-				deleteSessionTokenCookie(c.res);
+				deleteSessionTokenCookie(c);
 			}
 		}
 	};

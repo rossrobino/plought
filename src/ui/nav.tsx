@@ -1,9 +1,9 @@
 import type { User } from "@/lib/db/table";
 
 const links: { text: string; href: string }[] = [
-	{ text: "About", href: "/about" },
 	{ text: "Dashboard", href: "/" },
-	{ text: "Study", href: "/study" },
+	{ text: "Studies", href: "/study" },
+	{ text: "About", href: "/about" },
 	// { text: "Explore", href: "/explore" },
 	// { text: "Research", href: "/research" },
 ] as const;

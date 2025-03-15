@@ -15,6 +15,9 @@ export const StudyUpdate = async (props: {
 				<h1 class="mb-8">Update Study</h1>
 				<StudyForm study={props.study} />
 				<Issues issues={props.issues} />
+				<form action={`/study/${props.study.id}/delete`}>
+					<button class="destructive mt-4">Delete</button>
+				</form>
 			</article>
 		</Layout>
 	);

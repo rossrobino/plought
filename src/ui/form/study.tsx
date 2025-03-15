@@ -6,7 +6,7 @@ export const StudyForm = (props: { study?: Partial<Study> }) => {
 		<form method="post" class="space-y-3">
 			<Input name="title" value={props.study?.title ?? ""} />
 			<Textarea name="description">{props.study?.description ?? ""}</Textarea>
-			<Checkbox name="public" value={props.study?.public ? "on" : "off"} />
+			<Checkbox name="public" checked={props.study?.public ? true : false} />
 			<button>Submit</button>
 		</form>
 	);

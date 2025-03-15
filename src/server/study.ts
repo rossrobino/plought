@@ -9,14 +9,20 @@ import { StudyCreate } from "@/pages/study/create";
 import { StudyId } from "@/pages/study/id";
 import { StudyUpdate } from "@/pages/study/update";
 import { Router } from "@robino/router";
+import { eq } from "drizzle-orm";
 
 export const studyApp = new Router<State>();
 
 studyApp.get("/", auth.setAuth(), async (c) => {
-	const studies = await db.query.study.findMany();
-
 	c.res.html((p) => {
-		p.body(Studies({ user: c.state.auth.user, studies }));
+		p.body(async () => {
+			const [publicStudies, userStudies] = await Promise.all([
+				query.getStudiesPublic(),
+				query.getStudiesByUserId(c.state.auth?.user?.id),
+			]);
+
+			return Studies({ user: c.state.auth.user, publicStudies, userStudies });
+		});
 	});
 });
 
@@ -74,22 +80,27 @@ studyApp
 		});
 	})
 	.post("/:id/update", auth.setAuth(true), async (c) => {
+		const study = await query.getStudyById(c.params.id);
+		if (!study || study.userId !== c.state.auth.user?.id) return;
+
 		const formData = await c.req.formData();
 
-		const title = String(formData.get("title"));
-		const description = String(formData.get("description"));
+		const title = formData.get("title");
+		const description = formData.get("description");
+		const isPublic = Boolean(formData.get("public"));
 
 		const update = schema.study.Update.safeParse({
 			userId: c.state.auth.user?.id,
 			title,
 			description,
+			public: isPublic,
 		});
 
 		if (!update.success) {
 			c.res.html((p) => {
 				p.body(
 					StudyUpdate({
-						study: { title, description },
+						study,
 						user: c.state.auth.user,
 						issues: update.error.issues,
 					}),
@@ -99,10 +110,18 @@ studyApp
 			return;
 		}
 
-		const [study] = await db
+		await db
 			.update(table.study)
 			.set(update.data)
-			.returning({ id: table.study.id });
+			.where(eq(table.study.id, study.id));
 
-		c.res.redirect(`/study/${study?.id}`);
+		c.res.redirect(`/study/${c.params.id}`);
+	})
+	.get("/:id/delete", auth.setAuth(true), async (c) => {
+		const study = await query.getStudyById(c.params.id);
+		if (!study || study.userId !== c.state.auth.user?.id) return;
+
+		await db.delete(table.study).where(eq(table.study.id, study.id));
+
+		c.res.redirect("/study");
 	});

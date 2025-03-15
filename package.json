@@ -33,7 +33,7 @@
 		"@robino/html": "^0.9.0",
 		"@robino/jsx": "^0.2.6",
 		"@robino/md": "^3.2.1",
-		"@robino/router": "^0.6.1",
+		"@robino/router": "^0.7.0",
 		"@robino/tsconfig": "^1.0.2",
 		"arctic": "^3.5.0",
 		"clsx": "^2.1.1",

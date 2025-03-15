@@ -28,9 +28,7 @@ studyApp.get("/", auth.setAuth(), async (c) => {
 
 studyApp
 	.get("/create", auth.setAuth(true), (c) => {
-		c.res.html((p) => {
-			p.body(StudyCreate({ user: c.state.auth.user }));
-		});
+		c.res.html((p) => p.body(StudyCreate({ user: c.state.auth.user })));
 	})
 	.post("/create", auth.setAuth(true), async (c) => {
 		const formData = await c.req.formData();
@@ -65,9 +63,9 @@ studyApp.get("/:id", auth.setAuth(), async (c) => {
 	const study = await query.getStudyById(c.params.id);
 	if (!study) return;
 
-	c.res.html((p) => {
-		p.body(StudyId({ user: c.state.auth.user, study }));
-	});
+	if (c.res.etag(study.updatedAt)) return;
+
+	c.res.html((p) => p.body(StudyId({ user: c.state.auth.user, study })));
 });
 
 studyApp
@@ -75,9 +73,9 @@ studyApp
 		const study = await query.getStudyById(c.params.id);
 		if (!study || study.userId !== c.state.auth.user?.id) return;
 
-		c.res.html((p) => {
-			p.body(StudyUpdate({ user: c.state.auth.user, study }));
-		});
+		if (c.res.etag(study.updatedAt)) return;
+
+		c.res.html((p) => p.body(StudyUpdate({ user: c.state.auth.user, study })));
 	})
 	.post("/:id/update", auth.setAuth(true), async (c) => {
 		const study = await query.getStudyById(c.params.id);

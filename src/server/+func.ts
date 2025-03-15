@@ -13,15 +13,14 @@ const app = new Router<State>({
 });
 
 app.get("/", auth.setAuth(), async (c) => {
-	c.res.html((p) => {
-		p.body(Home({ user: c.state.auth.user }));
-	});
+	c.res.html((p) => p.body(Home({ user: c.state.auth.user })));
 });
 
 app.get("/about", async (c) => {
-	c.res.html((p) => {
-		p.body(About());
-	});
+	const about = await About();
+	if (c.res.etag(about)) return;
+
+	c.res.html((p) => p.body(about));
 });
 
 app.mount("/study", studyApp);

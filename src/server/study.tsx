@@ -4,12 +4,13 @@ import * as query from "@/lib/db/query";
 import * as schema from "@/lib/db/schema";
 import * as table from "@/lib/db/table";
 import type { State } from "@/lib/types";
-import { Studies } from "@/pages/study";
-import { StudyCreate } from "@/pages/study/create";
-import { StudyId } from "@/pages/study/id";
-import { StudyUpdate } from "@/pages/study/update";
+import { Layout } from "@/server/layout";
+import { StudyForm } from "@/ui/form/study";
+import { Issues } from "@/ui/issue";
+import { StudyTable } from "@/ui/table/study";
 import { Router } from "@robino/router";
 import { eq } from "drizzle-orm";
+import type { ZodIssue } from "zod";
 
 export const studyApp = new Router<State>();
 
@@ -21,10 +22,42 @@ studyApp.get("/", auth.setAuth(), async (c) => {
 				query.getStudiesByUserId(c.state.auth?.user?.id),
 			]);
 
-			return Studies({ user: c.state.auth.user, publicStudies, userStudies });
+			return (
+				<Layout user={c.state.auth.user}>
+					<article>
+						<div class="flex items-center justify-between">
+							<h1>Studies</h1>
+							<a class="button" href="/study/create">
+								Create
+							</a>
+						</div>
+						<div class="space-y-4 mt-8">
+							<h2>Public</h2>
+							<StudyTable studies={publicStudies} />
+							<h2>User</h2>
+							<StudyTable studies={userStudies} />
+						</div>
+					</article>
+				</Layout>
+			);
 		});
 	});
 });
+
+const StudyCreate = async (props: {
+	user: table.User | null;
+	issues?: ZodIssue[];
+}) => {
+	return (
+		<Layout user={props.user}>
+			<article>
+				<h1 class="mb-8">Create a New Study</h1>
+				<StudyForm />
+				<Issues issues={props.issues} />
+			</article>
+		</Layout>
+	);
+};
 
 studyApp
 	.get("/create", auth.setAuth(true), (c) => {
@@ -37,6 +70,7 @@ studyApp
 			userId: c.state.auth.user?.id,
 			title: formData.get("title"),
 			description: formData.get("description"),
+			public: Boolean(formData.get("public")),
 		});
 
 		if (!insert.success) {
@@ -65,8 +99,45 @@ studyApp.get("/:id", auth.setAuth(), async (c) => {
 
 	if (c.res.etag(study.updatedAt)) return;
 
-	c.res.html((p) => p.body(StudyId({ user: c.state.auth.user, study })));
+	const { user } = c.state.auth;
+
+	const href = `/study/${study.id}`;
+
+	c.res.html((p) =>
+		p.body(
+			<Layout user={user}>
+				<h1 class="flex gap-4 items-center">
+					<a class="underline text-4xl" href={href}>
+						#{study.id}
+					</a>
+					<span>{study.title}</span>
+				</h1>
+				<p>{study.description}</p>
+
+				{study.userId === user?.id && <a href={`${href}/update`}>Update</a>}
+			</Layout>,
+		),
+	);
 });
+
+const StudyUpdate = async (props: {
+	user: table.User | null;
+	study: Partial<table.Study>;
+	issues?: ZodIssue[];
+}) => {
+	return (
+		<Layout user={props.user}>
+			<article>
+				<h1 class="mb-8">Update Study</h1>
+				<StudyForm study={props.study} />
+				<Issues issues={props.issues} />
+				<form action={`/study/${props.study.id}/delete`}>
+					<button class="destructive mt-4">Delete</button>
+				</form>
+			</article>
+		</Layout>
+	);
+};
 
 studyApp
 	.get("/:id/update", auth.setAuth(true), async (c) => {
@@ -83,15 +154,11 @@ studyApp
 
 		const formData = await c.req.formData();
 
-		const title = formData.get("title");
-		const description = formData.get("description");
-		const isPublic = Boolean(formData.get("public"));
-
 		const update = schema.study.Update.safeParse({
 			userId: c.state.auth.user?.id,
-			title,
-			description,
-			public: isPublic,
+			title: formData.get("title"),
+			description: formData.get("description"),
+			public: Boolean(formData.get("public")),
 		});
 
 		if (!update.success) {

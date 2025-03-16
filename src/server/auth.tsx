@@ -4,7 +4,8 @@ import { db } from "@/lib/db";
 import * as schema from "@/lib/db/schema";
 import * as table from "@/lib/db/table";
 import type { State } from "@/lib/types";
-import { Login } from "@/pages/login";
+import { Layout } from "@/server/layout";
+import svg from "@/ui/svg/google.svg?raw";
 import { Router } from "@robino/router";
 import { Google } from "arctic";
 import * as arctic from "arctic";
@@ -40,7 +41,18 @@ authApp.get("/login", auth.setAuth(), (c) => {
 	}
 
 	c.res.html((p) => {
-		p.body(Login());
+		p.body(
+			<Layout user={null}>
+				<article class="prose">
+					<h1>Login</h1>
+					<div class="border rounded-xl flex items-center justify-center p-6">
+						<a class="contents" href="/login/google">
+							{svg}
+						</a>
+					</div>
+				</article>
+			</Layout>,
+		);
 	});
 });
 

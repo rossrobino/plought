@@ -1,4 +1,4 @@
-import type { GenericContext, State } from "../types";
+import type { State } from "../types";
 import * as constants from "@/lib/constants";
 import { db } from "@/lib/db";
 import * as table from "@/lib/db/table";
@@ -7,7 +7,8 @@ import {
 	encodeBase32LowerCaseNoPadding,
 	encodeHexLowerCase,
 } from "@oslojs/encoding";
-import type { Middleware } from "@robino/router";
+import type { Context, Middleware, Params } from "@robino/router";
+import { parse, serialize } from "cookie-es";
 import { eq } from "drizzle-orm";
 
 const day = 1000 * 60 * 60 * 24;
@@ -37,9 +38,7 @@ export const createSession = async (
 	return session;
 };
 
-const validateSessionToken = async (
-	token: string | null,
-): Promise<State["auth"]> => {
+const validateSessionToken = async (token?: string): Promise<State["auth"]> => {
 	if (!token) return { session: null, user: null };
 
 	const [auth] = await db
@@ -77,60 +76,61 @@ export const invalidateAllSessions = async (userId: table.User["id"]) =>
 	db.delete(table.session).where(eq(table.session.userId, userId));
 
 export const setSessionTokenCookie = (
-	c: GenericContext,
+	c: Context<any, Params>,
 	token: string,
 	expiresAt: Date,
 ) => {
-	c.res.headers.setCookie = {
-		name: sessionCookieName,
-		value: token,
-		httpOnly: true,
-		sameSite: "Lax",
-		expires: expiresAt,
-		path: "/",
-		secure: import.meta.env.DEV ? undefined : true,
-	};
+	c.headers.set(
+		"Set-Cookie",
+		serialize(sessionCookieName, token, {
+			httpOnly: true,
+			sameSite: "lax",
+			expires: expiresAt,
+			path: "/",
+			secure: import.meta.env.DEV ? undefined : true,
+		}),
+	);
 };
 
-export const deleteSessionTokenCookie = (c: GenericContext) => {
-	c.res.headers.setCookie = {
-		name: sessionCookieName,
-		value: "",
-		httpOnly: true,
-		sameSite: "Lax",
-		maxAge: 0,
-		path: "/",
-		secure: import.meta.env.DEV ? undefined : true,
-	};
+export const deleteSessionTokenCookie = (c: Context<any, Params>) => {
+	c.headers.set(
+		"Set-Cookie",
+		serialize(sessionCookieName, "", {
+			httpOnly: true,
+			sameSite: "lax",
+			maxAge: 0,
+			path: "/",
+			secure: import.meta.env.DEV ? undefined : true,
+		}),
+	);
 };
 
 export const setAuth = (loginRedirect = false) => {
-	const mw: Middleware<any, State> = async (c, next) => {
+	const mw: Middleware<State, Params> = async (c, next) => {
 		// csrf
 		if (c.req.method !== "GET") {
 			if (c.req.headers.get("Origin") !== constants.origin) {
-				c.res.set("Forbidden", { status: 403 });
+				c.text("Forbidden", 403);
 				return;
 			}
 		}
 
-		const sessionToken = c.req.headers.cookie.get(sessionCookieName);
+		const cookie = parse(c.req.headers.get("cookie") || "");
+		const sessionToken = cookie[sessionCookieName];
 
 		c.state.auth = await validateSessionToken(sessionToken);
 
 		if (loginRedirect && !c.state.auth.session) {
-			c.res.redirect("/login");
+			c.redirect("/login");
 			return;
 		}
 
 		await next();
 
-		if (c.res) {
-			if (c.state.auth.session && sessionToken) {
-				setSessionTokenCookie(c, sessionToken, c.state.auth.session.expiresAt);
-			} else {
-				deleteSessionTokenCookie(c);
-			}
+		if (c.state.auth.session && sessionToken) {
+			setSessionTokenCookie(c, sessionToken, c.state.auth.session.expiresAt);
+		} else {
+			deleteSessionTokenCookie(c);
 		}
 	};
 

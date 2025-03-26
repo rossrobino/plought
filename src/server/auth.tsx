@@ -9,6 +9,7 @@ import svg from "@/ui/svg/google.svg?raw";
 import { Router } from "@robino/router";
 import { Google } from "arctic";
 import * as arctic from "arctic";
+import { serialize, parseSetCookie } from "cookie-es";
 import "dotenv/config";
 import { eq } from "drizzle-orm";
 import { z } from "zod";
@@ -25,35 +26,24 @@ const google = new Google(
 	`${constants.origin}/login/google/callback`,
 );
 
-const ClaimsSchema = z.object({
-	sub: z.string(),
-	family_name: z.string(),
-	given_name: z.string(),
-	email: z.string().email(),
-	email_verified: z.boolean(),
-	picture: z.string().url(),
-});
-
 authApp.get("/login", auth.setAuth(), (c) => {
 	if (c.state.auth.user) {
-		c.res.redirect("/");
+		c.redirect("/");
 		return;
 	}
 
-	c.res.html((p) => {
-		p.body(
-			<Layout user={null}>
-				<article class="prose">
-					<h1>Login</h1>
-					<div class="border rounded-xl flex items-center justify-center p-6">
-						<a class="contents" href="/login/google">
-							{svg}
-						</a>
-					</div>
-				</article>
-			</Layout>,
-		);
-	});
+	c.page(
+		<Layout user={null}>
+			<article class="prose">
+				<h1>Login</h1>
+				<div class="border rounded-xl flex items-center justify-center p-6">
+					<a class="contents" href="/login/google">
+						{svg}
+					</a>
+				</div>
+			</article>
+		</Layout>,
+	);
 });
 
 authApp
@@ -64,44 +54,69 @@ authApp
 
 		const url = google.createAuthorizationURL(state, codeVerifier, scopes);
 
-		c.res.redirect(url);
-		c.res.headers.setCookie = [
-			{
-				name: "google_oauth_state",
-				value: state,
+		c.redirect(url);
+
+		c.headers.append(
+			"Set-Cookie",
+			serialize("google_oauth_state", state, {
 				path: "/",
 				httpOnly: true,
 				maxAge: 60 * 10,
-				sameSite: "Lax",
-			},
-			{
-				name: "google_code_verifier",
-				value: codeVerifier,
+				sameSite: "lax",
+			}),
+		);
+
+		c.headers.append(
+			"Set-Cookie",
+			serialize("google_code_verifier", codeVerifier, {
 				path: "/",
 				httpOnly: true,
 				maxAge: 60 * 10,
-				sameSite: "Lax",
-			},
-		];
+				sameSite: "lax",
+			}),
+		);
 	})
 	.get("/login/google/callback", async (c) => {
-		const code = c.req.url.searchParams.get("code");
-		const state = c.req.url.searchParams.get("state");
-		const storedState = c.req.headers.cookie.get("google_oauth_state");
-		const codeVerifier = c.req.headers.cookie.get("google_code_verifier");
+		const { google_oauth_state, google_code_verifier } = parseSetCookie(
+			c.req.headers.get("cookie") || "",
+		);
 
-		if (
-			code === null ||
-			state === null ||
-			storedState === null ||
-			codeVerifier === null ||
-			state !== storedState
-		) {
-			c.res.set("Invalid request", { status: 400 });
+		const CallbackSchema = z
+			.object({
+				code: z.string(),
+				state: z.string(),
+				storedState: z.string(),
+				codeVerifier: z.string(),
+			})
+			.refine((data) => data.state === data.storedState, {
+				message: "state does not match stored state",
+				path: ["state", "storedState"],
+			});
+
+		const result = CallbackSchema.safeParse({
+			code: c.url.searchParams.get("code"),
+			state: c.url.searchParams.get("state"),
+			storedState: google_oauth_state,
+			codeVerifier: google_code_verifier,
+		});
+
+		if (!result.success) {
+			c.text("Invalid request", 400);
 			return;
 		}
 
+		const { code, codeVerifier } = result.data;
+
 		const tokens = await google.validateAuthorizationCode(code, codeVerifier);
+
+		const ClaimsSchema = z.object({
+			sub: z.string(),
+			family_name: z.string(),
+			given_name: z.string(),
+			email: z.string().email(),
+			email_verified: z.boolean(),
+			picture: z.string().url(),
+		});
 
 		const { sub, email, email_verified, family_name, given_name } =
 			ClaimsSchema.parse(arctic.decodeIdToken(tokens.idToken()));
@@ -131,15 +146,13 @@ authApp
 		const sessionToken = auth.generateSessionToken();
 		const session = await auth.createSession(sessionToken, user.id);
 
-		c.res.redirect("/");
+		c.redirect("/");
 		auth.setSessionTokenCookie(c, sessionToken, session.expiresAt);
 	});
 
 authApp.get("/logout", auth.setAuth(), async (c) => {
-	if (c.state.auth.user) {
-		await auth.invalidateAllSessions(c.state.auth.user.id);
-	}
+	if (c.state.auth.user) await auth.invalidateAllSessions(c.state.auth.user.id);
 
-	c.res.redirect("/");
+	c.redirect("/");
 	auth.deleteSessionTokenCookie(c);
 });

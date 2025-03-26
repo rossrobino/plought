@@ -1,8 +1,8 @@
-import type { Children, JSX } from "@robino/jsx";
+import type { JSX } from "@robino/jsx";
 import { clsx } from "clsx";
 
 export const Label = (
-	props: ({ for: string } | { children: Children }) &
+	props: ({ for: string } | { children: JSX.Element }) &
 		JSX.IntrinsicElements["label"],
 ) => {
 	const { for: htmlFor, class: className, children, ...rest } = props;

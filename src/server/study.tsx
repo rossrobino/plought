@@ -9,38 +9,37 @@ import { StudyForm } from "@/ui/form/study";
 import { Issues } from "@/ui/issue";
 import { StudyTable } from "@/ui/table/study";
 import { Router } from "@robino/router";
+import { time } from "build:time";
 import { eq } from "drizzle-orm";
 import type { ZodIssue } from "zod";
 
 export const studyApp = new Router<State>();
 
 studyApp.get("/", auth.setAuth(), async (c) => {
-	c.res.html((p) => {
-		p.body(async () => {
-			const [publicStudies, userStudies] = await Promise.all([
-				query.getStudiesPublic(),
-				query.getStudiesByUserId(c.state.auth?.user?.id),
-			]);
+	c.page(async () => {
+		const [publicStudies, userStudies] = await Promise.all([
+			query.getStudiesPublic(),
+			query.getStudiesByUserId(c.state.auth?.user?.id),
+		]);
 
-			return (
-				<Layout user={c.state.auth.user}>
-					<article>
-						<div class="flex items-center justify-between">
-							<h1>Studies</h1>
-							<a class="button" href="/study/create">
-								Create
-							</a>
-						</div>
-						<div class="space-y-4 mt-8">
-							<h2>Public</h2>
-							<StudyTable studies={publicStudies} />
-							<h2>User</h2>
-							<StudyTable studies={userStudies} />
-						</div>
-					</article>
-				</Layout>
-			);
-		});
+		return (
+			<Layout user={c.state.auth.user}>
+				<article>
+					<div class="flex items-center justify-between">
+						<h1>Studies</h1>
+						<a class="button" href="/study/create">
+							Create
+						</a>
+					</div>
+					<div class="space-y-4 mt-8">
+						<h2>Public</h2>
+						<StudyTable studies={publicStudies} />
+						<h2>User</h2>
+						<StudyTable studies={userStudies} />
+					</div>
+				</article>
+			</Layout>
+		);
 	});
 });
 
@@ -61,7 +60,7 @@ const StudyCreate = async (props: {
 
 studyApp
 	.get("/create", auth.setAuth(true), (c) => {
-		c.res.html((p) => p.body(StudyCreate({ user: c.state.auth.user })));
+		c.page(StudyCreate({ user: c.state.auth.user }));
 	})
 	.post("/create", auth.setAuth(true), async (c) => {
 		const formData = await c.req.formData();
@@ -74,12 +73,9 @@ studyApp
 		});
 
 		if (!insert.success) {
-			c.res.html((p) => {
-				p.body(
-					StudyCreate({ user: c.state.auth.user, issues: insert.error.issues }),
-				);
-			});
-
+			c.page(
+				StudyCreate({ user: c.state.auth.user, issues: insert.error.issues }),
+			);
 			return;
 		}
 
@@ -89,7 +85,7 @@ studyApp
 			.returning({ id: table.study.id });
 
 		if (study) {
-			c.res.redirect(`/study/${study.id}`);
+			c.redirect(`/study/${study.id}`);
 		}
 	});
 
@@ -97,26 +93,24 @@ studyApp.get("/:id", auth.setAuth(), async (c) => {
 	const study = await query.getStudyById(c.params.id);
 	if (!study) return;
 
-	if (c.res.etag(study.updatedAt)) return;
+	if (c.etag(time + study.updatedAt)) return;
 
 	const { user } = c.state.auth;
 
 	const href = `/study/${study.id}`;
 
-	c.res.html((p) =>
-		p.body(
-			<Layout user={user}>
-				<h1 class="flex gap-4 items-center">
-					<a class="underline text-4xl" href={href}>
-						#{study.id}
-					</a>
-					<span>{study.title}</span>
-				</h1>
-				<p>{study.description}</p>
+	c.page(
+		<Layout user={user}>
+			<h1 class="flex gap-4 items-center">
+				<a class="underline text-4xl" href={href}>
+					#{study.id}
+				</a>
+				<span>{study.title}</span>
+			</h1>
+			<p>{study.description}</p>
 
-				{study.userId === user?.id && <a href={`${href}/update`}>Update</a>}
-			</Layout>,
-		),
+			{study.userId === user?.id && <a href={`${href}/update`}>Update</a>}
+		</Layout>,
 	);
 });
 
@@ -144,9 +138,9 @@ studyApp
 		const study = await query.getStudyById(c.params.id);
 		if (!study || study.userId !== c.state.auth.user?.id) return;
 
-		if (c.res.etag(study.updatedAt)) return;
+		if (c.etag(time + study.updatedAt)) return;
 
-		c.res.html((p) => p.body(StudyUpdate({ user: c.state.auth.user, study })));
+		c.page(StudyUpdate({ user: c.state.auth.user, study }));
 	})
 	.post("/:id/update", auth.setAuth(true), async (c) => {
 		const study = await query.getStudyById(c.params.id);
@@ -162,15 +156,13 @@ studyApp
 		});
 
 		if (!update.success) {
-			c.res.html((p) => {
-				p.body(
-					StudyUpdate({
-						study,
-						user: c.state.auth.user,
-						issues: update.error.issues,
-					}),
-				);
-			});
+			c.page(
+				StudyUpdate({
+					study,
+					user: c.state.auth.user,
+					issues: update.error.issues,
+				}),
+			);
 
 			return;
 		}
@@ -180,7 +172,7 @@ studyApp
 			.set(update.data)
 			.where(eq(table.study.id, study.id));
 
-		c.res.redirect(`/study/${c.params.id}`);
+		c.redirect(`/study/${c.params.id}`);
 	})
 	.get("/:id/delete", auth.setAuth(true), async (c) => {
 		const study = await query.getStudyById(c.params.id);
@@ -188,5 +180,5 @@ studyApp
 
 		await db.delete(table.study).where(eq(table.study.id, study.id));
 
-		c.res.redirect("/study");
+		c.redirect("/study");
 	});

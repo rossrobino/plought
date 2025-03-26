@@ -1,8 +1,11 @@
 import type { User } from "@/lib/db/table";
 import { Nav } from "@/ui/nav";
-import type { Children } from "@robino/jsx";
+import type { JSX } from "@robino/jsx";
 
-export const Layout = (props: { children?: Children; user: User | null }) => {
+export const Layout = (props: {
+	children?: JSX.Element;
+	user: User | null;
+}) => {
 	return (
 		<>
 			<main class="flex">

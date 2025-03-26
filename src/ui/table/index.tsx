@@ -1,12 +1,12 @@
-import type { Children } from "@robino/jsx";
+import type { JSX } from "@robino/jsx";
 
-type Row = Record<string, Children>;
+type Row = Record<string, JSX.Element>;
 
 type Column<R extends Row, K extends keyof R = keyof R> = {
 	key: K;
-	head: (key: K) => Children;
-	cell: (value: R[K]) => Children;
-	foot?: (value: R[K]) => Children;
+	head: (key: K) => JSX.Element;
+	cell: (value: R[K]) => JSX.Element;
+	foot?: (value: R[K]) => JSX.Element;
 };
 
 export const Table = <R extends Row>(props: {

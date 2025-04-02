@@ -1,4 +1,4 @@
-import type { JSX } from "@robino/jsx";
+import type { JSX } from "ovr";
 
 type Row = Record<string, JSX.Element>;
 

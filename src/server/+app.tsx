@@ -1,12 +1,12 @@
-import { authApp } from "./auth";
-import { studyApp } from "./study";
 import { html as aboutHtml } from "@/content/about.md";
 import * as auth from "@/lib/auth";
 import type { State } from "@/lib/types";
+import { authApp } from "@/server/auth";
 import { Layout } from "@/server/layout";
-import { Router } from "@robino/router";
+import { studyApp } from "@/server/study";
 import { time } from "build:time";
 import { html } from "client:page";
+import { Router } from "ovr";
 
 const app = new Router<State>({
 	start(c) {
@@ -38,4 +38,4 @@ app.get("/about", async (c) => {
 app.mount("/study", studyApp);
 app.mount("/", authApp);
 
-export const handler = app.fetch;
+export default app;

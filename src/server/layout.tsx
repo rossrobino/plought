@@ -1,6 +1,6 @@
 import type { User } from "@/lib/db/table";
 import { Nav } from "@/ui/nav";
-import type { JSX } from "@robino/jsx";
+import type { JSX } from "ovr";
 
 export const Layout = (props: {
 	children?: JSX.Element;

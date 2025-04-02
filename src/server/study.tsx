@@ -8,9 +8,9 @@ import { Layout } from "@/server/layout";
 import { StudyForm } from "@/ui/form/study";
 import { Issues } from "@/ui/issue";
 import { StudyTable } from "@/ui/table/study";
-import { Router } from "@robino/router";
 import { time } from "build:time";
 import { eq } from "drizzle-orm";
+import { Router } from "ovr";
 import type { ZodIssue } from "zod";
 
 export const studyApp = new Router<State>();

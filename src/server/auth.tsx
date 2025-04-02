@@ -6,12 +6,12 @@ import * as table from "@/lib/db/table";
 import type { State } from "@/lib/types";
 import { Layout } from "@/server/layout";
 import svg from "@/ui/svg/google.svg?raw";
-import { Router } from "@robino/router";
 import { Google } from "arctic";
 import * as arctic from "arctic";
 import { serialize, parseSetCookie } from "cookie-es";
 import "dotenv/config";
 import { eq } from "drizzle-orm";
+import { Router } from "ovr";
 import { z } from "zod";
 
 export const authApp = new Router<State>();

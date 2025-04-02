@@ -1,5 +1,5 @@
-import type { JSX } from "@robino/jsx";
 import { clsx } from "clsx";
+import type { JSX } from "ovr";
 
 export const Label = (
 	props: ({ for: string } | { children: JSX.Element }) &

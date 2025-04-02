@@ -4,8 +4,6 @@
 @import "tailwindcss/theme.css" layer(theme);
 @import "tailwindcss/utilities.css" layer(utilities);
 
-@source "../";
-
 @theme {
 	--color-*: initial;
 	--color-background: var(--background);
@@ -68,10 +66,4 @@
 	--radius-2xl: calc(var(--border-radius) * 2.66);
 	--radius-3xl: calc(var(--border-radius) * 4);
 	--radius-4xl: calc(var(--border-radius) * 5.33);
-}
-
-@layer base {
-	:root {
-		--accent: blue;
-	}
 }

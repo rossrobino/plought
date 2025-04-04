@@ -59,10 +59,10 @@ const StudyCreate = async (props: {
 };
 
 studyApp
-	.get("/create", auth.setAuth(true), (c) => {
-		c.page(StudyCreate({ user: c.state.auth.user }));
+	.get("/create", auth.setAuth({ redirect: true }), (c) => {
+		c.page(<StudyCreate user={c.state.auth.user} />);
 	})
-	.post("/create", auth.setAuth(true), async (c) => {
+	.post("/create", auth.setAuth({ redirect: true }), async (c) => {
 		const formData = await c.req.formData();
 
 		const insert = schema.study.Insert.safeParse({
@@ -74,7 +74,7 @@ studyApp
 
 		if (!insert.success) {
 			c.page(
-				StudyCreate({ user: c.state.auth.user, issues: insert.error.issues }),
+				<StudyCreate user={c.state.auth.user} issues={insert.error.issues} />,
 			);
 			return;
 		}
@@ -134,15 +134,15 @@ const StudyUpdate = async (props: {
 };
 
 studyApp
-	.get("/:id/update", auth.setAuth(true), async (c) => {
+	.get("/:id/update", auth.setAuth({ redirect: true }), async (c) => {
 		const study = await query.getStudyById(c.params.id);
 		if (!study || study.userId !== c.state.auth.user?.id) return;
 
 		if (c.etag(time + study.updatedAt)) return;
 
-		c.page(StudyUpdate({ user: c.state.auth.user, study }));
+		c.page(<StudyUpdate user={c.state.auth.user} study={study} />);
 	})
-	.post("/:id/update", auth.setAuth(true), async (c) => {
+	.post("/:id/update", auth.setAuth({ redirect: true }), async (c) => {
 		const study = await query.getStudyById(c.params.id);
 		if (!study || study.userId !== c.state.auth.user?.id) return;
 
@@ -157,11 +157,11 @@ studyApp
 
 		if (!update.success) {
 			c.page(
-				StudyUpdate({
-					study,
-					user: c.state.auth.user,
-					issues: update.error.issues,
-				}),
+				<StudyUpdate
+					user={c.state.auth.user}
+					study={study}
+					issues={update.error.issues}
+				/>,
 			);
 
 			return;
@@ -174,7 +174,7 @@ studyApp
 
 		c.redirect(`/study/${c.params.id}`);
 	})
-	.get("/:id/delete", auth.setAuth(true), async (c) => {
+	.get("/:id/delete", auth.setAuth({ redirect: true }), async (c) => {
 		const study = await query.getStudyById(c.params.id);
 		if (!study || study.userId !== c.state.auth.user?.id) return;
 

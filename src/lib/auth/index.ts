@@ -105,7 +105,10 @@ export const deleteSessionTokenCookie = (c: Context<any, Params>) => {
 	);
 };
 
-export const setAuth = (loginRedirect = false) => {
+export const setAuth = (options?: {
+	/** Redirect to /login if invalid session. */
+	redirect?: boolean;
+}) => {
 	const mw: Middleware<State, Params> = async (c, next) => {
 		// csrf
 		if (c.req.method !== "GET") {
@@ -120,7 +123,7 @@ export const setAuth = (loginRedirect = false) => {
 
 		c.state.auth = await validateSessionToken(sessionToken);
 
-		if (loginRedirect && !c.state.auth.session) {
+		if (options?.redirect && !c.state.auth.session) {
 			c.redirect("/login");
 			return;
 		}

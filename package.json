@@ -18,14 +18,13 @@
 		"@domcojs/vercel": "^2.0.0",
 		"@robino/prettier": "^1.0.2",
 		"@robino/tsconfig": "^1.0.2",
-		"@tailwindcss/vite": "^4.1.0",
-		"@types/node": "^22.13.17",
+		"@tailwindcss/vite": "^4.1.3",
 		"domco": "^4.0.0",
 		"drizzle-kit": "^0.30.6",
 		"prettier": "^3.5.3",
-		"tailwindcss": "^4.1.0",
+		"tailwindcss": "^4.1.3",
 		"typescript": "^5.8.2",
-		"vite": "^6.2.4"
+		"vite": "^6.2.5"
 	},
 	"dependencies": {
 		"@neondatabase/serverless": "^1.0.0",
@@ -38,7 +37,7 @@
 		"dotenv": "^16.4.7",
 		"drizzle-orm": "^0.41.0",
 		"drizzle-zod": "^0.7.1",
-		"ovr": "^1.0.0",
+		"ovr": "^1.1.0",
 		"uico": "^0.7.0",
 		"zod": "^3.24.2"
 	}

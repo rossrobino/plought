@@ -1,4 +1,4 @@
-import type { State } from "../types";
+import type { State } from "./types";
 import * as constants from "@/lib/constants";
 import { db } from "@/lib/db";
 import * as table from "@/lib/db/table";

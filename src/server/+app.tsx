@@ -11,16 +11,19 @@ import { Router } from "ovr";
 const app = new Router<State>({
 	start(c) {
 		c.base = html;
-		return { auth: { user: null, session: null } };
 	},
 });
 
-app.get("/", auth.setAuth(), async (c) => {
-	if (c.etag(time + c.state.auth.user?.updatedAt)) return;
+app.use(auth.csrf);
+
+app.get("/", async (c) => {
+	const { user } = await auth.get(c);
+
+	if (c.etag(time + user?.updatedAt)) return;
 
 	c.page(
-		<Layout user={c.state.auth.user}>
-			<h1>Hello {c.state.auth.user?.firstName}</h1>
+		<Layout user={user}>
+			<h1>Hello {user?.firstName}</h1>
 		</Layout>,
 	);
 });

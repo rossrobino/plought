@@ -26,14 +26,16 @@ const google = new Google(
 	`${constants.origin}/login/google/callback`,
 );
 
-authApp.get("/login", auth.setAuth(), (c) => {
-	if (c.state.auth.user) {
+authApp.get("/login", async (c) => {
+	const { user } = await auth.get(c);
+
+	if (user) {
 		c.redirect("/");
 		return;
 	}
 
 	c.page(
-		<Layout user={null}>
+		<Layout user={user}>
 			<article class="prose">
 				<h1>Login</h1>
 				<div class="border rounded-xl flex items-center justify-center p-6">
@@ -150,8 +152,9 @@ authApp
 		auth.setSessionTokenCookie(c, sessionToken, session.expiresAt);
 	});
 
-authApp.get("/logout", auth.setAuth(), async (c) => {
-	if (c.state.auth.user) await auth.invalidateAllSessions(c.state.auth.user.id);
+authApp.get("/logout", async (c) => {
+	const { user } = await auth.get(c);
+	if (user) await auth.invalidateAllSessions(user.id);
 
 	c.redirect("/");
 	auth.deleteSessionTokenCookie(c);

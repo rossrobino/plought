@@ -15,15 +15,15 @@ import type { ZodIssue } from "zod";
 
 export const studyApp = new Router<State>();
 
-studyApp.get("/", auth.setAuth(), async (c) => {
+studyApp.get("/", async (c) => {
 	c.page(async () => {
-		const [publicStudies, userStudies] = await Promise.all([
+		const [{ user }, publicStudies] = await Promise.all([
+			auth.get(c),
 			query.getStudiesPublic(),
-			query.getStudiesByUserId(c.state.auth?.user?.id),
 		]);
 
 		return (
-			<Layout user={c.state.auth.user}>
+			<Layout user={user}>
 				<article>
 					<div class="flex items-center justify-between">
 						<h1>Studies</h1>
@@ -35,7 +35,10 @@ studyApp.get("/", auth.setAuth(), async (c) => {
 						<h2>Public</h2>
 						<StudyTable studies={publicStudies} />
 						<h2>User</h2>
-						<StudyTable studies={userStudies} />
+						{async () => {
+							const userStudies = await query.getStudiesByUserId(user?.id);
+							return <StudyTable studies={userStudies} />;
+						}}
 					</div>
 				</article>
 			</Layout>
@@ -59,23 +62,27 @@ const StudyCreate = async (props: {
 };
 
 studyApp
-	.get("/create", auth.setAuth({ redirect: true }), (c) => {
-		c.page(<StudyCreate user={c.state.auth.user} />);
+	.get("/create", async (c) => {
+		const { user } = await auth.get(c);
+		if (!user) return c.redirect("/");
+
+		c.page(<StudyCreate user={user} />);
 	})
-	.post("/create", auth.setAuth({ redirect: true }), async (c) => {
+	.post("/create", async (c) => {
+		const { user } = await auth.get(c);
+		if (!user) return c.redirect("/");
+
 		const formData = await c.req.formData();
 
 		const insert = schema.study.Insert.safeParse({
-			userId: c.state.auth.user?.id,
+			userId: user?.id,
 			title: formData.get("title"),
 			description: formData.get("description"),
 			public: Boolean(formData.get("public")),
 		});
 
 		if (!insert.success) {
-			c.page(
-				<StudyCreate user={c.state.auth.user} issues={insert.error.issues} />,
-			);
+			c.page(<StudyCreate user={user} issues={insert.error.issues} />);
 			return;
 		}
 
@@ -89,15 +96,15 @@ studyApp
 		}
 	});
 
-studyApp.get("/:id", auth.setAuth(), async (c) => {
+studyApp.get("/:id", async (c) => {
 	const study = await query.getStudyById(c.params.id);
 	if (!study) return;
 
 	if (c.etag(time + study.updatedAt)) return;
 
-	const { user } = c.state.auth;
-
 	const href = `/study/${study.id}`;
+
+	const { user } = await auth.get(c);
 
 	c.page(
 		<Layout user={user}>
@@ -134,22 +141,28 @@ const StudyUpdate = async (props: {
 };
 
 studyApp
-	.get("/:id/update", auth.setAuth({ redirect: true }), async (c) => {
+	.get("/:id/update", async (c) => {
+		const { user } = await auth.get(c);
+		if (!user) return c.redirect("/");
+
 		const study = await query.getStudyById(c.params.id);
-		if (!study || study.userId !== c.state.auth.user?.id) return;
+		if (!study || study.userId !== user?.id) return;
 
 		if (c.etag(time + study.updatedAt)) return;
 
-		c.page(<StudyUpdate user={c.state.auth.user} study={study} />);
+		c.page(<StudyUpdate user={user} study={study} />);
 	})
-	.post("/:id/update", auth.setAuth({ redirect: true }), async (c) => {
+	.post("/:id/update", async (c) => {
+		const { user } = await auth.get(c);
+		if (!user) return c.redirect("/");
+
 		const study = await query.getStudyById(c.params.id);
-		if (!study || study.userId !== c.state.auth.user?.id) return;
+		if (!study || study.userId !== user?.id) return;
 
 		const formData = await c.req.formData();
 
 		const update = schema.study.Update.safeParse({
-			userId: c.state.auth.user?.id,
+			userId: user?.id,
 			title: formData.get("title"),
 			description: formData.get("description"),
 			public: Boolean(formData.get("public")),
@@ -157,11 +170,7 @@ studyApp
 
 		if (!update.success) {
 			c.page(
-				<StudyUpdate
-					user={c.state.auth.user}
-					study={study}
-					issues={update.error.issues}
-				/>,
+				<StudyUpdate user={user} study={study} issues={update.error.issues} />,
 			);
 
 			return;
@@ -174,9 +183,12 @@ studyApp
 
 		c.redirect(`/study/${c.params.id}`);
 	})
-	.get("/:id/delete", auth.setAuth({ redirect: true }), async (c) => {
+	.get("/:id/delete", async (c) => {
+		const { user } = await auth.get(c);
+		if (!user) return c.redirect("/");
+
 		const study = await query.getStudyById(c.params.id);
-		if (!study || study.userId !== c.state.auth.user?.id) return;
+		if (!study || study.userId !== user?.id) return;
 
 		await db.delete(table.study).where(eq(table.study.id, study.id));
 

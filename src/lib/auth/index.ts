@@ -38,8 +38,14 @@ export const createSession = async (
 	return session;
 };
 
-const validateSessionToken = async (token?: string): Promise<State["auth"]> => {
-	if (!token) return { session: null, user: null };
+const validateSessionToken = async (
+	token?: string,
+): Promise<
+	| { user: table.User; session: table.Session; token: string }
+	| { user: null; session: null; token: null }
+> => {
+	const nulls = { session: null, user: null, token: null };
+	if (!token) return nulls;
 
 	const [auth] = await db
 		.select({ user: table.user, session: table.session })
@@ -47,13 +53,12 @@ const validateSessionToken = async (token?: string): Promise<State["auth"]> => {
 		.innerJoin(table.user, eq(table.session.userId, table.user.id))
 		.where(eq(table.session.id, getSessionId(token)));
 
-	if (!auth) return { session: null, user: null };
+	if (!auth) return nulls;
 
 	if (Date.now() >= auth.session.expiresAt.getTime()) {
 		// session expired
 		await invalidateSession(auth.session.id);
-
-		return { session: null, user: null };
+		return nulls;
 	}
 
 	if (Date.now() >= auth.session.expiresAt.getTime() - day * 15) {
@@ -66,7 +71,7 @@ const validateSessionToken = async (token?: string): Promise<State["auth"]> => {
 			.where(eq(table.session.id, auth.session.id));
 	}
 
-	return auth;
+	return { ...auth, token };
 };
 
 const invalidateSession = async (sessionId: string) =>
@@ -85,9 +90,9 @@ export const setSessionTokenCookie = (
 		serialize(sessionCookieName, token, {
 			httpOnly: true,
 			sameSite: "lax",
-			expires: expiresAt,
 			path: "/",
 			secure: import.meta.env.DEV ? undefined : true,
+			expires: expiresAt,
 		}),
 	);
 };
@@ -98,44 +103,34 @@ export const deleteSessionTokenCookie = (c: Context<any, Params>) => {
 		serialize(sessionCookieName, "", {
 			httpOnly: true,
 			sameSite: "lax",
-			maxAge: 0,
 			path: "/",
 			secure: import.meta.env.DEV ? undefined : true,
+			maxAge: 0,
 		}),
 	);
 };
 
-export const setAuth = (options?: {
-	/** Redirect to /login if invalid session. */
-	redirect?: boolean;
-}) => {
-	const mw: Middleware<State, Params> = async (c, next) => {
-		// csrf
-		if (c.req.method !== "GET") {
-			if (c.req.headers.get("Origin") !== constants.origin) {
-				c.text("Forbidden", 403);
-				return;
-			}
-		}
+export const get = async (c: Context<any, Params>) => {
+	const cookie = parse(c.req.headers.get("cookie") || "");
+	const sessionToken = cookie[sessionCookieName];
+	const auth = await validateSessionToken(sessionToken);
 
-		const cookie = parse(c.req.headers.get("cookie") || "");
-		const sessionToken = cookie[sessionCookieName];
+	if (auth.session) {
+		setSessionTokenCookie(c, auth.token, auth.session.expiresAt);
+	} else {
+		deleteSessionTokenCookie(c);
+	}
 
-		c.state.auth = await validateSessionToken(sessionToken);
+	return auth;
+};
 
-		if (options?.redirect && !c.state.auth.session) {
-			c.redirect("/login");
+export const csrf: Middleware<State, Params> = async (c, next) => {
+	if (c.req.method !== "GET") {
+		if (c.req.headers.get("Origin") !== constants.origin) {
+			c.html("Forbidden", 403);
 			return;
 		}
+	}
 
-		await next();
-
-		if (c.state.auth.session && sessionToken) {
-			setSessionTokenCookie(c, sessionToken, c.state.auth.session.expiresAt);
-		} else {
-			deleteSessionTokenCookie(c);
-		}
-	};
-
-	return mw;
+	await next();
 };

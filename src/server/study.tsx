@@ -36,6 +36,7 @@ studyApp.get("/", async (c) => {
 						<StudyTable studies={publicStudies} />
 						<h2>User</h2>
 						{async () => {
+							await new Promise((res) => setTimeout(res, 1000));
 							const userStudies = await query.getStudiesByUserId(user?.id);
 							return <StudyTable studies={userStudies} />;
 						}}

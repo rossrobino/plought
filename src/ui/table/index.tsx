@@ -1,34 +1,57 @@
 import type { JSX } from "ovr";
 
-type Row = Record<string, JSX.Element>;
+type Row = Record<string, unknown>;
 
-type Column<R extends Row, K extends keyof R = keyof R> = {
+type Column<R extends Row, K extends keyof R | (string & {})> = {
 	key: K;
-	head: (key: K) => JSX.Element;
-	cell: (value: R[K]) => JSX.Element;
-	foot?: (value: R[K]) => JSX.Element;
+	head?: ((key: K) => JSX.Element) | JSX.Element;
+	cell?: (row: R) => JSX.Element;
+	foot?: (data: R[]) => JSX.Element;
 };
 
+const columnHelper = <R extends Row>() => {
+	return {
+		create: <K extends keyof R | (string & {})>(
+			key: K,
+			options?: {
+				head?: Column<R, K>["head"];
+				cell?: Column<R, K>["cell"];
+				foot?: Column<R, K>["foot"];
+			},
+		) => {
+			return { key, ...options };
+		},
+	};
+};
+
+type Create<R extends Row> = ReturnType<typeof columnHelper<R>>["create"];
+
 export const Table = <R extends Row>(props: {
-	data: R[];
-	columns?: Column<R>[];
+	data?: R[];
+	columns?: (h: Create<R>) => {
+		[K in keyof R | string]: Column<R, K>;
+	}[keyof R][];
 }) => {
+	if (!props.data) return null;
+
 	const columns = props.columns
-		? props.columns
-		: Object.keys(props.data.at(0) ?? {}).map((key) => {
-				return {
-					key,
-					head: (key: keyof R) => key,
-					cell: (value: R[typeof key]) => value,
-				} as Column<R>;
-			});
+		? props.columns(columnHelper<R>().create)
+		: Object.keys(props.data[0] ?? {}).map(
+				(key) => ({ key }) as Column<R, keyof R>,
+			);
 
 	return (
 		<table>
 			<thead>
 				<tr>
 					{columns.map((column) => (
-						<th>{column.head(column.key)}</th>
+						<th>
+							{column.head
+								? typeof column.head === "function"
+									? column.head(column.key)
+									: column.head
+								: column.key}
+						</th>
 					))}
 				</tr>
 			</thead>
@@ -36,16 +59,18 @@ export const Table = <R extends Row>(props: {
 				{props.data.map((row) => (
 					<tr>
 						{columns.map((column) => (
-							<td>{column.cell(row[column.key])}</td>
+							<td>{column.cell ? column.cell(row) : row[column.key]!}</td>
 						))}
 					</tr>
 				))}
 			</tbody>
+			<tfoot>
+				<tr>
+					{columns.map((column) => (
+						<td>{column.foot ? column.foot(props.data!) : null}</td>
+					))}
+				</tr>
+			</tfoot>
 		</table>
 	);
 };
-
-<Table
-	data={[{ hello: true }]}
-	columns={[{ key: "hello", head: () => "hello", cell: (v) => v }]}
-></Table>;

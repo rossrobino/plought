@@ -67,3 +67,9 @@
 	--radius-3xl: calc(var(--border-radius) * 4);
 	--radius-4xl: calc(var(--border-radius) * 5.33);
 }
+
+@layer base {
+	th {
+		text-transform: capitalize;
+	}
+}

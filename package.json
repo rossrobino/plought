@@ -18,27 +18,27 @@
 		"@domcojs/vercel": "^2.0.1",
 		"@robino/prettier": "^2.0.0",
 		"@robino/tsconfig": "^1.0.3",
-		"@tailwindcss/vite": "^4.1.4",
+		"@tailwindcss/vite": "^4.1.5",
 		"domco": "^4.1.1",
 		"drizzle-kit": "^0.31.0",
 		"prettier": "^3.5.3",
-		"tailwindcss": "^4.1.4",
+		"tailwindcss": "^4.1.5",
 		"typescript": "^5.8.3",
-		"vite": "^6.3.2"
+		"vite": "^6.3.4"
 	},
 	"dependencies": {
 		"@neondatabase/serverless": "^1.0.0",
 		"@oslojs/crypto": "^1.0.1",
 		"@oslojs/encoding": "^1.1.0",
-		"@robino/md": "^3.2.5",
+		"@robino/md": "^3.2.6",
 		"arctic": "^3.6.0",
 		"clsx": "^2.1.1",
 		"cookie-es": "^2.0.0",
 		"dotenv": "^16.5.0",
-		"drizzle-orm": "^0.42.0",
+		"drizzle-orm": "^0.43.1",
 		"drizzle-zod": "^0.7.1",
-		"ovr": "^1.2.3",
-		"uico": "^0.7.0",
+		"ovr": "^1.2.4",
+		"uico": "^0.10.1",
 		"zod": "^3.24.3"
 	}
 }

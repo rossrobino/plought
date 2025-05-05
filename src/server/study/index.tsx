@@ -5,17 +5,17 @@ import * as schema from "@/lib/db/schema";
 import * as table from "@/lib/db/table";
 import type { State } from "@/lib/types";
 import { Layout } from "@/server/layout";
-import { StudyForm } from "@/ui/form/study";
-import { Issues } from "@/ui/issue";
+import { StudyCreate } from "@/server/study/create";
+import { StudyUpdate } from "@/server/study/update";
+import { Checkbox } from "@/ui/form";
 import { StudyTable } from "@/ui/table/study";
 import { time } from "build:time";
 import { eq } from "drizzle-orm";
 import { Router } from "ovr";
-import type { ZodIssue } from "zod";
 
 export const studyApp = new Router<State>();
 
-studyApp.get("/", async (c) => {
+studyApp.get("/", (c) => {
 	c.page(async () => {
 		const [{ user }, publicStudies] = await Promise.all([
 			auth.get(c),
@@ -46,21 +46,6 @@ studyApp.get("/", async (c) => {
 	});
 });
 
-const StudyCreate = async (props: {
-	user: table.User | null;
-	issues?: ZodIssue[];
-}) => {
-	return (
-		<Layout user={props.user}>
-			<article>
-				<h1 class="mb-8">Create a New Study</h1>
-				<StudyForm />
-				<Issues issues={props.issues} />
-			</article>
-		</Layout>
-	);
-};
-
 studyApp
 	.get("/create", async (c) => {
 		const { user } = await auth.get(c);
@@ -82,8 +67,7 @@ studyApp
 		});
 
 		if (!insert.success) {
-			c.page(<StudyCreate user={user} issues={insert.error.issues} />);
-			return;
+			return c.page(<StudyCreate user={user} issues={insert.error.issues} />);
 		}
 
 		const [study] = await db
@@ -91,20 +75,20 @@ studyApp
 			.values(insert.data)
 			.returning({ id: table.study.id });
 
-		if (study) {
-			c.redirect(`/study/${study.id}`);
-		}
+		if (study) c.redirect(`/study/${study.id}`);
 	});
 
 studyApp.get("/:id", async (c) => {
-	const study = await query.getStudyById(c.params.id);
+	const [{ user }, study] = await Promise.all([
+		auth.get(c),
+		query.getStudyById(c.params.id),
+	]);
+
 	if (!study) return;
 
 	if (c.etag(time + study.updatedAt)) return;
 
 	const href = `/study/${study.id}`;
-
-	const { user } = await auth.get(c);
 
 	c.page(
 		<Layout user={user}>
@@ -114,51 +98,71 @@ studyApp.get("/:id", async (c) => {
 				</a>
 				<span>{study.title}</span>
 			</h1>
-			<p>{study.description}</p>
+			<div class="flex gap-2 my-4">
+				<div class="badge">{study.status}</div>
+				<div>{study.description}</div>
+			</div>
 
-			{study.userId === user?.id && <a href={`${href}/update`}>Update</a>}
+			{study.userId === user?.id && (
+				<div>
+					<div class="mb-4">
+						<a href={`${href}/update`}>Update</a>
+					</div>
+
+					{() => {
+						if (study.status === "draft") {
+							return (
+								<form class="grid gap-4">
+									{/* TODO No endpoint for this yet. */}
+									<p>Select instruments to run your study with:</p>
+
+									{async () => {
+										const instruments = await query.getInstrumentsAll();
+										return instruments.map((ins) => {
+											return (
+												<div class="border rounded p-4">
+													<Checkbox
+														name="instrument"
+														label={ins.name}
+														desc={ins.description}
+													/>
+												</div>
+											);
+										});
+									}}
+
+									<button>Next</button>
+								</form>
+							);
+						}
+
+						return null;
+					}}
+				</div>
+			)}
 		</Layout>,
 	);
 });
 
-const StudyUpdate = async (props: {
-	user: table.User | null;
-	study: Partial<table.Study>;
-	issues?: ZodIssue[];
-}) => {
-	return (
-		<Layout user={props.user}>
-			<article>
-				<h1 class="mb-8">Update Study</h1>
-				<StudyForm study={props.study} />
-				<Issues issues={props.issues} />
-				<form action={`/study/${props.study.id}/delete`}>
-					<button class="destructive mt-4">Delete</button>
-				</form>
-			</article>
-		</Layout>
-	);
-};
+studyApp.on(["GET", "POST"], ["/:id/update", "/:id/delete"], async (c) => {
+	const [{ user }, study] = await Promise.all([
+		auth.get(c),
+		query.getStudyById(c.params.id),
+	]);
 
-studyApp
-	.get("/:id/update", async (c) => {
-		const { user } = await auth.get(c);
-		if (!user) return c.redirect("/");
+	if (!user) return c.redirect("/");
+	if (!study || study.userId !== user?.id) return;
 
-		const study = await query.getStudyById(c.params.id);
-		if (!study || study.userId !== user?.id) return;
+	if (c.url.pathname.includes("delete")) {
+		await db.delete(table.study).where(eq(table.study.id, study.id));
+		return c.redirect("/study");
+	}
 
-		if (c.etag(time + study.updatedAt)) return;
+	if (c.req.method === "GET") {
+		return c.page(<StudyUpdate user={user} study={study} />);
+	}
 
-		c.page(<StudyUpdate user={user} study={study} />);
-	})
-	.post("/:id/update", async (c) => {
-		const { user } = await auth.get(c);
-		if (!user) return c.redirect("/");
-
-		const study = await query.getStudyById(c.params.id);
-		if (!study || study.userId !== user?.id) return;
-
+	if (c.req.method === "POST") {
 		const formData = await c.req.formData();
 
 		const update = schema.study.Update.safeParse({
@@ -169,11 +173,9 @@ studyApp
 		});
 
 		if (!update.success) {
-			c.page(
+			return c.page(
 				<StudyUpdate user={user} study={study} issues={update.error.issues} />,
 			);
-
-			return;
 		}
 
 		await db
@@ -181,16 +183,6 @@ studyApp
 			.set(update.data)
 			.where(eq(table.study.id, study.id));
 
-		c.redirect(`/study/${c.params.id}`);
-	})
-	.get("/:id/delete", async (c) => {
-		const { user } = await auth.get(c);
-		if (!user) return c.redirect("/");
-
-		const study = await query.getStudyById(c.params.id);
-		if (!study || study.userId !== user?.id) return;
-
-		await db.delete(table.study).where(eq(table.study.id, study.id));
-
-		c.redirect("/study");
-	});
+		return c.redirect(`/study/${c.params.id}`);
+	}
+});

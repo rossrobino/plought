@@ -19,3 +19,7 @@ export const getStudiesByUserId = (userId?: number) => {
 		where: (study, { eq }) => eq(study.userId, userId),
 	});
 };
+
+export const getInstrumentsAll = () => {
+	return db.query.instrument.findMany();
+};

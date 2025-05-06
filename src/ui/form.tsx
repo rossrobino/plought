@@ -34,12 +34,18 @@ export const Checkbox = (
 		desc?: string;
 	} & JSX.IntrinsicElements["input"],
 ) => {
-	const { name, label = name, desc, ...rest } = props;
+	const { name, label = name, desc, value, ...rest } = props;
 
 	return (
 		<div>
 			<Label class="flex gap-2 items-center">
-				<input switch type="checkbox" name={name} value={label} {...rest} />
+				<input
+					switch
+					type="checkbox"
+					name={name}
+					value={value ?? label}
+					{...rest}
+				/>
 				<div>{label.split("-").join(" ")}</div>
 			</Label>
 			{desc && <div>{desc}</div>}

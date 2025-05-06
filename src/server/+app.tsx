@@ -1,11 +1,19 @@
-import { html as aboutHtml } from "@/content/about.md";
 import * as auth from "@/lib/auth";
+import { db } from "@/lib/db";
+import * as query from "@/lib/db/query";
+import * as table from "@/lib/db/table";
+import * as schema from "@/lib/schema";
 import type { State } from "@/lib/types";
-import { authApp } from "@/server/auth";
-import { Layout } from "@/server/layout";
-import { studyApp } from "@/server/study";
-import { time } from "build:time";
+import { Home } from "@/pages/home";
+import { Layout } from "@/pages/layout";
+import { Login } from "@/pages/login";
+import * as studyPage from "@/pages/study";
+import { Checkbox } from "@/ui/form";
+import * as arctic from "arctic";
 import { html } from "client:page";
+import { serialize, parseSetCookie } from "cookie-es";
+import "dotenv/config";
+import { eq } from "drizzle-orm";
 import { Router } from "ovr";
 
 const app = new Router<State>({
@@ -19,26 +27,288 @@ app.use(auth.csrf);
 app.get("/", async (c) => {
 	const { user } = await auth.get(c);
 
-	if (c.etag(time + user?.updatedAt)) return;
-
-	c.page(
-		<Layout user={user}>
-			<h1>Hello {user?.firstName}</h1>
-		</Layout>,
-	);
+	c.page(<Home user={user} />);
 });
 
-app.get("/about", async (c) => {
-	if (c.etag(time)) return;
+app
+	.get("/login", async (c) => {
+		const { user } = await auth.get(c);
+		if (user) return c.redirect("/"); // already logged in
 
-	c.page(
-		<Layout user={null}>
-			<article class="prose">{aboutHtml}</article>
-		</Layout>,
+		c.page(<Login user={user} />);
+	})
+	.get("/login/google", (c) => {
+		const state = arctic.generateState();
+		const codeVerifier = arctic.generateCodeVerifier();
+		const scopes = ["openid", "profile", "email"];
+
+		const url = auth.google.createAuthorizationURL(state, codeVerifier, scopes);
+
+		c.redirect(url);
+
+		c.headers.append(
+			"Set-Cookie",
+			serialize("google_oauth_state", state, {
+				path: "/",
+				httpOnly: true,
+				maxAge: 60 * 10,
+				sameSite: "lax",
+			}),
+		);
+
+		c.headers.append(
+			"Set-Cookie",
+			serialize("google_code_verifier", codeVerifier, {
+				path: "/",
+				httpOnly: true,
+				maxAge: 60 * 10,
+				sameSite: "lax",
+			}),
+		);
+	})
+	.get("/login/google/callback", async (c) => {
+		const { google_oauth_state, google_code_verifier } = parseSetCookie(
+			c.req.headers.get("cookie") || "",
+		);
+
+		const result = schema.AuthCallback.safeParse({
+			code: c.url.searchParams.get("code"),
+			state: c.url.searchParams.get("state"),
+			storedState: google_oauth_state,
+			codeVerifier: google_code_verifier,
+		});
+
+		if (!result.success) return c.text("Invalid request", 400);
+
+		const { code, codeVerifier } = result.data;
+
+		const tokens = await auth.google.validateAuthorizationCode(
+			code,
+			codeVerifier,
+		);
+
+		const { sub, email, email_verified, family_name, given_name } =
+			schema.AuthClaims.parse(arctic.decodeIdToken(tokens.idToken()));
+
+		let [user] = await db
+			.select()
+			.from(table.user)
+			.where(eq(table.user.googleId, sub));
+
+		if (!user) {
+			if (!email_verified)
+				throw new Error("Please verify your Google email address.");
+
+			const newUser = schema.user.Insert.parse({
+				googleId: sub,
+				email,
+				firstName: given_name,
+				lastName: family_name,
+				username: `${given_name.toLowerCase()}-${crypto.randomUUID().split("-").at(0)}`,
+			});
+
+			[user] = await db.insert(table.user).values(newUser).returning();
+
+			if (!user) throw new Error("Unable to find or create user.");
+		}
+
+		const sessionToken = auth.generateSessionToken();
+		const session = await auth.createSession(sessionToken, user.id);
+
+		c.redirect("/");
+		auth.setSessionTokenCookie(c, sessionToken, session.expiresAt);
+	})
+	.get("/logout", async (c) => {
+		const { user } = await auth.get(c);
+		if (user) await auth.invalidateAllSessions(user.id);
+
+		c.redirect("/");
+		auth.deleteSessionTokenCookie(c);
+	});
+
+app
+	.get("/study", (c) => {
+		c.page(async () => {
+			const { user } = await auth.get(c);
+
+			return <studyPage.Home user={user} />;
+		});
+	})
+	.get("/study/create", async (c) => {
+		const { user } = await auth.get(c);
+		if (!user) return c.redirect("/");
+
+		c.page(<studyPage.Create user={user} />);
+	})
+	.post("/study/create", async (c) => {
+		const { user } = await auth.get(c);
+		if (!user) return c.redirect("/");
+
+		const formData = await c.req.formData();
+
+		const insert = schema.study.Insert.safeParse({
+			userId: user?.id,
+			title: formData.get("title"),
+			description: formData.get("description"),
+			public: Boolean(formData.get("public")),
+		});
+
+		if (!insert.success) {
+			return c.page(
+				<studyPage.Create user={user} issues={insert.error.issues} />,
+			);
+		}
+
+		const [study] = await db
+			.insert(table.study)
+			.values(insert.data)
+			.returning({ id: table.study.id });
+
+		if (study) c.redirect(`/study/${study.id}`);
+	})
+	.get("/study/:id", async (c) => {
+		const [{ user }, study] = await Promise.all([
+			auth.get(c),
+			query.getStudyById(c.params.id),
+		]);
+
+		if (!study) return;
+
+		c.page(
+			<Layout user={user}>
+				<h1 class="flex gap-4 items-center">
+					<a class="underline text-4xl" href={c.url.pathname}>
+						#{study.id}
+					</a>
+					<span>{study.title}</span>
+				</h1>
+				<div class="flex gap-2 my-4">
+					<div class="badge">{study.status}</div>
+					<div>{study.description}</div>
+				</div>
+
+				{study.userId === user?.id && (
+					<div>
+						<div class="mb-4">
+							<a href={`${c.url.pathname}/update`}>Update</a>
+						</div>
+
+						{() => {
+							if (study.status === "draft") {
+								return (
+									<form
+										class="grid gap-4"
+										method="post"
+										action={`/study/${study.id}/draft`}
+									>
+										{/* TODO No endpoint for this yet. */}
+
+										<p>Select instruments to run your study with:</p>
+
+										{async () => {
+											const instruments = await query.getInstrumentsAll();
+
+											return instruments.map((inst) => {
+												return (
+													<div class="border rounded p-4">
+														<Checkbox
+															name="instrument"
+															label={inst.name}
+															value={`${inst.id}`}
+															desc={inst.description}
+														/>
+													</div>
+												);
+											});
+										}}
+
+										<button>Next</button>
+									</form>
+								);
+							}
+
+							return null;
+						}}
+					</div>
+				)}
+			</Layout>,
+		);
+	})
+	.post("/study/:id/draft", async (c) => {
+		const [{ user }, study] = await Promise.all([
+			auth.get(c),
+			query.getStudyById(c.params.id),
+		]);
+
+		if (!user) return c.redirect("/");
+		if (!study || study.userId !== user?.id) return;
+
+		const data = await c.req.formData();
+		const instruments = data.getAll("instrument");
+
+		await db
+			.insert(table.studyInstrument)
+			.values(
+				instruments.map((instrument) => ({
+					studyId: study.id,
+					instrumentId: Number(instrument),
+				})),
+			);
+
+		// TODO
+
+		console.log(instruments);
+	})
+	.on(
+		["GET", "POST"],
+		["/study/:id/update", "/study/:id/delete"],
+		async (c) => {
+			const [{ user }, study] = await Promise.all([
+				auth.get(c),
+				query.getStudyById(c.params.id),
+			]);
+
+			if (!user) return c.redirect("/");
+			if (!study || study.userId !== user?.id) return;
+
+			if (c.url.pathname.includes("delete") && c.req.method === "POST") {
+				// TODO use a hidden form instead of pathname
+				await db.delete(table.study).where(eq(table.study.id, study.id));
+				return c.redirect("/study");
+			}
+
+			if (c.req.method === "GET") {
+				return c.page(<studyPage.Update user={user} study={study} />);
+			}
+
+			if (c.req.method === "POST") {
+				const formData = await c.req.formData();
+
+				const update = schema.study.Update.safeParse({
+					userId: user?.id,
+					title: formData.get("title"),
+					description: formData.get("description"),
+					public: Boolean(formData.get("public")),
+				});
+
+				if (!update.success) {
+					return c.page(
+						<studyPage.Update
+							user={user}
+							study={study}
+							issues={update.error.issues}
+						/>,
+					);
+				}
+
+				await db
+					.update(table.study)
+					.set(update.data)
+					.where(eq(table.study.id, study.id));
+
+				return c.redirect(`/study/${c.params.id}`);
+			}
+		},
 	);
-});
-
-app.mount("/study", studyApp);
-app.mount("/", authApp);
 
 export default app;

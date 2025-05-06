@@ -7,6 +7,7 @@ import {
 	encodeBase32LowerCaseNoPadding,
 	encodeHexLowerCase,
 } from "@oslojs/encoding";
+import { Google } from "arctic";
 import { parse, serialize } from "cookie-es";
 import { eq } from "drizzle-orm";
 import type { Context, Middleware, Params } from "ovr";
@@ -134,3 +135,13 @@ export const csrf: Middleware<State, Params> = async (c, next) => {
 
 	await next();
 };
+
+if (!process.env.GOOGLE_CLIENT_ID) throw new Error("GOOGLE_CLIENT_ID not set");
+if (!process.env.GOOGLE_CLIENT_SECRET)
+	throw new Error("GOOGLE_CLIENT_SECRET not set");
+
+export const google = new Google(
+	process.env.GOOGLE_CLIENT_ID,
+	process.env.GOOGLE_CLIENT_SECRET,
+	`${constants.origin}/login/google/callback`,
+);

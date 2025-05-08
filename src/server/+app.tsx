@@ -11,7 +11,7 @@ import * as studyPage from "@/pages/study";
 import { Checkbox } from "@/ui/form";
 import * as arctic from "arctic";
 import { html } from "client:page";
-import { serialize, parseSetCookie } from "cookie-es";
+import { serialize, parse } from "cookie-es";
 import "dotenv/config";
 import { eq } from "drizzle-orm";
 import { Router } from "ovr";
@@ -67,7 +67,7 @@ app
 		);
 	})
 	.get("/login/google/callback", async (c) => {
-		const { google_oauth_state, google_code_verifier } = parseSetCookie(
+		const { google_oauth_state, google_code_verifier } = parse(
 			c.req.headers.get("cookie") || "",
 		);
 

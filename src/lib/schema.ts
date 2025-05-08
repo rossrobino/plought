@@ -1,4 +1,4 @@
-import * as t from "@/lib/db/table";
+import * as table from "@/lib/db/table";
 import {
 	createInsertSchema,
 	createUpdateSchema,
@@ -7,45 +7,45 @@ import {
 import * as z from "zod";
 
 export const user = {
-	Insert: createInsertSchema(t.user),
-	Update: createUpdateSchema(t.user),
-	Select: createSelectSchema(t.user),
+	Insert: createInsertSchema(table.user),
+	Update: createUpdateSchema(table.user),
+	Select: createSelectSchema(table.user),
 };
 
 export const session = {
-	Insert: createInsertSchema(t.session),
-	Update: createUpdateSchema(t.session),
-	Select: createSelectSchema(t.session),
+	Insert: createInsertSchema(table.session),
+	Update: createUpdateSchema(table.session),
+	Select: createSelectSchema(table.session),
 };
 
 export const study = {
-	Insert: createInsertSchema(t.study, {
+	Insert: createInsertSchema(table.study, {
 		title: (s) => s.min(1).max(100),
 		description: (s) => s.min(1).max(300),
 	}),
-	Update: createUpdateSchema(t.study, {
+	Update: createUpdateSchema(table.study, {
 		title: (s) => s.min(1).max(100),
 		description: (s) => s.min(1).max(300),
 	}),
-	Select: createSelectSchema(t.study),
+	Select: createSelectSchema(table.study),
 };
 
 export const instrument = {
-	Insert: createInsertSchema(t.instrument),
-	Update: createUpdateSchema(t.instrument),
-	Select: createSelectSchema(t.instrument),
+	Insert: createInsertSchema(table.instrument),
+	Update: createUpdateSchema(table.instrument),
+	Select: createSelectSchema(table.instrument),
 };
 
 export const studyInstrument = {
-	Insert: createInsertSchema(t.studyInstrument),
-	Update: createUpdateSchema(t.studyInstrument),
-	Select: createSelectSchema(t.studyInstrument),
+	Insert: createInsertSchema(table.studyInstrument),
+	Update: createUpdateSchema(table.studyInstrument),
+	Select: createSelectSchema(table.studyInstrument),
 };
 
 export const response = {
-	Insert: createInsertSchema(t.response),
-	Update: createUpdateSchema(t.response),
-	Select: createSelectSchema(t.response),
+	Insert: createInsertSchema(table.response),
+	Update: createUpdateSchema(table.response),
+	Select: createSelectSchema(table.response),
 };
 
 export const AuthCallback = z

@@ -1,13 +1,12 @@
 import * as query from "@/lib/db/query";
-import * as table from "@/lib/db/table";
-import type { Study } from "@/lib/db/table";
+import type { Study, User } from "@/lib/db/table";
 import { Layout } from "@/pages/layout";
 import { Checkbox, Input, Textarea } from "@/ui/form";
 import { Issues } from "@/ui/issue";
 import { Table } from "@/ui/table";
 import type { ZodIssue } from "zod";
 
-export const Home = (props: { user: table.User | null }) => {
+export const Home = (props: { user: User | null }) => {
 	return (
 		<Layout user={props.user}>
 			<article>
@@ -20,13 +19,13 @@ export const Home = (props: { user: table.User | null }) => {
 				<div class="space-y-4 mt-8">
 					<h2>Public</h2>
 					{async () => {
-						const publicStudies = await query.getStudiesPublic();
+						const publicStudies = await query.studiesPublic();
 						return <StudyTable studies={publicStudies} />;
 					}}
 
 					<h2>Studies</h2>
 					{async () => {
-						const userStudies = await query.getStudiesByUserId(props.user?.id);
+						const userStudies = await query.studiesByUserId(props.user?.id);
 						return <StudyTable studies={userStudies} />;
 					}}
 				</div>
@@ -36,7 +35,7 @@ export const Home = (props: { user: table.User | null }) => {
 };
 
 export const Create = async (props: {
-	user: table.User | null;
+	user: User | null;
 	issues?: ZodIssue[];
 }) => {
 	return (
@@ -51,8 +50,8 @@ export const Create = async (props: {
 };
 
 export const Update = (props: {
-	user: table.User | null;
-	study: Partial<table.Study>;
+	user: User | null;
+	study: Partial<Study>;
 	issues?: ZodIssue[];
 }) => {
 	return (
@@ -83,14 +82,14 @@ const StudyForm = (props: { study?: Partial<Study> }) => {
 const StudyTable = (props: { studies?: Study[] }) => (
 	<Table
 		data={props.studies}
-		columns={(c) => {
+		columns={(column) => {
 			return [
-				c("id", { head: "#" }),
-				c("title", {
+				column("id", { head: "#" }),
+				column("title", {
 					cell: ({ id, title }) => <a href={`/study/${id}`}>{title}</a>,
 				}),
-				c("description"),
-				c("status", {
+				column("description"),
+				column("status", {
 					cell: ({ status }) => <span class="capitalize">{status}</span>,
 				}),
 			];

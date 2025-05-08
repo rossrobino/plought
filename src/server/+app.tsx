@@ -7,7 +7,7 @@ import type { State } from "@/lib/types";
 import { Home } from "@/pages/home";
 import { Layout } from "@/pages/layout";
 import { Login } from "@/pages/login";
-import * as studyPage from "@/pages/study";
+import * as studyPages from "@/pages/study";
 import { Checkbox } from "@/ui/form";
 import * as arctic from "arctic";
 import { html } from "client:page";
@@ -131,14 +131,14 @@ app
 		c.page(async () => {
 			const { user } = await auth.get(c);
 
-			return <studyPage.Home user={user} />;
+			return <studyPages.Home user={user} />;
 		});
 	})
 	.get("/study/create", async (c) => {
 		const { user } = await auth.get(c);
 		if (!user) return c.redirect("/");
 
-		c.page(<studyPage.Create user={user} />);
+		c.page(<studyPages.Create user={user} />);
 	})
 	.post("/study/create", async (c) => {
 		const { user } = await auth.get(c);
@@ -155,7 +155,7 @@ app
 
 		if (!insert.success) {
 			return c.page(
-				<studyPage.Create user={user} issues={insert.error.issues} />,
+				<studyPages.Create user={user} issues={insert.error.issues} />,
 			);
 		}
 
@@ -169,7 +169,7 @@ app
 	.get("/study/:id", async (c) => {
 		const [{ user }, study] = await Promise.all([
 			auth.get(c),
-			query.getStudyById(c.params.id),
+			query.studyById(c.params.id),
 		]);
 
 		if (!study) return;
@@ -206,7 +206,7 @@ app
 										<p>Select instruments to run your study with:</p>
 
 										{async () => {
-											const instruments = await query.getInstrumentsAll();
+											const instruments = await query.instrumentsAll();
 
 											return instruments.map((inst) => {
 												return (
@@ -237,7 +237,7 @@ app
 	.post("/study/:id/draft", async (c) => {
 		const [{ user }, study] = await Promise.all([
 			auth.get(c),
-			query.getStudyById(c.params.id),
+			query.studyById(c.params.id),
 		]);
 
 		if (!user) return c.redirect("/");
@@ -265,7 +265,7 @@ app
 		async (c) => {
 			const [{ user }, study] = await Promise.all([
 				auth.get(c),
-				query.getStudyById(c.params.id),
+				query.studyById(c.params.id),
 			]);
 
 			if (!user) return c.redirect("/");
@@ -278,7 +278,7 @@ app
 			}
 
 			if (c.req.method === "GET") {
-				return c.page(<studyPage.Update user={user} study={study} />);
+				return c.page(<studyPages.Update user={user} study={study} />);
 			}
 
 			if (c.req.method === "POST") {
@@ -293,7 +293,7 @@ app
 
 				if (!update.success) {
 					return c.page(
-						<studyPage.Update
+						<studyPages.Update
 							user={user}
 							study={study}
 							issues={update.error.issues}

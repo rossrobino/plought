@@ -1,18 +1,18 @@
 import { db } from "@/lib/db";
 
-export const getStudyById = (id: string | number) => {
+export const studyById = (id: string | number) => {
 	return db.query.study.findFirst({
 		where: (study, { eq }) => eq(study.id, Number(id)),
 	});
 };
 
-export const getStudiesPublic = () => {
+export const studiesPublic = () => {
 	return db.query.study.findMany({
 		where: (study, { eq }) => eq(study.public, true),
 	});
 };
 
-export const getStudiesByUserId = (userId?: number) => {
+export const studiesByUserId = (userId?: number) => {
 	if (!userId) return [];
 
 	return db.query.study.findMany({
@@ -20,6 +20,6 @@ export const getStudiesByUserId = (userId?: number) => {
 	});
 };
 
-export const getInstrumentsAll = () => {
+export const instrumentsAll = () => {
 	return db.query.instrument.findMany();
 };

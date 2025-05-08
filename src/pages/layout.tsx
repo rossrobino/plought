@@ -12,7 +12,6 @@ export const Layout = (props: {
 				<Nav user={props.user} />
 				<div class="basis-full p-6">{props.children}</div>
 			</main>
-			<footer></footer>
 		</>
 	);
 };

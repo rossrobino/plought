@@ -28,9 +28,9 @@ type Create<R extends Row> = ReturnType<typeof columnHelper<R>>["create"];
 
 export const Table = <R extends Row>(props: {
 	data?: R[];
-	columns?: (h: Create<R>) => {
-		[K in keyof R | string]: Column<R, K>;
-	}[keyof R][];
+	columns?: (
+		h: Create<R>,
+	) => { [K in keyof R | string]: Column<R, K> }[keyof R][];
 }) => {
 	if (!props.data) return null;
 
@@ -42,7 +42,7 @@ export const Table = <R extends Row>(props: {
 
 	return (
 		<table>
-			<thead>
+			<thead class="cursor-default">
 				<tr>
 					{columns.map((column) => (
 						<th>

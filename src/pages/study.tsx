@@ -82,14 +82,14 @@ const StudyForm = (props: { study?: Partial<Study> }) => {
 const StudyTable = (props: { studies?: Study[] }) => (
 	<Table
 		data={props.studies}
-		columns={(column) => {
+		columns={(h) => {
 			return [
-				column("id", { head: "#" }),
-				column("title", {
+				h("id", { head: "#" }),
+				h("title", {
 					cell: ({ id, title }) => <a href={`/study/${id}`}>{title}</a>,
 				}),
-				column("description"),
-				column("status", {
+				h("description"),
+				h("status", {
 					cell: ({ status }) => <span class="capitalize">{status}</span>,
 				}),
 			];

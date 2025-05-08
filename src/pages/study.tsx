@@ -1,12 +1,12 @@
 import * as query from "@/lib/db/query";
-import type { Study, User } from "@/lib/db/table";
+import type * as table from "@/lib/db/table";
 import { Layout } from "@/pages/layout";
 import { Checkbox, Input, Textarea } from "@/ui/form";
 import { Issues } from "@/ui/issue";
 import { Table } from "@/ui/table";
 import type { ZodIssue } from "zod";
 
-export const Home = (props: { user: User | null }) => {
+export const Home = (props: { user: table.User | null }) => {
 	return (
 		<Layout user={props.user}>
 			<article>
@@ -35,7 +35,7 @@ export const Home = (props: { user: User | null }) => {
 };
 
 export const Create = async (props: {
-	user: User | null;
+	user: table.User | null;
 	issues?: ZodIssue[];
 }) => {
 	return (
@@ -49,9 +49,78 @@ export const Create = async (props: {
 	);
 };
 
+export const Study = async (props: {
+	user: table.User | null;
+	study: table.Study;
+}) => {
+	const { user, study } = props;
+
+	const pathname = `/study/${study.id}`;
+
+	return (
+		<Layout user={user}>
+			<h1 class="flex gap-4 items-center">
+				<a class="underline text-4xl" href={pathname}>
+					#{study.id}
+				</a>
+				<span>{study.title}</span>
+			</h1>
+			<div class="flex gap-2 my-4">
+				<div class="badge">{study.status}</div>
+				<div>{study.description}</div>
+			</div>
+
+			{study.userId === user?.id && (
+				<div>
+					<div class="mb-4">
+						<a href={`${pathname}/update`}>Update</a>
+					</div>
+
+					{() => {
+						if (study.status === "draft") {
+							return (
+								<form
+									class="grid gap-4"
+									method="post"
+									action={`/study/${study.id}/draft`}
+								>
+									{/* TODO No endpoint for this yet. */}
+
+									<p>Select instruments to run your study with:</p>
+
+									{async () => {
+										const instruments = await query.instrumentsAll();
+
+										return instruments.map((inst) => {
+											return (
+												<div class="border rounded p-4">
+													<Checkbox
+														name="instrument"
+														label={inst.name}
+														value={`${inst.id}`}
+														desc={inst.description}
+													/>
+												</div>
+											);
+										});
+									}}
+
+									<button>Next</button>
+								</form>
+							);
+						}
+
+						return null;
+					}}
+				</div>
+			)}
+		</Layout>
+	);
+};
+
 export const Update = (props: {
-	user: User | null;
-	study: Partial<Study>;
+	user: table.User | null;
+	study: Partial<table.Study>;
 	issues?: ZodIssue[];
 }) => {
 	return (
@@ -68,7 +137,7 @@ export const Update = (props: {
 	);
 };
 
-const StudyForm = (props: { study?: Partial<Study> }) => {
+const StudyForm = (props: { study?: Partial<table.Study> }) => {
 	return (
 		<form method="post" class="space-y-3">
 			<Input name="title" value={props.study?.title ?? ""} />
@@ -79,7 +148,7 @@ const StudyForm = (props: { study?: Partial<Study> }) => {
 	);
 };
 
-const StudyTable = (props: { studies?: Study[] }) => (
+const StudyTable = (props: { studies?: table.Study[] }) => (
 	<Table
 		data={props.studies}
 		columns={(h) => {

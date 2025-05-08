@@ -5,10 +5,8 @@ import * as table from "@/lib/db/table";
 import * as schema from "@/lib/schema";
 import type { State } from "@/lib/types";
 import { Home } from "@/pages/home";
-import { Layout } from "@/pages/layout";
 import { Login } from "@/pages/login";
 import * as studyPages from "@/pages/study";
-import { Checkbox } from "@/ui/form";
 import * as arctic from "arctic";
 import { html } from "client:page";
 import { serialize, parse } from "cookie-es";
@@ -174,65 +172,7 @@ app
 
 		if (!study) return;
 
-		c.page(
-			<Layout user={user}>
-				<h1 class="flex gap-4 items-center">
-					<a class="underline text-4xl" href={c.url.pathname}>
-						#{study.id}
-					</a>
-					<span>{study.title}</span>
-				</h1>
-				<div class="flex gap-2 my-4">
-					<div class="badge">{study.status}</div>
-					<div>{study.description}</div>
-				</div>
-
-				{study.userId === user?.id && (
-					<div>
-						<div class="mb-4">
-							<a href={`${c.url.pathname}/update`}>Update</a>
-						</div>
-
-						{() => {
-							if (study.status === "draft") {
-								return (
-									<form
-										class="grid gap-4"
-										method="post"
-										action={`/study/${study.id}/draft`}
-									>
-										{/* TODO No endpoint for this yet. */}
-
-										<p>Select instruments to run your study with:</p>
-
-										{async () => {
-											const instruments = await query.instrumentsAll();
-
-											return instruments.map((inst) => {
-												return (
-													<div class="border rounded p-4">
-														<Checkbox
-															name="instrument"
-															label={inst.name}
-															value={`${inst.id}`}
-															desc={inst.description}
-														/>
-													</div>
-												);
-											});
-										}}
-
-										<button>Next</button>
-									</form>
-								);
-							}
-
-							return null;
-						}}
-					</div>
-				)}
-			</Layout>,
-		);
+		c.page(<studyPages.Study user={user} study={study} />);
 	})
 	.post("/study/:id/draft", async (c) => {
 		const [{ user }, study] = await Promise.all([

@@ -10,7 +10,7 @@ import {
 import { Google } from "arctic";
 import { parse, serialize } from "cookie-es";
 import { eq } from "drizzle-orm";
-import type { Context, Middleware, Params } from "ovr";
+import { context, type Middleware, type Params } from "ovr";
 
 const day = 1000 * 60 * 60 * 24;
 const sessionCookieName = "auth-session";
@@ -81,12 +81,8 @@ const invalidateSession = async (sessionId: string) =>
 export const invalidateAllSessions = async (userId: table.User["id"]) =>
 	db.delete(table.session).where(eq(table.session.userId, userId));
 
-export const setSessionTokenCookie = (
-	c: Context<any, Params>,
-	token: string,
-	expiresAt: Date,
-) => {
-	c.headers.set(
+export const setSessionTokenCookie = (token: string, expiresAt: Date) =>
+	context().headers.set(
 		"Set-Cookie",
 		serialize(sessionCookieName, token, {
 			httpOnly: true,
@@ -96,10 +92,9 @@ export const setSessionTokenCookie = (
 			expires: expiresAt,
 		}),
 	);
-};
 
-export const deleteSessionTokenCookie = (c: Context<any, Params>) => {
-	c.headers.set(
+export const deleteSessionTokenCookie = () =>
+	context().headers.set(
 		"Set-Cookie",
 		serialize(sessionCookieName, "", {
 			httpOnly: true,
@@ -109,17 +104,18 @@ export const deleteSessionTokenCookie = (c: Context<any, Params>) => {
 			maxAge: 0,
 		}),
 	);
-};
 
-export const get = async (c: Context<any, Params>) => {
+export const get = async () => {
+	const c = context();
+
 	const cookie = parse(c.req.headers.get("cookie") || "");
 	const sessionToken = cookie[sessionCookieName];
 	const auth = await validateSessionToken(sessionToken);
 
 	if (auth.session) {
-		setSessionTokenCookie(c, auth.token, auth.session.expiresAt);
+		setSessionTokenCookie(auth.token, auth.session.expiresAt);
 	} else {
-		deleteSessionTokenCookie(c);
+		deleteSessionTokenCookie();
 	}
 
 	return auth;

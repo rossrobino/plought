@@ -5,6 +5,7 @@ import * as table from "@/lib/db/table";
 import * as schema from "@/lib/schema";
 import type { State } from "@/lib/types";
 import { Home } from "@/pages/home";
+import { Layout } from "@/pages/layout";
 import { Login } from "@/pages/login";
 import * as studyPages from "@/pages/study";
 import * as arctic from "arctic";
@@ -17,24 +18,17 @@ import { Router } from "ovr";
 const app = new Router<State>({
 	start(c) {
 		c.base = html;
+
+		c.layout(Layout);
 	},
 });
 
 app.use(auth.csrf);
 
-app.get("/", async (c) => {
-	const { user } = await auth.get(c);
-
-	c.page(<Home user={user} />);
-});
+app.get("/", (c) => c.page(<Home />));
 
 app
-	.get("/login", async (c) => {
-		const { user } = await auth.get(c);
-		if (user) return c.redirect("/"); // already logged in
-
-		c.page(<Login user={user} />);
-	})
+	.get("/login", (c) => c.page(<Login />))
 	.get("/login/google", (c) => {
 		const state = arctic.generateState();
 		const codeVerifier = arctic.generateCodeVerifier();
@@ -114,32 +108,32 @@ app
 		const session = await auth.createSession(sessionToken, user.id);
 
 		c.redirect("/");
-		auth.setSessionTokenCookie(c, sessionToken, session.expiresAt);
+		auth.setSessionTokenCookie(sessionToken, session.expiresAt);
 	})
 	.get("/logout", async (c) => {
-		const { user } = await auth.get(c);
+		const { user } = await auth.get();
 		if (user) await auth.invalidateAllSessions(user.id);
 
 		c.redirect("/");
-		auth.deleteSessionTokenCookie(c);
+		auth.deleteSessionTokenCookie();
 	});
 
 app
 	.get("/study", (c) => {
 		c.page(async () => {
-			const { user } = await auth.get(c);
+			const { user } = await auth.get();
 
 			return <studyPages.Home user={user} />;
 		});
 	})
 	.get("/study/create", async (c) => {
-		const { user } = await auth.get(c);
-		if (!user) return c.redirect("/");
+		const { user } = await auth.get();
+		if (!user) return c.redirect("/login");
 
-		c.page(<studyPages.Create user={user} />);
+		c.page(<studyPages.Create />);
 	})
 	.post("/study/create", async (c) => {
-		const { user } = await auth.get(c);
+		const { user } = await auth.get();
 		if (!user) return c.redirect("/");
 
 		const formData = await c.req.formData();
@@ -151,11 +145,8 @@ app
 			public: Boolean(formData.get("public")),
 		});
 
-		if (!insert.success) {
-			return c.page(
-				<studyPages.Create user={user} issues={insert.error.issues} />,
-			);
-		}
+		if (!insert.success)
+			return c.page(<studyPages.Create issues={insert.error.issues} />);
 
 		const [study] = await db
 			.insert(table.study)
@@ -166,7 +157,7 @@ app
 	})
 	.get("/study/:id", async (c) => {
 		const [{ user }, study] = await Promise.all([
-			auth.get(c),
+			auth.get(),
 			query.studyById(c.params.id),
 		]);
 
@@ -176,7 +167,7 @@ app
 	})
 	.post("/study/:id/draft", async (c) => {
 		const [{ user }, study] = await Promise.all([
-			auth.get(c),
+			auth.get(),
 			query.studyById(c.params.id),
 		]);
 
@@ -204,7 +195,7 @@ app
 		["/study/:id/update", "/study/:id/delete"],
 		async (c) => {
 			const [{ user }, study] = await Promise.all([
-				auth.get(c),
+				auth.get(),
 				query.studyById(c.params.id),
 			]);
 
@@ -217,9 +208,8 @@ app
 				return c.redirect("/study");
 			}
 
-			if (c.req.method === "GET") {
-				return c.page(<studyPages.Update user={user} study={study} />);
-			}
+			if (c.req.method === "GET")
+				return c.page(<studyPages.Update study={study} />);
 
 			if (c.req.method === "POST") {
 				const formData = await c.req.formData();
@@ -231,15 +221,10 @@ app
 					public: Boolean(formData.get("public")),
 				});
 
-				if (!update.success) {
+				if (!update.success)
 					return c.page(
-						<studyPages.Update
-							user={user}
-							study={study}
-							issues={update.error.issues}
-						/>,
+						<studyPages.Update study={study} issues={update.error.issues} />,
 					);
-				}
 
 				await db
 					.update(table.study)

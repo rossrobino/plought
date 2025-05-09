@@ -1,15 +1,12 @@
-import type { User } from "@/lib/db/table";
+import * as auth from "@/lib/auth";
 import clsx from "clsx";
-import type { JSX } from "ovr";
+import { type JSX } from "ovr";
 
-export const Layout = (props: {
-	children?: JSX.Element;
-	user: User | null;
-}) => {
+export const Layout = (props: { children?: JSX.Element }) => {
 	return (
 		<>
 			<main class="lg:flex">
-				<Nav user={props.user} />
+				<Nav />
 				<div class="basis-full p-6">{props.children}</div>
 			</main>
 		</>
@@ -23,9 +20,7 @@ const links: { text: string; href: string }[] = [
 	// { text: "Research", href: "/research" },
 ] as const;
 
-const NavPanel = (
-	props: { user: User | null } & JSX.IntrinsicElements["nav"],
-) => {
+const NavPanel = (props: JSX.IntrinsicElements["nav"]) => {
 	const { user, class: className, ...rest } = props;
 	return (
 		<nav
@@ -46,14 +41,22 @@ const NavPanel = (
 					);
 				})}
 			</ul>
-			<a class="button secondary" href={props.user ? "/logout" : "/login"}>
-				{props.user ? "Logout" : "Login"}
-			</a>
+			<Login />
 		</nav>
 	);
 };
 
-const NavDialog = (props: { user: User | null }) => {
+const Login = async () => {
+	const { user } = await auth.get();
+
+	return (
+		<a class="button secondary" href={user ? "/logout" : "/login"}>
+			{user ? "Logout" : "Login"}
+		</a>
+	);
+};
+
+const NavDialog = () => {
 	return (
 		<div class="p-4 block lg:hidden">
 			<drab-dialog click-outside-close remove-body-scroll>
@@ -64,18 +67,18 @@ const NavDialog = (props: { user: User | null }) => {
 					data-content
 					class="min-h-screen backdrop:bg-muted/75 backdrop:backdrop-blur-lg"
 				>
-					<NavPanel user={props.user}></NavPanel>
+					<NavPanel />
 				</dialog>
 			</drab-dialog>
 		</div>
 	);
 };
 
-const Nav = (props: { user: User | null }) => {
+const Nav = () => {
 	return (
 		<>
-			<NavDialog user={props.user} />
-			<NavPanel user={props.user} class="hidden lg:flex" />
+			<NavDialog />
+			<NavPanel class="hidden lg:flex" />
 		</>
 	);
 };

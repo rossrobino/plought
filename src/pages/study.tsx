@@ -1,6 +1,5 @@
 import * as query from "@/lib/db/query";
 import type * as table from "@/lib/db/table";
-import { Layout } from "@/pages/layout";
 import { Checkbox, Input, Textarea } from "@/ui/form";
 import { Issues } from "@/ui/issue";
 import { Table } from "@/ui/table";
@@ -8,44 +7,37 @@ import type { ZodIssue } from "zod";
 
 export const Home = (props: { user: table.User | null }) => {
 	return (
-		<Layout user={props.user}>
-			<article>
-				<div class="flex items-center justify-between">
-					<h1>Studies</h1>
-					<a class="button" href="/study/create">
-						Create
-					</a>
-				</div>
-				<div class="space-y-4 mt-8">
-					<h2>Public</h2>
-					{async () => {
-						const publicStudies = await query.studiesPublic();
-						return <StudyTable studies={publicStudies} />;
-					}}
+		<article>
+			<div class="flex items-center justify-between">
+				<h1>Studies</h1>
+				<a class="button" href="/study/create">
+					Create
+				</a>
+			</div>
+			<div class="space-y-4 mt-8">
+				<h2>Public</h2>
+				{async () => {
+					const publicStudies = await query.studiesPublic();
+					return <StudyTable studies={publicStudies} />;
+				}}
 
-					<h2>Studies</h2>
-					{async () => {
-						const userStudies = await query.studiesByUserId(props.user?.id);
-						return <StudyTable studies={userStudies} />;
-					}}
-				</div>
-			</article>
-		</Layout>
+				<h2>Studies</h2>
+				{async () => {
+					const userStudies = await query.studiesByUserId(props.user?.id);
+					return <StudyTable studies={userStudies} />;
+				}}
+			</div>
+		</article>
 	);
 };
 
-export const Create = async (props: {
-	user: table.User | null;
-	issues?: ZodIssue[];
-}) => {
+export const Create = async (props: { issues?: ZodIssue[] }) => {
 	return (
-		<Layout user={props.user}>
-			<article>
-				<h1 class="mb-8">Create a New Study</h1>
-				<StudyForm />
-				<Issues issues={props.issues} />
-			</article>
-		</Layout>
+		<article>
+			<h1 class="mb-8">Create a New Study</h1>
+			<StudyForm />
+			<Issues issues={props.issues} />
+		</article>
 	);
 };
 
@@ -58,7 +50,7 @@ export const Study = async (props: {
 	const pathname = `/study/${study.id}`;
 
 	return (
-		<Layout user={user}>
+		<>
 			<h1 class="flex gap-4 items-center">
 				<a class="underline text-4xl" href={pathname}>
 					#{study.id}
@@ -114,26 +106,23 @@ export const Study = async (props: {
 					}}
 				</div>
 			)}
-		</Layout>
+		</>
 	);
 };
 
 export const Update = (props: {
-	user: table.User | null;
 	study: Partial<table.Study>;
 	issues?: ZodIssue[];
 }) => {
 	return (
-		<Layout user={props.user}>
-			<article>
-				<h1 class="mb-8">Update Study</h1>
-				<StudyForm study={props.study} />
-				<Issues issues={props.issues} />
-				<form action={`/study/${props.study.id}/delete`}>
-					<button class="destructive mt-4">Delete</button>
-				</form>
-			</article>
-		</Layout>
+		<article>
+			<h1 class="mb-8">Update Study</h1>
+			<StudyForm study={props.study} />
+			<Issues issues={props.issues} />
+			<form action={`/study/${props.study.id}/delete`}>
+				<button class="destructive mt-4">Delete</button>
+			</form>
+		</article>
 	);
 };
 

@@ -1,27 +1,30 @@
 <script lang="ts">
-	import { alternatives, criteria } from "$lib/stores";
+	import { alternatives, criteria } from "$lib/state";
 	import XMark from "$lib/svg/XMark.svelte";
 	import type { Criteria } from "$lib/types";
 
+	interface Props {
+		weights?: boolean;
+	}
+
 	/** controls if weights column is displayed*/
-	export let weights = true;
+	let { weights = true }: Props = $props();
 
 	const addCriteria = () => {
-		$criteria.push({ name: `Criteria #${$criteria.length + 1}`, weight: 0 });
-		$alternatives.forEach((alt) => {
+		criteria.current.push({
+			name: `Criteria #${criteria.current.length + 1}`,
+			weight: 0,
+		});
+		alternatives.current.forEach((alt) => {
 			alt.scores.push(0);
 		});
-		$criteria = $criteria;
-		$alternatives = $alternatives;
 	};
 
 	const removeCriteria = (index: number) => {
-		$criteria.splice(index, 1);
-		$alternatives.forEach((alt) => {
+		criteria.current.splice(index, 1);
+		alternatives.current.forEach((alt) => {
 			alt.scores.splice(index, 1);
 		});
-		$criteria = $criteria;
-		$alternatives = $alternatives;
 	};
 
 	const getWeights = (criteria: Criteria[]) => {
@@ -50,7 +53,7 @@
 				</tr>
 			</thead>
 			<tbody>
-				{#each $criteria as { name, weight }, i}
+				{#each criteria.current as item, i (i)}
 					<tr>
 						<td><label for="name{i}">#{i + 1}</label></td>
 						<td>
@@ -59,7 +62,7 @@
 								name="name"
 								id="name{i}"
 								class="w-full"
-								bind:value={name}
+								bind:value={item.name}
 								required
 								placeholder="Criteria"
 							/>
@@ -70,7 +73,7 @@
 									type="number"
 									name="weight"
 									id="weight{i}"
-									bind:value={weight}
+									bind:value={item.weight}
 									step="0.01"
 									min="0"
 									max="1"
@@ -84,8 +87,8 @@
 						<td>
 							<button
 								class="btn-s"
-								on:click={() => removeCriteria(i)}
-								disabled={$criteria.length < 2}
+								onclick={() => removeCriteria(i)}
+								disabled={criteria.current.length < 2}
 							>
 								<XMark />
 							</button>
@@ -99,11 +102,13 @@
 
 						<td>
 							<span
-								class:text-rose-800={Math.round(
-									sumArray(getWeights($criteria)) * 100,
-								) !== 100}
+								class={{
+									"text-rose-800":
+										Math.round(sumArray(getWeights(criteria.current)) * 100) !==
+										100,
+								}}
 							>
-								{(sumArray(getWeights($criteria)) * 100).toFixed()}
+								{(sumArray(getWeights(criteria.current)) * 100).toFixed()}
 							</span>
 							/ 100
 						</td>
@@ -114,5 +119,5 @@
 			</tbody>
 		</table>
 	</div>
-	<button on:click={addCriteria} class="mt-4 w-full">Add</button>
+	<button onclick={addCriteria} class="mt-4 w-full">Add</button>
 </section>

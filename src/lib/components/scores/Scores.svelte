@@ -1,23 +1,31 @@
 <script lang="ts">
-	import { alternatives, criteria } from "$lib/stores";
+	import { alternatives, criteria } from "$lib/state";
 	import type { Alternative, Criteria } from "$lib/types";
 
-	export let weightedSum = false;
-	export let pairwise = false;
-
 	type SortBy = "" | "weightedSum" | "pairwise";
-	export let sortBy: SortBy = "";
 
-	let sortedAlternatives: Alternative[];
-	$: sortedAlternatives = [...$alternatives].sort((a, b) => {
-		if (sortBy === "weightedSum") {
-			return getWeightedSum(b, $criteria) - getWeightedSum(a, $criteria);
-		} else if (sortBy === "pairwise") {
-			return getPairwiseScore(b) - getPairwiseScore(a);
-		} else {
-			return 1;
-		}
-	});
+	interface Props {
+		pairwise?: boolean;
+		sortBy?: SortBy;
+		weightedSum?: boolean;
+	}
+
+	let { weightedSum = false, pairwise = false, sortBy = "" }: Props = $props();
+
+	const sortedAlternatives = $derived(
+		[...alternatives.current].sort((a, b) => {
+			if (sortBy === "weightedSum") {
+				return (
+					getWeightedSum(b, criteria.current) -
+					getWeightedSum(a, criteria.current)
+				);
+			} else if (sortBy === "pairwise") {
+				return getPairwiseScore(b) - getPairwiseScore(a);
+			} else {
+				return 1;
+			}
+		}),
+	);
 
 	/**
 	 * Calculates the weighted sum score of an alternative
@@ -53,7 +61,7 @@
 	 */
 	const getPairwiseScore = (alt: Alternative) => {
 		// find index of alt
-		const skipIndex = $alternatives.indexOf(alt);
+		const skipIndex = alternatives.current.indexOf(alt);
 
 		// sum all pairwise scores besides the index
 		let total = 0;
@@ -83,11 +91,11 @@
 				</tr>
 			</thead>
 			<tbody>
-				{#each sortedAlternatives as alt}
+				{#each sortedAlternatives as alt (alt.name)}
 					<tr>
 						<td>{alt.name}</td>
 						{#if weightedSum}
-							<td class="font-bold">{getWeightedSum(alt, $criteria)}</td>
+							<td class="font-bold">{getWeightedSum(alt, criteria.current)}</td>
 						{/if}
 						{#if pairwise}
 							<td class="font-bold">{getPairwiseScore(alt)}</td>

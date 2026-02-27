@@ -1,16 +1,5 @@
 <script lang="ts">
-	import { alternatives, criteria } from "$lib/stores";
-
-	const reset = () => {
-		$criteria = [
-			{ name: "Criteria #1", weight: 0.5 },
-			{ name: "Criteria #2", weight: 0.5 },
-		];
-		$alternatives = [
-			{ name: "Alternative #1", scores: [5, 5], pairwise: [0.5, 0.5] },
-			{ name: "Alternative #2", scores: [5, 5], pairwise: [0.5, 0.5] },
-		];
-	};
+	import { reset } from "$lib/state";
 </script>
 
 <button class="btn-s mt-8 w-full" onclick={reset}>Reset</button>

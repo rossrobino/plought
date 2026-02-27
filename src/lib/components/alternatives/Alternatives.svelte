@@ -1,7 +1,7 @@
 <script lang="ts">
 	import AddAlternativeButton from "$lib/components/alternatives/AddAlternativeButton.svelte";
 	import RemoveAlternativeButton from "$lib/components/alternatives/RemoveAlternativeButton.svelte";
-	import { alternatives, criteria } from "$lib/stores";
+	import { alternatives, criteria } from "$lib/state";
 
 	interface Props {
 		/** controls if criteria are displayed */
@@ -20,15 +20,15 @@
 					<th></th>
 					<th>Name</th>
 					{#if showCriteria}
-						{#each $criteria as { name }}
-							<th>{name}</th>
+						{#each criteria.current as item}
+							<th>{item.name}</th>
 						{/each}
 					{/if}
 					<th></th>
 				</tr>
 			</thead>
 			<tbody>
-				{#each $alternatives as alt, i}
+				{#each alternatives.current as alt, i}
 					<tr>
 						<td>
 							<label for="{alt.name}{i}">#{i + 1}</label>

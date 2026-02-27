@@ -26,7 +26,6 @@
 <Scores weightedSum={true} pairwise={true} />
 
 <section class="border-s bg-s text-base">
-	<h2>About</h2>
 	<p>
 		Decision making is difficult, especially when there are many different
 		alternatives and criteria to base the decision on.

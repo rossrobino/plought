@@ -11,17 +11,23 @@
 		"format": "prettier --write ."
 	},
 	"devDependencies": {
+		"@internationalized/date": "^3.11.0",
+		"@lucide/svelte": "^0.561.0",
 		"@robino/prettier": "^2.0.3",
 		"@sveltejs/adapter-vercel": "^6.3.3",
 		"@sveltejs/kit": "^2.53.3",
 		"@sveltejs/vite-plugin-svelte": "^6.2.4",
 		"@tailwindcss/vite": "^4.2.1",
+		"clsx": "^2.1.1",
 		"prettier": "^3.8.1",
 		"prettier-plugin-svelte": "^3.5.0",
 		"prettier-plugin-tailwindcss": "^0.7.2",
 		"svelte": "^5.53.5",
 		"svelte-check": "^4.4.4",
+		"tailwind-merge": "^3.5.0",
+		"tailwind-variants": "^3.2.2",
 		"tailwindcss": "^4.2.1",
+		"tw-animate-css": "^1.4.0",
 		"typescript": "^5.9.3",
 		"vite": "^7.3.1"
 	},

@@ -9,7 +9,7 @@
 </script>
 
 <div
-	class="mx-auto flex h-dvh max-w-5xl flex-col justify-between selection:bg-content selection:text-base"
+	class="mx-auto flex min-h-dvh max-w-5xl flex-col selection:bg-primary selection:text-primary-foreground"
 >
 	<main class="p-4">
 		{@render children()}

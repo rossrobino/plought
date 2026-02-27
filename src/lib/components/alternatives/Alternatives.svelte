@@ -1,6 +1,11 @@
 <script lang="ts">
 	import AddAlternativeButton from "$lib/components/alternatives/AddAlternativeButton.svelte";
 	import RemoveAlternativeButton from "$lib/components/alternatives/RemoveAlternativeButton.svelte";
+	import * as Field from "$lib/components/ui/field/index.js";
+	import { Input } from "$lib/components/ui/input/index.js";
+	import { Label } from "$lib/components/ui/label/index.js";
+	import { ScrollArea } from "$lib/components/ui/scroll-area/index.js";
+	import * as Table from "$lib/components/ui/table/index.js";
 	import { alternatives, criteria } from "$lib/state";
 
 	interface Props {
@@ -13,60 +18,64 @@
 
 <section>
 	<h2>Alternatives</h2>
-	<div class="mt-4 overflow-x-auto">
-		<table>
-			<thead>
-				<tr>
-					<th></th>
-					<th>Name</th>
+	<ScrollArea class="mt-4 w-full whitespace-nowrap rounded-md border" orientation="horizontal">
+		<Table.Root class="min-w-full">
+			<Table.Header>
+				<Table.Row class="hover:[&,&>svelte-css-wrapper]:[&>th,td]:bg-transparent">
+					<Table.Head class="w-16"></Table.Head>
+					<Table.Head class="min-w-56">Name</Table.Head>
 					{#if showCriteria}
 						{#each criteria.current as item}
-							<th>{item.name}</th>
+							<Table.Head class="min-w-32">{item.name}</Table.Head>
 						{/each}
 					{/if}
-					<th></th>
-				</tr>
-			</thead>
-			<tbody>
+					<Table.Head class="w-16"></Table.Head>
+				</Table.Row>
+			</Table.Header>
+			<Table.Body>
 				{#each alternatives.current as alt, i}
-					<tr>
-						<td>
-							<label for="{alt.name}{i}">#{i + 1}</label>
-						</td>
-						<td>
-							<input
-								type="text"
-								name="{alt.name}{i}"
-								id="{alt.name}{i}"
-								bind:value={alt.name}
-								required
-								placeholder="Alternative"
-							/>
-						</td>
+					<Table.Row>
+						<Table.Cell>
+							<Label for={`alternative${i}`} class="text-muted-foreground">#{i + 1}</Label>
+						</Table.Cell>
+						<Table.Cell>
+							<Field.Field>
+								<Input
+									type="text"
+									name={`alternative${i}`}
+									id={`alternative${i}`}
+									bind:value={alt.name}
+									required
+									placeholder="Alternative"
+								/>
+							</Field.Field>
+						</Table.Cell>
 						{#if showCriteria}
 							{#each alt.scores as _, j}
-								<td>
-									<input
-										type="number"
-										name="{alt.name}{i}score{j}"
-										id="{alt.name}{i}score{j}"
-										bind:value={alt.scores[j]}
-										min="0"
-										max="10"
-										required
-										inputmode="decimal"
-										placeholder="0"
-									/>
-								</td>
+								<Table.Cell>
+									<Field.Field>
+										<Input
+											type="number"
+											name={`alternative${i}score${j}`}
+											id={`alternative${i}score${j}`}
+											bind:value={alt.scores[j]}
+											min="0"
+											max="10"
+											required
+											inputmode="decimal"
+											placeholder="0"
+										/>
+									</Field.Field>
+								</Table.Cell>
 							{/each}
 						{/if}
-						<td>
+						<Table.Cell>
 							<RemoveAlternativeButton index={i} />
-						</td>
-					</tr>
+						</Table.Cell>
+					</Table.Row>
 				{/each}
-			</tbody>
-		</table>
-	</div>
+			</Table.Body>
+		</Table.Root>
+	</ScrollArea>
 	<AddAlternativeButton />
 </section>

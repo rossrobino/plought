@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { Button } from "$lib/components/ui/button/index.js";
 	import { alternatives, criteria } from "$lib/state";
 
 	export const addAlternative = () => {
@@ -25,4 +26,4 @@
 	};
 </script>
 
-<button class="mt-4 w-full" onclick={addAlternative}>Add</button>
+<Button class="mt-4 w-full" onclick={addAlternative}>Add</Button>

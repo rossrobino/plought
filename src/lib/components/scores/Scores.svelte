@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { ScrollArea } from "$lib/components/ui/scroll-area/index.js";
+	import * as Table from "$lib/components/ui/table/index.js";
 	import { alternatives, criteria } from "$lib/state";
 	import type { Alternative, Criteria } from "$lib/types";
 
@@ -77,32 +79,34 @@
 
 <section>
 	<h2>Scores</h2>
-	<div class="mt-4 overflow-x-auto">
-		<table>
-			<thead>
-				<tr>
-					<th>Alternative</th>
+	<ScrollArea class="mt-4 w-full whitespace-nowrap rounded-md border" orientation="horizontal">
+		<Table.Root class="min-w-full">
+			<Table.Header>
+				<Table.Row class="hover:[&,&>svelte-css-wrapper]:[&>th,td]:bg-transparent">
+					<Table.Head>Alternative</Table.Head>
 					{#if weightedSum}
-						<th>Weighted Sum</th>
+						<Table.Head>Weighted Sum</Table.Head>
 					{/if}
 					{#if pairwise}
-						<th>Pairwise</th>
+						<Table.Head>Pairwise</Table.Head>
 					{/if}
-				</tr>
-			</thead>
-			<tbody>
+				</Table.Row>
+			</Table.Header>
+			<Table.Body>
 				{#each sortedAlternatives as alt (alt.name)}
-					<tr>
-						<td>{alt.name}</td>
+					<Table.Row>
+						<Table.Cell>{alt.name}</Table.Cell>
 						{#if weightedSum}
-							<td class="font-bold">{getWeightedSum(alt, criteria.current)}</td>
+							<Table.Cell class="font-semibold">
+								{getWeightedSum(alt, criteria.current)}
+							</Table.Cell>
 						{/if}
 						{#if pairwise}
-							<td class="font-bold">{getPairwiseScore(alt)}</td>
+							<Table.Cell class="font-semibold">{getPairwiseScore(alt)}</Table.Cell>
 						{/if}
-					</tr>
+					</Table.Row>
 				{/each}
-			</tbody>
-		</table>
-	</div>
+			</Table.Body>
+		</Table.Root>
+	</ScrollArea>
 </section>

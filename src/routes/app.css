@@ -1,65 +1,143 @@
 @import "tailwindcss";
 
-@theme {
-	--color-base: #fdfdfd;
-	--color-content: #0d1c3a;
-	--color-p: #7af066;
-	--color-p-100: #defbeb;
-	--color-s: #3a637a;
-	--color-s-100: #d6f4fa;
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+:root {
+	--radius: 0.625rem;
+	--background: #fdfdfd;
+	--foreground: #0d1c3a;
+	--card: #ffffff;
+	--card-foreground: #0d1c3a;
+	--popover: #ffffff;
+	--popover-foreground: #0d1c3a;
+	--primary: #7af066;
+	--primary-foreground: #0d1c3a;
+	--secondary: #3a637a;
+	--secondary-foreground: #fdfdfd;
+	--muted: #defbeb;
+	--muted-foreground: #3a637a;
+	--accent: #d6f4fa;
+	--accent-foreground: #0d1c3a;
+	--destructive: #b91c1c;
+	--border: #d9e3ea;
+	--input: #d9e3ea;
+	--ring: #3a637a;
+	--chart-1: #7af066;
+	--chart-2: #3a637a;
+	--chart-3: #d6f4fa;
+	--chart-4: #defbeb;
+	--chart-5: #0d1c3a;
+	--sidebar: #ffffff;
+	--sidebar-foreground: #0d1c3a;
+	--sidebar-primary: #7af066;
+	--sidebar-primary-foreground: #0d1c3a;
+	--sidebar-accent: #d6f4fa;
+	--sidebar-accent-foreground: #0d1c3a;
+	--sidebar-border: #d9e3ea;
+	--sidebar-ring: #3a637a;
+}
+
+.dark {
+	--background: #122445;
+	--foreground: #f4f9fc;
+	--card: #183054;
+	--card-foreground: #f4f9fc;
+	--popover: #183054;
+	--popover-foreground: #f4f9fc;
+	--primary: #7af066;
+	--primary-foreground: #0d1c3a;
+	--secondary: #2a4f66;
+	--secondary-foreground: #f4f9fc;
+	--muted: #213d52;
+	--muted-foreground: #bfcedb;
+	--accent: #27475f;
+	--accent-foreground: #f4f9fc;
+	--destructive: #ef4444;
+	--border: #31526a;
+	--input: #31526a;
+	--ring: #7af066;
+	--chart-1: #7af066;
+	--chart-2: #5fa8c8;
+	--chart-3: #d6f4fa;
+	--chart-4: #a9d66f;
+	--chart-5: #f4f9fc;
+	--sidebar: #183054;
+	--sidebar-foreground: #f4f9fc;
+	--sidebar-primary: #7af066;
+	--sidebar-primary-foreground: #0d1c3a;
+	--sidebar-accent: #27475f;
+	--sidebar-accent-foreground: #f4f9fc;
+	--sidebar-border: #31526a;
+	--sidebar-ring: #7af066;
+}
+
+@theme inline {
+	--radius-sm: calc(var(--radius) - 4px);
+	--radius-md: calc(var(--radius) - 2px);
+	--radius-lg: var(--radius);
+	--radius-xl: calc(var(--radius) + 4px);
+	--color-background: var(--background);
+	--color-foreground: var(--foreground);
+	--color-card: var(--card);
+	--color-card-foreground: var(--card-foreground);
+	--color-popover: var(--popover);
+	--color-popover-foreground: var(--popover-foreground);
+	--color-primary: var(--primary);
+	--color-primary-foreground: var(--primary-foreground);
+	--color-secondary: var(--secondary);
+	--color-secondary-foreground: var(--secondary-foreground);
+	--color-muted: var(--muted);
+	--color-muted-foreground: var(--muted-foreground);
+	--color-accent: var(--accent);
+	--color-accent-foreground: var(--accent-foreground);
+	--color-destructive: var(--destructive);
+	--color-border: var(--border);
+	--color-input: var(--input);
+	--color-ring: var(--ring);
+	--color-chart-1: var(--chart-1);
+	--color-chart-2: var(--chart-2);
+	--color-chart-3: var(--chart-3);
+	--color-chart-4: var(--chart-4);
+	--color-chart-5: var(--chart-5);
+	--color-sidebar: var(--sidebar);
+	--color-sidebar-foreground: var(--sidebar-foreground);
+	--color-sidebar-primary: var(--sidebar-primary);
+	--color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+	--color-sidebar-accent: var(--sidebar-accent);
+	--color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+	--color-sidebar-border: var(--sidebar-border);
+	--color-sidebar-ring: var(--sidebar-ring);
 }
 
 @layer base {
-	button,
-	.btn {
-		@apply inline-block rounded-xl bg-p p-2 text-content no-underline shadow transition;
-		@apply hover:brightness-90;
-		@apply disabled:cursor-not-allowed disabled:bg-slate-400;
-		@apply active:scale-[97%];
+	* {
+		@apply border-border outline-ring/50;
 	}
-	input,
-	select {
-		@apply rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 invalid:outline invalid:-outline-offset-2 invalid:outline-rose-700;
+
+	body {
+		@apply bg-background text-foreground antialiased;
 	}
-	section {
-		@apply mt-8 rounded-xl border border-s/50 p-4 shadow;
-	}
-	h2 {
-		@apply mb-2 rounded-xl py-1 text-lg font-semibold;
-	}
-	table {
-		@apply w-full;
-	}
-	thead th {
-		@apply border-b-2 border-b-s/25;
-	}
-	th {
-		@apply text-left;
-	}
-	td,
-	th {
-		@apply py-2 pr-5 text-sm last:pr-0;
-	}
-	tr {
-		@apply border-b border-b-s/25 last:border-b-2;
-	}
+
 	a {
-		@apply font-semibold underline decoration-2 hover:decoration-dotted;
+		@apply font-medium underline decoration-2 underline-offset-2 hover:decoration-dotted;
 	}
+
+	section {
+		@apply mt-8 rounded-xl border bg-card p-4 shadow-sm;
+	}
+
+	h2 {
+		@apply mb-2 text-lg font-semibold;
+	}
+
 	p,
 	ul {
 		@apply mb-4 last:mb-0;
 	}
-	li {
-		@apply ml-6 list-disc;
-	}
-}
 
-@layer components {
-	.btn-o {
-		@apply border-2 border-s bg-transparent text-s;
-	}
-	.btn-s {
-		@apply bg-s text-base;
+	li {
+		@apply ms-6 list-disc;
 	}
 }

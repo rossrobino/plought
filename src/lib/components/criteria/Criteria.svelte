@@ -1,4 +1,11 @@
 <script lang="ts">
+	import { Button } from "$lib/components/ui/button/index.js";
+	import * as Field from "$lib/components/ui/field/index.js";
+	import { Input } from "$lib/components/ui/input/index.js";
+	import { Label } from "$lib/components/ui/label/index.js";
+	import { ScrollArea } from "$lib/components/ui/scroll-area/index.js";
+	import * as Table from "$lib/components/ui/table/index.js";
+	import * as Tooltip from "$lib/components/ui/tooltip/index.js";
 	import { alternatives, criteria } from "$lib/state";
 	import XMark from "$lib/svg/XMark.svelte";
 	import type { Criteria } from "$lib/types";
@@ -36,88 +43,109 @@
 	const sumArray = (a: number[]) => {
 		return a.reduce((a, b) => a + b, 0);
 	};
+
+	const total = $derived(sumArray(getWeights(criteria.current)));
 </script>
 
 <section>
 	<h2>Criteria</h2>
-	<div class="mt-4 overflow-x-auto">
-		<table>
-			<thead>
-				<tr>
-					<th></th>
-					<th>Name</th>
-					{#if weights}
-						<th>Weight</th>
-					{/if}
-					<th></th>
-				</tr>
-			</thead>
-			<tbody>
-				{#each criteria.current as item, i (i)}
-					<tr>
-						<td><label for="name{i}">#{i + 1}</label></td>
-						<td>
-							<input
-								type="text"
-								name="name"
-								id="name{i}"
-								class="w-full"
-								bind:value={item.name}
-								required
-								placeholder="Criteria"
-							/>
-						</td>
+	<Tooltip.Provider>
+		<ScrollArea class="mt-4 w-full whitespace-nowrap rounded-md border" orientation="horizontal">
+			<Table.Root class="min-w-full">
+				<Table.Header>
+					<Table.Row class="hover:[&,&>svelte-css-wrapper]:[&>th,td]:bg-transparent">
+						<Table.Head class="w-16"></Table.Head>
+						<Table.Head class="min-w-56">Name</Table.Head>
 						{#if weights}
-							<td>
-								<input
-									type="number"
-									name="weight"
-									id="weight{i}"
-									bind:value={item.weight}
-									step="0.01"
-									min="0"
-									max="1"
-									class="w-full"
-									required
-									inputmode="decimal"
-									placeholder="0"
-								/>
-							</td>
+							<Table.Head class="min-w-40">Weight</Table.Head>
 						{/if}
-						<td>
-							<button
-								class="btn-s"
-								onclick={() => removeCriteria(i)}
-								disabled={criteria.current.length < 2}
-							>
-								<XMark />
-							</button>
-						</td>
-					</tr>
-				{/each}
-				{#if weights}
-					<tr>
-						<th>Total</th>
-						<td></td>
-
-						<td>
-							<span
-								class={{
-									"text-rose-800":
-										Math.round(sumArray(getWeights(criteria.current)) * 100) !==
-										100,
-								}}
-							>
-								{(sumArray(getWeights(criteria.current)) * 100).toFixed()}
-							</span>
-							/ 100
-						</td>
-
-						<td></td>
-					</tr>
-				{/if}
-			</tbody>
-		</table>
-	</div>
-	<button onclick={addCriteria} class="mt-4 w-full">Add</button>
+						<Table.Head class="w-16"></Table.Head>
+					</Table.Row>
+				</Table.Header>
+				<Table.Body>
+					{#each criteria.current as item, i (i)}
+						<Table.Row>
+							<Table.Cell>
+								<Label for={`name${i}`} class="text-muted-foreground">#{i + 1}</Label>
+							</Table.Cell>
+							<Table.Cell>
+								<Field.Field>
+									<Input
+										type="text"
+										name="name"
+										id={`name${i}`}
+										bind:value={item.name}
+										required
+										placeholder="Criteria"
+									/>
+								</Field.Field>
+							</Table.Cell>
+							{#if weights}
+								<Table.Cell>
+									<Field.Field>
+										<Input
+											type="number"
+											name="weight"
+											id={`weight${i}`}
+											bind:value={item.weight}
+											step="0.01"
+											min="0"
+											max="1"
+											required
+											inputmode="decimal"
+											placeholder="0"
+										/>
+									</Field.Field>
+								</Table.Cell>
+							{/if}
+							<Table.Cell>
+								<Tooltip.Root>
+									<Tooltip.Trigger>
+										{#snippet child({ props })}
+											<Button
+												{...props}
+												variant="secondary"
+												size="icon-sm"
+												aria-disabled={criteria.current.length < 2}
+												class={criteria.current.length < 2
+													? "aria-disabled:pointer-events-auto"
+													: undefined}
+												onclick={() => {
+													if (criteria.current.length >= 2) {
+														removeCriteria(i);
+													}
+												}}
+												aria-label={`Remove criteria ${i + 1}`}
+											>
+												<XMark class="size-4" />
+											</Button>
+										{/snippet}
+									</Tooltip.Trigger>
+									{#if criteria.current.length < 2}
+										<Tooltip.Content sideOffset={8}>
+											At least two criteria are required.
+										</Tooltip.Content>
+									{/if}
+								</Tooltip.Root>
+							</Table.Cell>
+						</Table.Row>
+					{/each}
+					{#if weights}
+						<Table.Row class="hover:[&,&>svelte-css-wrapper]:[&>th,td]:bg-transparent">
+							<Table.Head>Total</Table.Head>
+							<Table.Cell></Table.Cell>
+							<Table.Cell>
+								<span class:text-destructive={Math.round(total * 100) !== 100}>
+									{(total * 100).toFixed()}
+								</span>
+								/ 100
+							</Table.Cell>
+							<Table.Cell></Table.Cell>
+						</Table.Row>
+					{/if}
+				</Table.Body>
+			</Table.Root>
+		</ScrollArea>
+	</Tooltip.Provider>
+	<Button onclick={addCriteria} class="mt-4 w-full">Add</Button>
 </section>

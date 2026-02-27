@@ -8,16 +8,10 @@
 
 <div class="grid gap-4 sm:grid-cols-2">
 	{#each apps as app}
-		<a href={app.path} class="group no-underline">
-			<div class="flex gap-4 rounded-xl border border-s/50 p-4 shadow">
-				<div>
-					<div
-						class="text-xl font-semibold capitalize underline group-hover:decoration-dotted"
-					>
-						{app.title}
-					</div>
-					<p>{app.desc}</p>
-				</div>
+		<a href={app.path} class="group block no-underline">
+			<div class="rounded-xl border bg-card p-4 shadow-sm transition-colors group-hover:bg-accent/40">
+				<div class="text-xl font-semibold capitalize">{app.title}</div>
+				<p class="mt-2">{app.desc}</p>
 			</div>
 		</a>
 	{/each}
@@ -25,7 +19,7 @@
 
 <Scores weightedSum={true} pairwise={true} />
 
-<section class="border-s bg-s text-base">
+<section class="border-secondary/30 bg-secondary text-secondary-foreground">
 	<p>
 		Decision making is difficult, especially when there are many different
 		alternatives and criteria to base the decision on.

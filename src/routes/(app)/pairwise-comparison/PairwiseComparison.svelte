@@ -1,4 +1,7 @@
 <script lang="ts">
+	import { ScrollArea } from "$lib/components/ui/scroll-area/index.js";
+	import * as Select from "$lib/components/ui/select/index.js";
+	import * as Table from "$lib/components/ui/table/index.js";
 	import { alternatives } from "$lib/state";
 
 	const updateInverse = (i: number, j: number) => {
@@ -6,53 +9,76 @@
 		alternatives.current[j].pairwise[i] =
 			newScore > 0.5 ? 0 : newScore === 0.5 ? 0.5 : 1;
 	};
+
+	const updateScore = (i: number, j: number, value: string) => {
+		alternatives.current[i].pairwise[j] = Number(value);
+		updateInverse(i, j);
+	};
+
+	const getSelection = (i: number, j: number) => {
+		return `${alternatives.current[i].pairwise[j]}`;
+	};
+
+	const getLabel = (i: number, j: number) => {
+		if (alternatives.current[i].pairwise[j] === 1) {
+			return alternatives.current[i].name;
+		}
+		if (alternatives.current[i].pairwise[j] === 0) {
+			return alternatives.current[j].name;
+		}
+		return "Tie";
+	};
 </script>
 
 <section>
 	<h2>Comparisons</h2>
-	<div class="mt-4 overflow-x-auto">
-		<table>
-			<thead>
-				<tr>
-					<th></th>
+	<ScrollArea class="mt-4 w-full whitespace-nowrap rounded-md border" orientation="horizontal">
+		<Table.Root class="min-w-full">
+			<Table.Header>
+				<Table.Row class="hover:[&,&>svelte-css-wrapper]:[&>th,td]:bg-transparent">
+					<Table.Head class="w-28"></Table.Head>
 					{#each alternatives.current as { name }}
-						<th>{name}</th>
+						<Table.Head class="min-w-40">{name}</Table.Head>
 					{/each}
-				</tr>
-			</thead>
-			<tbody>
+				</Table.Row>
+			</Table.Header>
+			<Table.Body>
 				{#each alternatives.current as alt, i}
-					<tr>
-						<th>{alt.name}</th>
+					<Table.Row>
+						<Table.Head>{alt.name}</Table.Head>
 						{#each alt.pairwise as _, j}
-							<td>
+							<Table.Cell>
 								{#if alternatives.current[i] !== alternatives.current[j]}
 									{#if i < j}
-										<select
-											bind:value={alternatives.current[i].pairwise[j]}
-											onchange={() => updateInverse(i, j)}
+										<Select.Root
+											type="single"
+											value={getSelection(i, j)}
+											onValueChange={(value) => updateScore(i, j, value)}
 										>
-											<option value={1}>
-												{alternatives.current[i].name}
-											</option>
-											<option value={0.5}>Tie</option>
-											<option value={0}>{alternatives.current[j].name}</option>
-										</select>
-									{:else if alternatives.current[i].pairwise[j] === 1}
-										{alternatives.current[i].name}
-									{:else if alternatives.current[i].pairwise[j] === 0}
-										{alternatives.current[j].name}
+											<Select.Trigger class="h-8 w-full min-w-40 justify-between">
+												{getLabel(i, j)}
+											</Select.Trigger>
+											<Select.Content>
+												<Select.Item value="1">
+													{alternatives.current[i].name}
+												</Select.Item>
+												<Select.Item value="0.5">Tie</Select.Item>
+												<Select.Item value="0">
+													{alternatives.current[j].name}
+												</Select.Item>
+											</Select.Content>
+										</Select.Root>
 									{:else}
-										Tie
+										{getLabel(i, j)}
 									{/if}
 								{:else}
-									<span class="text-stone-400">-</span>
+									<span class="text-muted-foreground">-</span>
 								{/if}
-							</td>
+							</Table.Cell>
 						{/each}
-					</tr>
+					</Table.Row>
 				{/each}
-			</tbody>
-		</table>
-	</div>
+			</Table.Body>
+		</Table.Root>
+	</ScrollArea>
 </section>

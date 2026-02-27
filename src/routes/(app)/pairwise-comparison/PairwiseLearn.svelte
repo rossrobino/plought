@@ -1,5 +1,6 @@
 <script lang="ts">
 	import AboutAlternatives from "$lib/components/alternatives/AboutAlternatives.svelte";
+	import * as Table from "$lib/components/ui/table/index.js";
 </script>
 
 <AboutAlternatives />
@@ -30,28 +31,28 @@
 		<b>alternatives.</b>
 	</p>
 
-	<table>
-		<thead>
-			<tr>
-				<th>Choice</th>
-				<th>Score</th>
-			</tr>
-		</thead>
-		<tbody>
-			<tr>
-				<td>Preferred</td>
-				<td>+1</td>
-			</tr>
-			<tr>
-				<td>Tie</td>
-				<td>+0.5</td>
-			</tr>
-			<tr>
-				<td>Unfavored</td>
-				<td>0</td>
-			</tr>
-		</tbody>
-	</table>
+	<Table.Root>
+		<Table.Header>
+			<Table.Row class="hover:[&,&>svelte-css-wrapper]:[&>th,td]:bg-transparent">
+				<Table.Head>Choice</Table.Head>
+				<Table.Head>Score</Table.Head>
+			</Table.Row>
+		</Table.Header>
+		<Table.Body>
+			<Table.Row>
+				<Table.Cell>Preferred</Table.Cell>
+				<Table.Cell>+1</Table.Cell>
+			</Table.Row>
+			<Table.Row>
+				<Table.Cell>Tie</Table.Cell>
+				<Table.Cell>+0.5</Table.Cell>
+			</Table.Row>
+			<Table.Row>
+				<Table.Cell>Unfavored</Table.Cell>
+				<Table.Cell>0</Table.Cell>
+			</Table.Row>
+		</Table.Body>
+	</Table.Root>
 	<p>
 		The scores for each <b>alternative</b>
 		are summed across the row and scored respectively. The highest score indicates

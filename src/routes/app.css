@@ -1,6 +1,13 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+
+@theme {
+	--color-base: #fdfdfd;
+	--color-content: #0d1c3a;
+	--color-p: #7af066;
+	--color-p-100: #defbeb;
+	--color-s: #3a637a;
+	--color-s-100: #d6f4fa;
+}
 
 @layer base {
 	button,
@@ -12,10 +19,10 @@
 	}
 	input,
 	select {
-		@apply rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 invalid:outline invalid:outline-2 invalid:-outline-offset-2 invalid:outline-rose-700;
+		@apply rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 invalid:outline invalid:-outline-offset-2 invalid:outline-rose-700;
 	}
 	section {
-		@apply mt-8 rounded-xl border border-s border-opacity-50 p-4 shadow;
+		@apply mt-8 rounded-xl border border-s/50 p-4 shadow;
 	}
 	h2 {
 		@apply mb-2 rounded-xl py-1 text-lg font-semibold;
@@ -24,7 +31,7 @@
 		@apply w-full;
 	}
 	thead th {
-		@apply border-b-2 border-b-s border-opacity-25;
+		@apply border-b-2 border-b-s/25;
 	}
 	th {
 		@apply text-left;
@@ -34,7 +41,7 @@
 		@apply py-2 pr-5 text-sm last:pr-0;
 	}
 	tr {
-		@apply border-b border-b-s border-opacity-25 last:border-b-2;
+		@apply border-b border-b-s/25 last:border-b-2;
 	}
 	a {
 		@apply font-semibold underline decoration-2 hover:decoration-dotted;

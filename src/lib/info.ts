@@ -17,10 +17,6 @@ class App {
 	}
 
 	get title() {
-		return this.getTitle();
-	}
-
-	getTitle() {
 		return capitalize(this.path.replace(/[^A-Z]/gi, " "));
 	}
 }

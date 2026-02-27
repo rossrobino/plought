@@ -5,17 +5,6 @@ declare global {
 		// interface PageData {}
 		// interface Platform {}
 	}
-
-	interface Alternative {
-		name: string;
-		scores: number[];
-		pairwise: number[];
-	}
-
-	interface Criteria {
-		name: string;
-		weight: number;
-	}
 }
 
 export {};

@@ -1,7 +1,7 @@
 <script lang="ts">
-	import { criteria, alternatives } from "$lib/stores";
 	import AddAlternativeButton from "$lib/components/alternatives/AddAlternativeButton.svelte";
 	import RemoveAlternativeButton from "$lib/components/alternatives/RemoveAlternativeButton.svelte";
+	import { alternatives, criteria } from "$lib/stores";
 
 	interface Props {
 		/** controls if criteria are displayed */

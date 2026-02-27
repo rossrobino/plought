@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { alternatives, criteria } from "$lib/stores";
+	import type { Alternative, Criteria } from "$lib/types";
 
 	export let weightedSum = false;
 	export let pairwise = false;

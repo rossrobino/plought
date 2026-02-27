@@ -1,12 +1,7 @@
 <script lang="ts">
 	import { info } from "$lib/info";
 
-	interface Props {
-		title?: string;
-		desc?: string;
-	}
-
-	let { title = "", desc = "" }: Props = $props();
+	let { title = "", desc = "" } = $props();
 
 	let headTitle = $state(info.name);
 

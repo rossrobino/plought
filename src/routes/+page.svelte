@@ -1,7 +1,7 @@
 <script lang="ts">
-	import { info, apps } from "$lib/info";
 	import Head from "$lib/components/Head.svelte";
 	import Scores from "$lib/components/scores/Scores.svelte";
+	import { apps, info } from "$lib/info";
 </script>
 
 <Head desc={info.tagline} />
@@ -9,9 +9,7 @@
 <div class="grid gap-4 sm:grid-cols-2">
 	{#each apps as app}
 		<a href={app.path} class="group no-underline">
-			<div
-				class="flex gap-4 rounded-xl border border-s border-opacity-50 p-4 shadow"
-			>
+			<div class="flex gap-4 rounded-xl border border-s/50 p-4 shadow">
 				<div>
 					<div
 						class="text-xl font-semibold capitalize underline group-hover:decoration-dotted"

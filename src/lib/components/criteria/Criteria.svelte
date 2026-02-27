@@ -1,6 +1,7 @@
 <script lang="ts">
-	import { criteria, alternatives } from "$lib/stores";
+	import { alternatives, criteria } from "$lib/stores";
 	import XMark from "$lib/svg/XMark.svelte";
+	import type { Criteria } from "$lib/types";
 
 	/** controls if weights column is displayed*/
 	export let weights = true;

@@ -1,8 +1,8 @@
 <script lang="ts">
-	import Criteria from "$lib/components/criteria/Criteria.svelte";
 	import Reset from "$lib/components/Reset.svelte";
-	import Scores from "$lib/components/scores/Scores.svelte";
 	import Alternatives from "$lib/components/alternatives/Alternatives.svelte";
+	import Criteria from "$lib/components/criteria/Criteria.svelte";
+	import Scores from "$lib/components/scores/Scores.svelte";
 </script>
 
 <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">

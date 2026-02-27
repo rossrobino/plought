@@ -1,8 +1,8 @@
 <script lang="ts">
-	import "../app.postcss";
 	import { dev } from "$app/environment";
-	import { inject } from "@vercel/analytics";
 	import { info } from "$lib/info";
+	import "./app.css";
+	import { inject } from "@vercel/analytics";
 
 	inject({ mode: dev ? "development" : "production" });
 
@@ -10,7 +10,7 @@
 </script>
 
 <div
-	class="mx-auto flex h-[100dvh] max-w-[90ch] flex-col justify-between selection:bg-content selection:text-base"
+	class="mx-auto flex h-dvh max-w-[90ch] flex-col justify-between selection:bg-content selection:text-base"
 >
 	<main class="p-4">
 		{@render children?.()}

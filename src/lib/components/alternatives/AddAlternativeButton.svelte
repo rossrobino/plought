@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { criteria, alternatives } from "$lib/stores";
+	import { alternatives, criteria } from "$lib/stores";
 
 	export const addAlternative = () => {
 		// create an array of zeros based on the number of criteria

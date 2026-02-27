@@ -1,17 +1,9 @@
 export const capitalize = (str: string) => {
 	const words = str.trim().split(" ");
 
-	words.forEach((word, i) => {
-		const letters = word.split("");
-
-		if (letters[0]) {
-			letters[0] = letters[0].toUpperCase();
-		}
-
-		const capitalizedWord = letters.join("");
-
-		words[i] = capitalizedWord;
-	});
+	words.forEach(
+		(word, i) => (words[i] = word.slice(0, 1).toUpperCase() + word.slice(1)),
+	);
 
 	return words.join(" ");
 };

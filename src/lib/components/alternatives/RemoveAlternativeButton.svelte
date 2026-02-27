@@ -1,6 +1,6 @@
 <script lang="ts">
-	import XMark from "$lib/svg/XMark.svelte";
 	import { alternatives } from "$lib/stores";
+	import XMark from "$lib/svg/XMark.svelte";
 
 	interface Props {
 		index: number;

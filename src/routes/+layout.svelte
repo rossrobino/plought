@@ -14,7 +14,7 @@
 
 	const title = $derived.by(() => {
 		if (page.url.pathname === "/") {
-			return info.name;
+			return "Home";
 		}
 		if (page.url.pathname.startsWith("/scores")) {
 			return "Scores";
@@ -27,11 +27,11 @@
 <Sidebar.Provider bind:open>
 	<AppSidebar />
 	<Sidebar.Inset class="selection:bg-primary selection:text-primary-foreground">
-	<header class="sticky top-0 z-20 flex h-14 items-center gap-2 border-b bg-background/95 px-4 backdrop-blur supports-[backdrop-filter]:bg-background/80">
+		<header class="sticky top-0 z-20 flex h-14 items-center gap-2 border-b border-border/50 bg-background/95 px-4 backdrop-blur supports-[backdrop-filter]:bg-background/80">
 			<Sidebar.Trigger />
 			<div class="min-w-0 truncate text-base font-semibold">{title}</div>
 		</header>
-		<div class="mx-auto flex w-full max-w-5xl flex-1 flex-col p-4">
+		<div class="flex w-full flex-1 flex-col px-3 pt-0 pb-3">
 			{@render children()}
 		</div>
 	</Sidebar.Inset>

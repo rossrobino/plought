@@ -124,17 +124,21 @@
 		@apply font-medium underline decoration-2 underline-offset-2 hover:decoration-dotted;
 	}
 
+	a[data-sidebar="menu-button"] {
+		@apply no-underline;
+	}
+
 	section {
-		@apply mt-8 rounded-xl border bg-card p-4 shadow-sm;
+		@apply mt-3 rounded-xl border bg-card p-3 shadow-sm;
 	}
 
 	h2 {
-		@apply mb-2 text-lg font-semibold;
+		@apply mb-1 text-lg font-semibold;
 	}
 
 	section p,
 	section ul {
-		@apply mb-4 last:mb-0;
+		@apply mb-3 last:mb-0;
 	}
 
 	section li {

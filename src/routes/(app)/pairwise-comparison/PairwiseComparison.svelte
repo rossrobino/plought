@@ -43,7 +43,7 @@
 			</div>
 		</Info>
 	</div>
-	<ScrollArea class="mt-4 w-full whitespace-nowrap rounded-md border" orientation="horizontal">
+	<ScrollArea class="mt-3 w-full whitespace-nowrap rounded-md border" orientation="horizontal">
 		<Table.Root class="min-w-full">
 			<Table.Header>
 				<Table.Row class="hover:[&,&>svelte-css-wrapper]:[&>th,td]:bg-transparent">

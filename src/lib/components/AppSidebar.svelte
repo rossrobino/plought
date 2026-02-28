@@ -98,5 +98,4 @@
 			</Sidebar.GroupContent>
 		</Sidebar.Group>
 	</Sidebar.Content>
-	<Sidebar.Rail />
 </Sidebar.Root>

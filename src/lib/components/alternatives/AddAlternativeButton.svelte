@@ -26,4 +26,6 @@
 	};
 </script>
 
-<Button class="mt-4 w-full" size="sm" onclick={addAlternative}>Add</Button>
+<div class="mt-3 flex justify-end">
+	<Button size="sm" onclick={addAlternative}>Add</Button>
+</div>

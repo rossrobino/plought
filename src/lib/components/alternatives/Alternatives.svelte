@@ -4,7 +4,6 @@
 	import RemoveAlternativeButton from "$lib/components/alternatives/RemoveAlternativeButton.svelte";
 	import * as Field from "$lib/components/ui/field/index.js";
 	import { Input } from "$lib/components/ui/input/index.js";
-	import { Label } from "$lib/components/ui/label/index.js";
 	import { ScrollArea } from "$lib/components/ui/scroll-area/index.js";
 	import * as Table from "$lib/components/ui/table/index.js";
 	import { alternatives, criteria } from "$lib/state";
@@ -29,11 +28,10 @@
 			</div>
 		</Info>
 	</div>
-	<ScrollArea class="mt-4 w-full whitespace-nowrap rounded-md border" orientation="horizontal">
+	<ScrollArea class="mt-3 w-full whitespace-nowrap rounded-md border" orientation="horizontal">
 		<Table.Root class="min-w-full">
 			<Table.Header>
 				<Table.Row class="hover:[&,&>svelte-css-wrapper]:[&>th,td]:bg-transparent">
-					<Table.Head class="w-16"></Table.Head>
 					<Table.Head class="min-w-56">Name</Table.Head>
 					{#if showCriteria}
 						{#each criteria.current as item}
@@ -46,9 +44,6 @@
 			<Table.Body>
 				{#each alternatives.current as alt, i}
 					<Table.Row>
-						<Table.Cell>
-							<Label for={`alternative${i}`} class="text-muted-foreground">#{i + 1}</Label>
-						</Table.Cell>
 						<Table.Cell>
 							<Field.Field>
 								<Input

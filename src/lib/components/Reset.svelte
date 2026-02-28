@@ -7,14 +7,11 @@
 </script>
 
 <AlertDialog.Root bind:open>
-	<Button
-		class="mt-8 w-full"
-		size="sm"
-		variant="secondary"
-		onclick={() => (open = true)}
-	>
-		Reset
-	</Button>
+	<div class="mt-3 flex justify-end">
+		<Button size="sm" variant="secondary" onclick={() => (open = true)}>
+			Reset
+		</Button>
+	</div>
 
 	<AlertDialog.Content>
 		<AlertDialog.Header>
@@ -24,8 +21,8 @@
 			</AlertDialog.Description>
 		</AlertDialog.Header>
 		<AlertDialog.Footer>
-			<AlertDialog.Cancel>Cancel</AlertDialog.Cancel>
-			<AlertDialog.Action onclick={reset}>Reset</AlertDialog.Action>
+			<AlertDialog.Cancel class="h-8 px-3 text-sm">Cancel</AlertDialog.Cancel>
+			<AlertDialog.Action class="h-8 px-3 text-sm" onclick={reset}>Reset</AlertDialog.Action>
 		</AlertDialog.Footer>
 	</AlertDialog.Content>
 </AlertDialog.Root>

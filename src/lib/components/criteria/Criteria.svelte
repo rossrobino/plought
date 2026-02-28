@@ -3,7 +3,6 @@
 	import { Button } from "$lib/components/ui/button/index.js";
 	import * as Field from "$lib/components/ui/field/index.js";
 	import { Input } from "$lib/components/ui/input/index.js";
-	import { Label } from "$lib/components/ui/label/index.js";
 	import { ScrollArea } from "$lib/components/ui/scroll-area/index.js";
 	import * as Table from "$lib/components/ui/table/index.js";
 	import * as Tooltip from "$lib/components/ui/tooltip/index.js";
@@ -67,11 +66,10 @@
 		</Info>
 	</div>
 	<Tooltip.Provider>
-		<ScrollArea class="mt-4 w-full whitespace-nowrap rounded-md border" orientation="horizontal">
+		<ScrollArea class="mt-3 w-full whitespace-nowrap rounded-md border" orientation="horizontal">
 			<Table.Root class="min-w-full">
 				<Table.Header>
 					<Table.Row class="hover:[&,&>svelte-css-wrapper]:[&>th,td]:bg-transparent">
-						<Table.Head class="w-16"></Table.Head>
 						<Table.Head class="min-w-56">Name</Table.Head>
 						{#if weights}
 							<Table.Head class="min-w-40">Weight</Table.Head>
@@ -82,9 +80,6 @@
 				<Table.Body>
 					{#each criteria.current as item, i (i)}
 						<Table.Row>
-							<Table.Cell>
-								<Label for={`name${i}`} class="text-muted-foreground">#{i + 1}</Label>
-							</Table.Cell>
 							<Table.Cell>
 								<Field.Field>
 									<Input
@@ -150,7 +145,6 @@
 					{#if weights}
 						<Table.Row class="hover:[&,&>svelte-css-wrapper]:[&>th,td]:bg-transparent">
 							<Table.Head>Total</Table.Head>
-							<Table.Cell></Table.Cell>
 							<Table.Cell>
 								<span class:text-destructive={Math.round(total * 100) !== 100}>
 									{(total * 100).toFixed()}
@@ -164,5 +158,7 @@
 			</Table.Root>
 		</ScrollArea>
 	</Tooltip.Provider>
-	<Button onclick={addCriteria} class="mt-4 w-full" size="sm">Add</Button>
+	<div class="mt-3 flex justify-end">
+		<Button onclick={addCriteria} size="sm">Add</Button>
+	</div>
 </section>

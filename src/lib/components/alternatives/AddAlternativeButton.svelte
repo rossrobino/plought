@@ -1,4 +1,5 @@
 <script lang="ts">
+	import PlusIcon from "@lucide/svelte/icons/plus";
 	import { Button } from "$lib/components/ui/button/index.js";
 	import { alternatives, criteria } from "$lib/state";
 
@@ -27,5 +28,8 @@
 </script>
 
 <div class="mt-3 flex justify-end">
-	<Button size="sm" onclick={addAlternative}>Add</Button>
+	<Button size="sm" onclick={addAlternative}>
+		<PlusIcon />
+		Add
+	</Button>
 </div>

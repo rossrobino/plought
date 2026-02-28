@@ -1,4 +1,5 @@
 <script lang="ts">
+	import PlusIcon from "@lucide/svelte/icons/plus";
 	import Info from "$lib/components/Info.svelte";
 	import { Button } from "$lib/components/ui/button/index.js";
 	import * as Field from "$lib/components/ui/field/index.js";
@@ -159,6 +160,9 @@
 		</ScrollArea>
 	</Tooltip.Provider>
 	<div class="mt-3 flex justify-end">
-		<Button onclick={addCriteria} size="sm">Add</Button>
+		<Button onclick={addCriteria} size="sm">
+			<PlusIcon />
+			Add
+		</Button>
 	</div>
 </section>

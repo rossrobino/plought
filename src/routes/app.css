@@ -132,6 +132,7 @@
 		@apply mt-3 rounded-xl border bg-card p-3 shadow-sm;
 	}
 
+
 	h2 {
 		@apply mb-1 text-lg font-semibold;
 	}

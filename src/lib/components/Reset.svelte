@@ -19,7 +19,8 @@
 		<AlertDialog.Header>
 			<AlertDialog.Title>Reset values?</AlertDialog.Title>
 			<AlertDialog.Description>
-				This clears your saved criteria and alternatives and restores defaults.
+				This clears your saved decision title, goal, criteria, and alternatives
+				and restores defaults.
 			</AlertDialog.Description>
 		</AlertDialog.Header>
 		<AlertDialog.Footer>

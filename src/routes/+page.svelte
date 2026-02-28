@@ -1,4 +1,5 @@
 <script lang="ts">
+	import DecisionSetup from "$lib/components/decision/DecisionSetup.svelte";
 	import Head from "$lib/components/Head.svelte";
 	import { Separator } from "$lib/components/ui/separator/index.js";
 	import { apps, info } from "$lib/info";
@@ -16,51 +17,42 @@
 	};
 </script>
 
-<div class="mx-auto w-full max-w-[80ch]">
+<div class="mx-auto w-full max-w-[80ch] pt-4">
 	<Head desc={info.tagline} />
 
-	<section>
-		<h1 class="text-2xl font-semibold tracking-tight sm:text-3xl">
-			Make better decisions with less noise.
-		</h1>
-		<p class="text-muted-foreground">
-			Use one or more decision methods below to evaluate alternatives from
-			different angles.
-		</p>
-		<div class="grid gap-3 sm:grid-cols-2">
-			{#each apps as app (app.path)}
-				{@const meta = getAppMeta(app.path)}
-				<a href={app.path} class="group block no-underline">
-					<div
-						class="h-full rounded-xl border bg-card p-3 shadow-sm transition-all group-hover:-translate-y-0.5 group-hover:bg-accent/35"
-					>
-						<div class="flex items-start justify-between gap-2">
-							<div
-								class="inline-flex size-9 items-center justify-center rounded-md border bg-background"
-							>
-								<meta.icon class="size-4" />
-							</div>
-							<span
-								class="rounded-full border bg-muted/50 px-2 py-0.5 text-[11px] text-muted-foreground"
-							>
-								{meta.badge}
-							</span>
-						</div>
-						<div class="mt-3 text-xl font-semibold capitalize">{app.title}</div>
-						<p class="mt-2 text-muted-foreground">{app.desc}</p>
+	<DecisionSetup />
+
+	<div class="mt-4 grid gap-4 sm:grid-cols-2">
+		{#each apps as app (app.path)}
+			{@const meta = getAppMeta(app.path)}
+			<a href={app.path} class="group block no-underline">
+				<div
+					class="h-full rounded-xl border bg-card p-3 shadow-sm transition-all group-hover:-translate-y-0.5 group-hover:bg-accent/35"
+				>
+					<div class="flex items-start justify-between gap-2">
 						<div
-							class="mt-4 inline-flex items-center gap-1 text-sm font-medium"
+							class="inline-flex size-9 items-center justify-center rounded-md border bg-background"
 						>
-							Open app
-							<ArrowRightIcon
-								class="size-4 transition-transform group-hover:translate-x-0.5"
-							/>
+							<meta.icon class="size-4" />
 						</div>
+						<span
+							class="rounded-full border bg-muted/50 px-2 py-0.5 text-[11px] text-muted-foreground"
+						>
+							{meta.badge}
+						</span>
 					</div>
-				</a>
-			{/each}
-		</div>
-	</section>
+					<div class="mt-3 text-xl font-semibold capitalize">{app.title}</div>
+					<p class="mt-2 text-muted-foreground">{app.desc}</p>
+					<div class="mt-4 inline-flex items-center gap-1 text-sm font-medium">
+						Open app
+						<ArrowRightIcon
+							class="size-4 transition-transform group-hover:translate-x-0.5"
+						/>
+					</div>
+				</div>
+			</a>
+		{/each}
+	</div>
 
 	<a href="/scores" class="group block no-underline">
 		<section
@@ -110,7 +102,14 @@
 	<section class="border-secondary/30 bg-secondary text-secondary-foreground">
 		<div>
 			<h2>How It Works</h2>
-			<p class="text-secondary-foreground/90">
+			<p class="text-2xl font-semibold tracking-tight sm:text-3xl">
+				Make better decisions with less noise.
+			</p>
+			<p class="mt-2 text-secondary-foreground/90">
+				Use one or more decision methods below to evaluate alternatives from
+				different angles.
+			</p>
+			<p class="mt-3 text-secondary-foreground/90">
 				{info.name} turns complex choices into structured comparisons by separating
 				inputs from outcomes. You define criteria, score alternatives, and compare
 				results across methods before deciding.

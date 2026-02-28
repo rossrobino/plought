@@ -9,3 +9,7 @@ _Plought_ is a collection of decision making applications. Each app uses differe
 While _Plought_ can help guide in decision making, and reveal surprising results, many decisions are subjective (including inputs into the application). It is hard to be able to accurately account for each possible alternative and criteria. Use _Plought_ as a tool, ultimately the decision is up to you!
 
 Open to contributions.
+
+## License
+
+AGPL-3.0-or-later © 2026 Ross Robino

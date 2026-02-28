@@ -32,7 +32,7 @@
 	<Sidebar.Header class="p-3">
 		<a
 			href="/"
-			class="flex items-center gap-2 rounded-md p-2 text-sidebar-foreground no-underline transition-colors hover:bg-sidebar-accent"
+			class="flex items-center gap-2 rounded-md p-2 text-sidebar-foreground no-underline transition-colors hover:bg-transparent"
 		>
 			<img src="/plought-text-logo-dark.svg" alt={info.name} class="h-6 w-auto" />
 		</a>
@@ -44,7 +44,11 @@
 				<Sidebar.Menu>
 					{#each overview as item}
 						<Sidebar.MenuItem>
-							<Sidebar.MenuButton isActive={active(item.href)} tooltipContent={item.label}>
+							<Sidebar.MenuButton
+								isActive={active(item.href)}
+								tooltipContent={item.label}
+								class="hover:bg-transparent hover:text-sidebar-foreground data-[state=open]:hover:bg-transparent data-[state=open]:hover:text-sidebar-foreground"
+							>
 								{#snippet child({ props })}
 									<a {...props} href={item.href}>
 										<item.icon />

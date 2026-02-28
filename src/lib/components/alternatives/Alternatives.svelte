@@ -1,5 +1,6 @@
 <script lang="ts">
 	import AddAlternativeButton from "$lib/components/alternatives/AddAlternativeButton.svelte";
+	import Info from "$lib/components/Info.svelte";
 	import RemoveAlternativeButton from "$lib/components/alternatives/RemoveAlternativeButton.svelte";
 	import * as Field from "$lib/components/ui/field/index.js";
 	import { Input } from "$lib/components/ui/input/index.js";
@@ -17,7 +18,17 @@
 </script>
 
 <section>
-	<h2>Alternatives</h2>
+	<div class="flex items-center justify-between gap-2">
+		<h2 class="mb-0">Alternatives</h2>
+		<Info label="About alternatives">
+			<div class="space-y-2">
+				<p>Create alternatives for each option you are comparing.</p>
+				<p>
+					Examples: Ford F-150, Aston Martin DB9, Volvo XC60.
+				</p>
+			</div>
+		</Info>
+	</div>
 	<ScrollArea class="mt-4 w-full whitespace-nowrap rounded-md border" orientation="horizontal">
 		<Table.Root class="min-w-full">
 			<Table.Header>

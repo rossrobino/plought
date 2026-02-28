@@ -1,17 +1,38 @@
 <script lang="ts">
 	import { dev } from "$app/environment";
+	import { page } from "$app/state";
+	import { apps, info } from "$lib/info";
+	import AppSidebar from "$lib/components/AppSidebar.svelte";
+	import * as Sidebar from "$lib/components/ui/sidebar/index.js";
 	import "./app.css";
 	import { inject } from "@vercel/analytics";
 
 	inject({ mode: dev ? "development" : "production" });
 
+	let open = $state(true);
 	let { children } = $props();
+
+	const title = $derived.by(() => {
+		if (page.url.pathname === "/") {
+			return info.name;
+		}
+		if (page.url.pathname.startsWith("/scores")) {
+			return "Scores";
+		}
+		const app = apps.find((item) => page.url.pathname.startsWith(item.path));
+		return app ? app.title : info.name;
+	});
 </script>
 
-<div
-	class="mx-auto flex min-h-dvh max-w-5xl flex-col selection:bg-primary selection:text-primary-foreground"
->
-	<main class="p-4">
-		{@render children()}
-	</main>
-</div>
+<Sidebar.Provider bind:open>
+	<AppSidebar />
+	<Sidebar.Inset class="selection:bg-primary selection:text-primary-foreground">
+	<header class="sticky top-0 z-20 flex h-14 items-center gap-2 border-b bg-background/95 px-4 backdrop-blur supports-[backdrop-filter]:bg-background/80">
+			<Sidebar.Trigger />
+			<div class="min-w-0 truncate text-base font-semibold">{title}</div>
+		</header>
+		<div class="mx-auto flex w-full max-w-5xl flex-1 flex-col p-4">
+			{@render children()}
+		</div>
+	</Sidebar.Inset>
+</Sidebar.Provider>

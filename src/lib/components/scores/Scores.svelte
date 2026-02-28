@@ -1,4 +1,5 @@
 <script lang="ts">
+	import Info from "$lib/components/Info.svelte";
 	import { ScrollArea } from "$lib/components/ui/scroll-area/index.js";
 	import * as Table from "$lib/components/ui/table/index.js";
 	import { alternatives, criteria } from "$lib/state";
@@ -78,7 +79,32 @@
 </script>
 
 <section>
-	<h2>Scores</h2>
+	<div class="flex items-center justify-between gap-2">
+		<h2 class="mb-0">Scores</h2>
+		<Info label="About scores">
+			<div class="space-y-2">
+				{#if weightedSum && !pairwise}
+					<p>
+						Each alternative score is multiplied by its criterion weight, then those
+						values are summed.
+					</p>
+				{:else if pairwise && !weightedSum}
+					<p>
+						Each row is scored from head-to-head comparisons:
+						Preferred = +1, Tie = +0.5, Unfavored = 0.
+					</p>
+				{:else}
+					<p>
+						Weighted Sum uses criteria weights; Pairwise uses head-to-head
+						preferences.
+					</p>
+					<p>
+						Use this table to compare rankings across both scoring methods.
+					</p>
+				{/if}
+			</div>
+		</Info>
+	</div>
 	<ScrollArea class="mt-4 w-full whitespace-nowrap rounded-md border" orientation="horizontal">
 		<Table.Root class="min-w-full">
 			<Table.Header>

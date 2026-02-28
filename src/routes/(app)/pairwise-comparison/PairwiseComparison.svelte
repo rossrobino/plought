@@ -1,4 +1,5 @@
 <script lang="ts">
+	import Info from "$lib/components/Info.svelte";
 	import { ScrollArea } from "$lib/components/ui/scroll-area/index.js";
 	import * as Select from "$lib/components/ui/select/index.js";
 	import * as Table from "$lib/components/ui/table/index.js";
@@ -31,7 +32,17 @@
 </script>
 
 <section>
-	<h2>Comparisons</h2>
+	<div class="flex items-center justify-between gap-2">
+		<h2 class="mb-0">Comparisons</h2>
+		<Info label="About comparisons">
+			<div class="space-y-2">
+				<p>Compare each alternative against every other alternative.</p>
+				<p>
+					If one option is preferred, select it. If both are equal, select Tie.
+				</p>
+			</div>
+		</Info>
+	</div>
 	<ScrollArea class="mt-4 w-full whitespace-nowrap rounded-md border" orientation="horizontal">
 		<Table.Root class="min-w-full">
 			<Table.Header>

@@ -7,7 +7,12 @@
 </script>
 
 <AlertDialog.Root bind:open>
-	<Button class="mt-8 w-full" variant="secondary" onclick={() => (open = true)}>
+	<Button
+		class="mt-8 w-full"
+		size="sm"
+		variant="secondary"
+		onclick={() => (open = true)}
+	>
 		Reset
 	</Button>
 

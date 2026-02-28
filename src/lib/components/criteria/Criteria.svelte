@@ -1,4 +1,5 @@
 <script lang="ts">
+	import Info from "$lib/components/Info.svelte";
 	import { Button } from "$lib/components/ui/button/index.js";
 	import * as Field from "$lib/components/ui/field/index.js";
 	import { Input } from "$lib/components/ui/input/index.js";
@@ -48,7 +49,23 @@
 </script>
 
 <section>
-	<h2>Criteria</h2>
+	<div class="flex items-center justify-between gap-2">
+		<h2 class="mb-0">Criteria</h2>
+		<Info label="About criteria">
+			<div class="space-y-2">
+				<p>
+					Create criteria for each factor in the decision and assign a weight from
+					0 to 1.
+				</p>
+				<p>
+					For example: Safety = 0.5, Speed = 0.25, Price = 0.25.
+				</p>
+				<p>
+					A higher weight means that criterion contributes more to the final score.
+				</p>
+			</div>
+		</Info>
+	</div>
 	<Tooltip.Provider>
 		<ScrollArea class="mt-4 w-full whitespace-nowrap rounded-md border" orientation="horizontal">
 			<Table.Root class="min-w-full">
@@ -147,5 +164,5 @@
 			</Table.Root>
 		</ScrollArea>
 	</Tooltip.Provider>
-	<Button onclick={addCriteria} class="mt-4 w-full">Add</Button>
+	<Button onclick={addCriteria} class="mt-4 w-full" size="sm">Add</Button>
 </section>

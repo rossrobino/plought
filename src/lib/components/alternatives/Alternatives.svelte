@@ -102,7 +102,7 @@
 	{:else}
 		<ul class="mt-3 grid gap-2">
 			{#each alternatives.current as alt, i}
-				<li class="flex items-center gap-2 rounded-md border bg-card p-2">
+				<li class="flex items-center gap-2">
 					<div class="min-w-0 flex-1">
 						{#if editNames}
 							<Field.Field>

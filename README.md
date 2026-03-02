@@ -10,6 +10,16 @@ While _Plought_ can help guide in decision making, and reveal surprising results
 
 Open to contributions.
 
+## Credits
+
+Built with these open-source projects:
+
+- [Svelte](https://svelte.dev/) and [SvelteKit](https://svelte.dev/docs/kit/introduction)
+- [Bits UI](https://bits-ui.com/) and [runed](https://runed.dev/)
+- [Tailwind CSS](https://tailwindcss.com/) and [tailwind-variants](https://www.tailwind-variants.org/)
+- [Lucide](https://lucide.dev/) ([`@lucide/svelte`](https://www.npmjs.com/package/@lucide/svelte))
+- [Vite](https://vite.dev/)
+
 ## License
 
 AGPL-3.0-or-later © 2026 Ross Robino

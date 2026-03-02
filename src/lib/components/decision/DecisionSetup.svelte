@@ -5,7 +5,7 @@
 </script>
 
 <div class="rounded-lg border bg-muted/25 p-3">
-	<h2 class="mb-0 text-base">Decision Setup</h2>
+	<h2 class="mb-0">Decision Setup</h2>
 	<p class="mt-1 text-sm text-muted-foreground">
 		Set your decision context here before scoring. You can update this anytime.
 	</p>

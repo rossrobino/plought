@@ -21,7 +21,7 @@
 	};
 </script>
 
-<div class="mx-auto w-full max-w-[80ch] pt-4">
+<div class="w-full pt-4">
 	<Head desc={info.tagline} />
 
 	<a href="/setup" class="group block no-underline">

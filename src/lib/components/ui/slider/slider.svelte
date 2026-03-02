@@ -1,0 +1,64 @@
+<script lang="ts">
+	import { cn } from "$lib/utils.js";
+	import { Slider as SliderPrimitive } from "bits-ui";
+
+	type Props = Omit<
+		SliderPrimitive.RootProps,
+		"type" | "value" | "onValueChange"
+	> & {
+		onValueChange?: (value: number) => void;
+		value?: number;
+	};
+
+	let {
+		ref = $bindable(null),
+		class: className,
+		min = 0,
+		max = 100,
+		step = 1,
+		disabled = false,
+		value = $bindable(0),
+		onValueChange,
+	}: Props = $props();
+
+	const handleValueChange = (next: number) => {
+		value = next;
+		onValueChange?.(next);
+	};
+</script>
+
+<SliderPrimitive.Root
+	bind:ref
+	type="single"
+	{value}
+	{min}
+	{max}
+	{step}
+	{disabled}
+	onValueChange={handleValueChange}
+	data-slot="slider"
+	class={cn(
+		"relative flex w-full touch-none items-center select-none",
+		"data-[orientation=vertical]:h-full data-[orientation=vertical]:w-2 data-[orientation=vertical]:flex-col",
+		className,
+	)}
+>
+	<span
+		data-slot="slider-track"
+		class="bg-muted relative h-1.5 w-full grow overflow-hidden rounded-full"
+	>
+		<SliderPrimitive.Range
+			data-slot="slider-range"
+			class="bg-primary absolute h-full"
+		/>
+	</span>
+	<SliderPrimitive.Thumb
+		data-slot="slider-thumb"
+		index={0}
+		class={cn(
+			"border-primary/50 bg-background block size-4 rounded-full border shadow-sm outline-none transition-[color,box-shadow]",
+			"focus-visible:ring-2 focus-visible:ring-ring/50 focus-visible:outline-1 focus-visible:outline-ring",
+			"disabled:pointer-events-none disabled:opacity-50",
+		)}
+	/>
+</SliderPrimitive.Root>

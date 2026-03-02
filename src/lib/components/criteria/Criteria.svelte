@@ -4,6 +4,8 @@
 	import * as Field from "$lib/components/ui/field/index.js";
 	import { Input } from "$lib/components/ui/input/index.js";
 	import { ScrollArea } from "$lib/components/ui/scroll-area/index.js";
+	import { Slider } from "$lib/components/ui/slider/index.js";
+	import { Switch } from "$lib/components/ui/switch/index.js";
 	import * as Table from "$lib/components/ui/table/index.js";
 	import * as Tooltip from "$lib/components/ui/tooltip/index.js";
 	import { alternatives, criteria, markMethodUsed } from "$lib/state";
@@ -17,15 +19,81 @@
 
 	/** controls if weights column is displayed*/
 	let { weights = true }: Props = $props();
+	let keepTotal = $state(true);
+
+	const clampPercent = (value: number) => {
+		return Math.max(0, Math.min(100, Math.round(value)));
+	};
+
+	const toPercent = (value: number) => {
+		if (!Number.isFinite(value)) {
+			return 0;
+		}
+		return clampPercent(value * 100);
+	};
+
+	const setWeightsFromPercent = (weights: number[]) => {
+		weights.forEach((weight, i) => {
+			if (criteria.current[i] == null) {
+				return;
+			}
+			criteria.current[i].weight = clampPercent(weight) / 100;
+		});
+	};
+
+	const normalizePercent = (values: number[], target = 100) => {
+		const count = values.length;
+		if (count === 0) {
+			return [];
+		}
+		if (target <= 0) {
+			return new Array(count).fill(0);
+		}
+		const positive = values.map((value) => Math.max(0, value));
+		const sum = positive.reduce((a, b) => a + b, 0);
+		if (sum <= 0) {
+			const base = Math.floor(target / count);
+			const next = new Array(count).fill(base);
+			let remaining = target - base * count;
+			for (let i = 0; i < count && remaining > 0; i++) {
+				next[i] += 1;
+				remaining -= 1;
+			}
+			return next;
+		}
+		const raw = positive.map((value) => (value / sum) * target);
+		const floor = raw.map((value) => Math.floor(value));
+		let remaining = target - floor.reduce((a, b) => a + b, 0);
+		const order = raw
+			.map((value, i) => ({ i, frac: value - floor[i] }))
+			.sort((a, b) => b.frac - a.frac);
+		for (let i = 0; i < order.length && remaining > 0; i++) {
+			floor[order[i].i] += 1;
+			remaining -= 1;
+		}
+		return floor;
+	};
+
+	const normalizeCurrentWeights = () => {
+		const current = criteria.current.map((item) => toPercent(item.weight));
+		const next = normalizePercent(current, 100);
+		if (next.some((value, i) => value !== current[i])) {
+			setWeightsFromPercent(next);
+			markMethodUsed("weightedSum");
+		}
+	};
 
 	const addCriteria = () => {
 		criteria.current.push({
-			name: `Criteria #${criteria.current.length + 1}`,
+			name: `Criterion #${criteria.current.length + 1}`,
 			weight: 0,
 		});
 		alternatives.current.forEach((alt) => {
 			alt.scores.push(0);
 		});
+		if (keepTotal) {
+			normalizeCurrentWeights();
+		}
 		markMethodUsed("weightedSum");
 	};
 
@@ -34,7 +102,61 @@
 		alternatives.current.forEach((alt) => {
 			alt.scores.splice(index, 1);
 		});
+		if (keepTotal && criteria.current.length > 0) {
+			normalizeCurrentWeights();
+		}
 		markMethodUsed("weightedSum");
+	};
+
+	const setWeightPercent = (index: number, value: number) => {
+		const nextValue = clampPercent(value);
+		if (!keepTotal) {
+			criteria.current[index].weight = nextValue / 100;
+			markMethodUsed("weightedSum");
+			return;
+		}
+
+		const current = criteria.current.map((item) => toPercent(item.weight));
+		if (current[index] === nextValue) {
+			return;
+		}
+
+		if (current.length === 1) {
+			criteria.current[0].weight = 1;
+			markMethodUsed("weightedSum");
+			return;
+		}
+
+		const otherIndices = current
+			.map((_, i) => i)
+			.filter((i) => i !== index);
+		const targetOthers = 100 - nextValue;
+		const next = [...current];
+		next[index] = nextValue;
+
+		if (targetOthers <= 0) {
+			otherIndices.forEach((i) => {
+				next[i] = 0;
+			});
+		} else {
+			const redistributed = normalizePercent(
+				otherIndices.map((i) => current[i]),
+				targetOthers,
+			);
+			otherIndices.forEach((item, i) => {
+				next[item] = redistributed[i];
+			});
+		}
+
+		setWeightsFromPercent(next);
+		markMethodUsed("weightedSum");
+	};
+
+	const setKeepTotal = (next: boolean) => {
+		keepTotal = next;
+		if (next) {
+			normalizeCurrentWeights();
+		}
 	};
 
 	const getWeights = (criteria: Criteria[]) => {
@@ -57,9 +179,9 @@
 			<div class="space-y-2">
 				<p>
 					Create criteria for each factor in the decision and assign a weight
-					from 0 to 1.
+					from 0 to 100.
 				</p>
-				<p>For example: Safety = 0.5, Speed = 0.25, Price = 0.25.</p>
+				<p>For example: Safety = 50, Speed = 25, Price = 25.</p>
 				<p>
 					A higher weight means that criterion contributes more to the final
 					score.
@@ -79,7 +201,7 @@
 					>
 						<Table.Head class="min-w-56">Name</Table.Head>
 						{#if weights}
-							<Table.Head class="min-w-40">Weight</Table.Head>
+							<Table.Head class="min-w-56">Weight</Table.Head>
 						{/if}
 						<Table.Head class="w-16"></Table.Head>
 					</Table.Row>
@@ -102,21 +224,19 @@
 							</Table.Head>
 							{#if weights}
 								<Table.Cell>
-									<Field.Field>
-										<Input
-											type="number"
-											name="weight"
+									<div class="flex min-w-56 items-center gap-3">
+										<Slider
 											id={`weight${i}`}
-											bind:value={item.weight}
-											oninput={() => markMethodUsed("weightedSum")}
-											step="0.01"
-											min="0"
-											max="1"
-											required
-											inputmode="decimal"
-											placeholder="0"
+											min={0}
+											max={100}
+											step={1}
+											value={toPercent(item.weight)}
+											onValueChange={(value) => setWeightPercent(i, value)}
 										/>
-									</Field.Field>
+										<span class="w-11 text-right text-sm text-muted-foreground">
+											{toPercent(item.weight)}%
+										</span>
+									</div>
 								</Table.Cell>
 							{/if}
 							<Table.Cell>
@@ -169,7 +289,21 @@
 			</Table.Root>
 		</ScrollArea>
 	</Tooltip.Provider>
-	<div class="mt-3 flex justify-end">
+	<div class="mt-3 flex flex-wrap items-center justify-end gap-4">
+		{#if weights}
+			<label
+				for="keep-total"
+				class="flex cursor-default items-center gap-2 text-sm font-medium select-none"
+			>
+				<span id="keep-total-label">Keep total at 100%</span>
+				<Switch
+					id="keep-total"
+					checked={keepTotal}
+					onCheckedChange={setKeepTotal}
+					aria-labelledby="keep-total-label"
+				/>
+			</label>
+		{/if}
 		<Button onclick={addCriteria} size="sm">
 			<PlusIcon />
 			Add

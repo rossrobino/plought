@@ -11,8 +11,8 @@ export interface MethodMeta {
 export type MethodMetaState = Record<MethodKey, MethodMeta>;
 
 const getCriteria = (): Criteria[] => [
-	{ name: "Criteria #1", weight: 0.5 },
-	{ name: "Criteria #2", weight: 0.5 },
+	{ name: "Criterion #1", weight: 0.5 },
+	{ name: "Criterion #2", weight: 0.5 },
 ];
 
 const getAlternatives = (): Alternative[] => [

@@ -66,33 +66,29 @@
 						</Table.Head>
 						{#each alt.pairwise as _, j}
 							<Table.Cell>
-								{#if alternatives.current[i] !== alternatives.current[j]}
-									{#if i < j}
-										<Select.Root
-											type="single"
-											value={getSelection(i, j)}
-											onValueChange={(value) => updateScore(i, j, value)}
-										>
-											<Select.Trigger
-												class="h-8 w-full min-w-40 justify-between"
-											>
-												{getLabel(i, j)}
-											</Select.Trigger>
-											<Select.Content>
-												<Select.Item value="1">
-													{alternatives.current[i].name}
-												</Select.Item>
-												<Select.Item value="0.5">Tie</Select.Item>
-												<Select.Item value="0">
-													{alternatives.current[j].name}
-												</Select.Item>
-											</Select.Content>
-										</Select.Root>
-									{:else}
-										{getLabel(i, j)}
-									{/if}
-								{:else}
+								{#if i === j}
 									<span class="text-muted-foreground">-</span>
+								{:else if i < j}
+									<Select.Root
+										type="single"
+										value={getSelection(i, j)}
+										onValueChange={(value) => updateScore(i, j, value)}
+									>
+										<Select.Trigger class="h-8 w-full min-w-40 justify-between">
+											{getLabel(i, j)}
+										</Select.Trigger>
+										<Select.Content>
+											<Select.Item value="1">
+												{alternatives.current[i].name}
+											</Select.Item>
+											<Select.Item value="0.5">Tie</Select.Item>
+											<Select.Item value="0">
+												{alternatives.current[j].name}
+											</Select.Item>
+										</Select.Content>
+									</Select.Root>
+								{:else}
+									{getLabel(i, j)}
 								{/if}
 							</Table.Cell>
 						{/each}

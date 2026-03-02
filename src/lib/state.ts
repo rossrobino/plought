@@ -1,7 +1,9 @@
 import type { Alternative, Criteria, Decision } from "$lib/types";
 import { PersistedState } from "runed";
 
-export type MethodKey = "weightedSum" | "pairwise" | "rankOrder";
+const methodKeys = ["weightedSum", "pairwise", "rankOrder", "topsis"] as const;
+
+export type MethodKey = (typeof methodKeys)[number];
 
 export interface MethodMeta {
 	included: boolean;
@@ -32,7 +34,28 @@ const getMethodMetaDefaults = (
 		weightedSum: { used, included },
 		pairwise: { used, included },
 		rankOrder: { used, included },
+		topsis: { used, included },
 	};
+};
+
+const normalizeMethodMeta = (
+	value: Partial<MethodMetaState> | null | undefined,
+	used = false,
+	included = false,
+) => {
+	const defaults = getMethodMetaDefaults(used, included);
+	if (value == null || typeof value !== "object") {
+		return defaults;
+	}
+	const next = {} as MethodMetaState;
+	for (const key of methodKeys) {
+		const item = value[key];
+		next[key] = {
+			used: item?.used ?? defaults[key].used,
+			included: item?.included ?? defaults[key].included,
+		};
+	}
+	return next;
 };
 
 const getMethodMeta = (): MethodMetaState => {
@@ -42,13 +65,24 @@ const getMethodMeta = (): MethodMetaState => {
 	}
 	try {
 		const storage = window.localStorage;
-		if (storage.getItem("methodMeta") != null) {
-			return defaults;
+		const current = storage.getItem("methodMeta");
+		if (current != null) {
+			try {
+				return normalizeMethodMeta(
+					JSON.parse(current) as Partial<MethodMetaState>,
+				);
+			} catch {
+				return defaults;
+			}
 		}
-		const hasLegacyData = ["criteria", "alternatives", "decision", "rankOrder"]
-			.some((key) => storage.getItem(key) != null);
+		const hasLegacyData = [
+			"criteria",
+			"alternatives",
+			"decision",
+			"rankOrder",
+		].some((key) => storage.getItem(key) != null);
 		if (hasLegacyData) {
-			return getMethodMetaDefaults(true, true);
+			return normalizeMethodMeta(undefined, true, true);
 		}
 		return defaults;
 	} catch {
@@ -105,6 +139,21 @@ export const rankOrder = new PersistedState(
 	getRankOrder(getAlternatives().length),
 );
 
+const syncMethodMeta = () => {
+	const current = methodMeta.current;
+	const next = normalizeMethodMeta(current);
+	for (const key of methodKeys) {
+		if (
+			current[key]?.used !== next[key].used ||
+			current[key]?.included !== next[key].included
+		) {
+			methodMeta.current = next;
+			return next;
+		}
+	}
+	return current;
+};
+
 export const syncRankOrder = (count = alternatives.current.length) => {
 	const order = Array.isArray(rankOrder.current) ? rankOrder.current : [];
 	const next = normalizeRankOrder(order, count);
@@ -119,7 +168,7 @@ export const syncRankOrder = (count = alternatives.current.length) => {
 };
 
 export const markMethodUsed = (method: MethodKey) => {
-	const item = methodMeta.current[method];
+	const item = syncMethodMeta()[method];
 	if (item == null || item.used) {
 		return;
 	}
@@ -128,7 +177,7 @@ export const markMethodUsed = (method: MethodKey) => {
 };
 
 export const setMethodIncluded = (method: MethodKey, included: boolean) => {
-	const item = methodMeta.current[method];
+	const item = syncMethodMeta()[method];
 	if (item == null) {
 		return;
 	}
@@ -140,11 +189,11 @@ export const toggleMethodIncluded = (method: MethodKey) => {
 };
 
 export const isMethodUsed = (method: MethodKey) => {
-	return methodMeta.current[method]?.used ?? false;
+	return syncMethodMeta()[method]?.used ?? false;
 };
 
 export const isMethodIncluded = (method: MethodKey) => {
-	return methodMeta.current[method]?.included ?? false;
+	return syncMethodMeta()[method]?.included ?? false;
 };
 
 export const reset = () => {

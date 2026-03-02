@@ -5,10 +5,7 @@
 	type Props = Omit<
 		SliderPrimitive.RootProps,
 		"type" | "value" | "onValueChange"
-	> & {
-		onValueChange?: (value: number) => void;
-		value?: number;
-	};
+	> & { onValueChange?: (value: number) => void; value?: number };
 
 	let {
 		ref = $bindable(null),
@@ -45,18 +42,18 @@
 >
 	<span
 		data-slot="slider-track"
-		class="bg-muted relative h-1.5 w-full grow overflow-hidden rounded-full"
+		class="relative h-1.5 w-full grow overflow-hidden rounded-full bg-muted"
 	>
 		<SliderPrimitive.Range
 			data-slot="slider-range"
-			class="bg-primary absolute h-full"
+			class="absolute h-full bg-primary"
 		/>
 	</span>
 	<SliderPrimitive.Thumb
 		data-slot="slider-thumb"
 		index={0}
 		class={cn(
-			"border-primary/50 bg-background block size-4 rounded-full border shadow-sm outline-none transition-[color,box-shadow]",
+			"block size-4 rounded-full border border-primary/50 bg-background shadow-sm transition-[color,box-shadow] outline-none",
 			"focus-visible:ring-2 focus-visible:ring-ring/50 focus-visible:outline-1 focus-visible:outline-ring",
 			"disabled:pointer-events-none disabled:opacity-50",
 		)}

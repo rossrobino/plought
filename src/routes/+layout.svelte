@@ -19,11 +19,23 @@
 		if (page.url.pathname === "/") {
 			return "Home";
 		}
-		if (page.url.pathname.startsWith("/setup")) {
-			return "Setup";
+		if (page.url.pathname === "/setup") {
+			return "Start";
+		}
+		if (page.url.pathname.startsWith("/setup/alternatives")) {
+			return "Alternatives";
+		}
+		if (page.url.pathname.startsWith("/setup/criteria")) {
+			return "Criteria";
+		}
+		if (page.url.pathname.startsWith("/summary")) {
+			return "Summary";
 		}
 		if (page.url.pathname.startsWith("/scores")) {
-			return "Scores";
+			return "Summary";
+		}
+		if (page.url.pathname.startsWith("/overview")) {
+			return "Summary";
 		}
 		const app = apps.find((item) => page.url.pathname.startsWith(item.path));
 		return app ? app.title : info.name;

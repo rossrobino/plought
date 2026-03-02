@@ -2,27 +2,31 @@
 	import { page } from "$app/state";
 	import * as Sidebar from "$lib/components/ui/sidebar/index.js";
 	import { apps as appRegistry, info } from "$lib/info";
-	import { methodMeta } from "$lib/state";
+	import { isMethodUsed } from "$lib/state";
 	import BarChart3Icon from "@lucide/svelte/icons/bar-chart-3";
 	import CheckIcon from "@lucide/svelte/icons/check";
 	import GitCompareIcon from "@lucide/svelte/icons/git-compare";
 	import GithubIcon from "@lucide/svelte/icons/github";
-	import HomeIcon from "@lucide/svelte/icons/home";
 	import ListOrderedIcon from "@lucide/svelte/icons/list-ordered";
 	import ScaleIcon from "@lucide/svelte/icons/scale";
 	import SlidersHorizontalIcon from "@lucide/svelte/icons/sliders-horizontal";
 	import { mergeProps } from "bits-ui";
 
-	const overview = [
-		{ icon: HomeIcon, href: "/", label: "Home" },
-		{ icon: SlidersHorizontalIcon, href: "/setup", label: "Setup" },
+	const setup = [
+		{ icon: SlidersHorizontalIcon, href: "/setup", label: "Start" },
+		{
+			icon: ListOrderedIcon,
+			href: "/setup/alternatives",
+			label: "Alternatives",
+		},
+		{ icon: ScaleIcon, href: "/setup/criteria", label: "Criteria" },
 	];
 
 	const getAppIcon = (path: string) => {
-		if (path === "/weighted-sum") {
+		if (path === "/weight") {
 			return ScaleIcon;
 		}
-		if (path === "/rank-order") {
+		if (path === "/rank") {
 			return ListOrderedIcon;
 		}
 		return GitCompareIcon;
@@ -37,11 +41,11 @@
 		};
 	});
 
-	const summary = [{ icon: BarChart3Icon, href: "/scores", label: "Scores" }];
+	const output = [{ icon: BarChart3Icon, href: "/summary", label: "Summary" }];
 	const sidebar = Sidebar.useSidebar();
 
 	const active = (href: string) => {
-		if (href === "/") {
+		if (href === "/setup") {
 			return page.url.pathname === href;
 		}
 		return page.url.pathname.startsWith(href);
@@ -74,10 +78,10 @@
 	</Sidebar.Header>
 	<Sidebar.Content>
 		<Sidebar.Group>
-			<Sidebar.GroupLabel>Overview</Sidebar.GroupLabel>
+			<Sidebar.GroupLabel>Setup</Sidebar.GroupLabel>
 			<Sidebar.GroupContent>
 				<Sidebar.Menu>
-					{#each overview as item (item.href)}
+					{#each setup as item (item.href)}
 						<Sidebar.MenuItem>
 							<Sidebar.MenuButton
 								isActive={active(item.href)}
@@ -113,7 +117,7 @@
 									</a>
 								{/snippet}
 							</Sidebar.MenuButton>
-							{#if methodMeta.current[item.method]?.used}
+							{#if isMethodUsed(item.method)}
 								<Sidebar.MenuBadge
 									class="inset-e-2 h-4 w-4 min-w-0 -translate-y-1/2 rounded-full border border-sidebar-border bg-sidebar-accent/45 p-0 text-sidebar-foreground/80 peer-hover/menu-button:text-sidebar-foreground/80 peer-data-[active=true]/menu-button:text-sidebar-foreground/80 peer-data-[size=default]/menu-button:top-1/2 peer-data-[size=lg]/menu-button:top-1/2 peer-data-[size=sm]/menu-button:top-1/2"
 									aria-hidden="true"
@@ -128,10 +132,10 @@
 		</Sidebar.Group>
 
 		<Sidebar.Group>
-			<Sidebar.GroupLabel>Summary</Sidebar.GroupLabel>
+			<Sidebar.GroupLabel>Output</Sidebar.GroupLabel>
 			<Sidebar.GroupContent>
 				<Sidebar.Menu>
-					{#each summary as item (item.href)}
+					{#each output as item (item.href)}
 						<Sidebar.MenuItem>
 							<Sidebar.MenuButton
 								isActive={active(item.href)}

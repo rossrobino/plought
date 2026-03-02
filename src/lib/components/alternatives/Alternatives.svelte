@@ -6,7 +6,12 @@
 	import { Input } from "$lib/components/ui/input/index.js";
 	import { ScrollArea } from "$lib/components/ui/scroll-area/index.js";
 	import * as Table from "$lib/components/ui/table/index.js";
-	import { alternatives, criteria, markMethodUsed } from "$lib/state";
+	import {
+		type MethodKey,
+		alternatives,
+		criteria,
+		markMethodUsed,
+	} from "$lib/state";
 
 	interface Props {
 		/** controls if criteria are displayed */
@@ -15,13 +20,23 @@
 		editNames?: boolean;
 		/** controls if add/remove alternative actions are displayed */
 		manageList?: boolean;
+		/** method that should be marked as used for score edits */
+		method?: MethodKey | null;
 	}
 
 	let {
 		showCriteria = false,
 		editNames = true,
 		manageList = true,
+		method = "weightedSum",
 	}: Props = $props();
+
+	const markUsed = () => {
+		if (method == null) {
+			return;
+		}
+		markMethodUsed(method);
+	};
 </script>
 
 <section>
@@ -80,7 +95,7 @@
 											name={`alternative${i}score${j}`}
 											id={`alternative${i}score${j}`}
 											bind:value={alt.scores[j]}
-											oninput={() => markMethodUsed("weightedSum")}
+											oninput={markUsed}
 											min="0"
 											max="10"
 											required

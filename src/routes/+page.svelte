@@ -11,10 +11,10 @@
 	import SlidersHorizontalIcon from "@lucide/svelte/icons/sliders-horizontal";
 
 	const getAppMeta = (path: string) => {
-		if (path === "/weighted-sum") {
+		if (path === "/weight") {
 			return { icon: ScaleIcon, badge: "Weighted criteria" };
 		}
-		if (path === "/rank-order") {
+		if (path === "/rank") {
 			return { icon: ListOrderedIcon, badge: "Manual ranking" };
 		}
 		return { icon: GitCompareIcon, badge: "Head-to-head" };
@@ -82,7 +82,7 @@
 		{/each}
 	</div>
 
-	<a href="/scores" class="group block no-underline">
+	<a href="/summary" class="group block no-underline">
 		<section
 			class="border-primary/35 bg-primary/10 transition-colors group-hover:bg-primary/15"
 		>
@@ -90,7 +90,7 @@
 				<div>
 					<h2 class="mb-0">Summary</h2>
 					<p class="mt-1 text-muted-foreground">
-						Compare Weighted Sum, Pairwise, and Rank Order side by side.
+						Compare Weighted Sum, Pairwise, Rank, and TOPSIS side by side.
 					</p>
 				</div>
 				<div
@@ -104,8 +104,8 @@
 				<div
 					class="rounded-md border bg-card/70 px-2.5 py-1.5 text-muted-foreground"
 				>
-					<span class="font-semibold text-foreground">{apps.length}</span>
-					methods
+					<span class="font-semibold text-foreground">{apps.length + 1}</span>
+					scoring methods
 				</div>
 				<div
 					class="rounded-md border bg-card/70 px-2.5 py-1.5 text-muted-foreground"

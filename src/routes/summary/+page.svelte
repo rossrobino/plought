@@ -3,21 +3,24 @@
 	import Scores from "$lib/components/scores/Scores.svelte";
 	import { Button } from "$lib/components/ui/button/index.js";
 	import {
+		type MethodKey,
 		isMethodIncluded,
 		toggleMethodIncluded,
-		type MethodKey,
 	} from "$lib/state";
 
 	const methods: { key: MethodKey; label: string }[] = [
 		{ key: "weightedSum", label: "Weighted Sum" },
 		{ key: "pairwise", label: "Pairwise" },
-		{ key: "rankOrder", label: "Rank Order" },
+		{ key: "rankOrder", label: "Rank" },
+		{ key: "topsis", label: "TOPSIS" },
 	];
 
-	const hasIncluded = $derived(methods.some((item) => isMethodIncluded(item.key)));
+	const hasIncluded = $derived(
+		methods.some((item) => isMethodIncluded(item.key)),
+	);
 </script>
 
-<Head title="Scores" />
+<Head title="Summary" />
 
 <section>
 	<h2 class="mb-0">Included Methods</h2>
@@ -44,6 +47,7 @@
 		weightedSum={isMethodIncluded("weightedSum")}
 		pairwise={isMethodIncluded("pairwise")}
 		rankOrder={isMethodIncluded("rankOrder")}
+		topsis={isMethodIncluded("topsis")}
 	/>
 {:else}
 	<section>

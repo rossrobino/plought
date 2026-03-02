@@ -66,8 +66,8 @@
 
 <section>
 	<div class="flex items-center justify-between gap-2">
-		<h2 class="mb-0">Rank Order</h2>
-		<Info label="About rank order">
+		<h2 class="mb-0">Rank</h2>
+		<Info label="About rank">
 			<div class="space-y-2">
 				<p>Order alternatives from most to least preferred.</p>
 				<p>

@@ -10,13 +10,15 @@
 		rankOrder as rankOrderState,
 	} from "$lib/state";
 	import type { Alternative, Criteria } from "$lib/types";
+	import { getTopsisCloseness } from "$lib/util/topsis";
 
-	type SortBy = "" | "weightedSum" | "pairwise" | "rankOrder";
+	type SortBy = "" | "weightedSum" | "pairwise" | "rankOrder" | "topsis";
 
 	interface Props {
 		pairwise?: boolean;
 		rankOrder?: boolean;
 		sortBy?: SortBy;
+		topsis?: boolean;
 		weightedSum?: boolean;
 	}
 
@@ -24,6 +26,7 @@
 		weightedSum = false,
 		pairwise = false,
 		rankOrder = false,
+		topsis = false,
 		sortBy = "",
 	}: Props = $props();
 
@@ -42,6 +45,12 @@
 		return map;
 	});
 
+	const topsisScoreByAlternativeIndex = $derived(
+		getTopsisCloseness(alternatives.current, criteria.current).map((value) =>
+			Number((value * 10).toFixed(2)),
+		),
+	);
+
 	const sortedAlternatives = $derived(
 		alternatives.current
 			.map((alt, i) => ({ alt, i }))
@@ -55,6 +64,8 @@
 					return getPairwiseScore(b.i) - getPairwiseScore(a.i);
 				} else if (sortBy === "rankOrder") {
 					return getRankOrderScore(b.i) - getRankOrderScore(a.i);
+				} else if (sortBy === "topsis") {
+					return getTopsisScore(b.i) - getTopsisScore(a.i);
 				} else {
 					return a.i - b.i;
 				}
@@ -115,6 +126,10 @@
 		const rank = rankByAlternativeIndex.get(altIndex);
 		return getRankScore(rank == null ? count - 1 : rank, count);
 	};
+
+	const getTopsisScore = (altIndex: number) => {
+		return topsisScoreByAlternativeIndex[altIndex] ?? 0;
+	};
 </script>
 
 <section>
@@ -122,20 +137,25 @@
 		<h2 class="mb-0">Scores</h2>
 		<Info label="About scores">
 			<div class="space-y-2">
-				{#if weightedSum && !pairwise}
+				{#if weightedSum && !pairwise && !rankOrder && !topsis}
 					<p>
 						Each alternative score is multiplied by its criterion weight, then
 						those values are summed.
 					</p>
-				{:else if pairwise && !weightedSum}
+				{:else if pairwise && !weightedSum && !rankOrder && !topsis}
 					<p>
 						Each row is scored from head-to-head comparisons: Preferred = +1,
 						Tie = +0.5, Unfavored = 0.
 					</p>
-				{:else if rankOrder && !weightedSum && !pairwise}
+				{:else if rankOrder && !weightedSum && !pairwise && !topsis}
 					<p>
 						Order alternatives from most to least preferred. Scores are
 						normalized from 0 to 10 based on rank position.
+					</p>
+				{:else if topsis && !weightedSum && !pairwise && !rankOrder}
+					<p>
+						TOPSIS ranks alternatives by closeness to the ideal option and
+						distance from the worst option using weighted normalized scores.
 					</p>
 				{:else}
 					<p>
@@ -146,7 +166,10 @@
 							Pairwise uses head-to-head preferences.
 						{/if}
 						{#if rankOrder}
-							Rank Order converts list position into a 0-10 score.
+							Rank converts list position into a 0-10 score.
+						{/if}
+						{#if topsis}
+							TOPSIS uses distance to ideal and anti-ideal profiles.
 						{/if}
 					</p>
 					<p>
@@ -173,7 +196,10 @@
 						<Table.Head>Pairwise</Table.Head>
 					{/if}
 					{#if rankOrder}
-						<Table.Head>Rank Order</Table.Head>
+						<Table.Head>Rank</Table.Head>
+					{/if}
+					{#if topsis}
+						<Table.Head>TOPSIS</Table.Head>
 					{/if}
 				</Table.Row>
 			</Table.Header>
@@ -196,6 +222,11 @@
 						{#if rankOrder}
 							<Table.Cell class="font-semibold">
 								{getRankOrderScore(item.i)}
+							</Table.Cell>
+						{/if}
+						{#if topsis}
+							<Table.Cell class="font-semibold">
+								{getTopsisScore(item.i)}
 							</Table.Cell>
 						{/if}
 					</Table.Row>

@@ -1,5 +1,5 @@
-import { capitalize } from "$lib/util/capitalize";
 import type { MethodKey } from "$lib/state";
+import { capitalize } from "$lib/util/capitalize";
 
 export const info = {
 	author: { name: "Ross Robino", url: "https://robino.dev" },
@@ -12,32 +12,40 @@ class App {
 	path: string;
 	desc: string;
 	method: MethodKey;
+	label?: string;
 
-	constructor(path: string, desc: string, method: MethodKey) {
+	constructor(path: string, desc: string, method: MethodKey, label?: string) {
 		this.path = path;
 		this.desc = desc;
 		this.method = method;
+		this.label = label;
 	}
 
 	get title() {
+		if (this.label != null) {
+			return this.label;
+		}
 		return capitalize(this.path.replace(/[^A-Z]/gi, " "));
 	}
 }
 
 export const apps = [
 	new App(
-		"/weighted-sum",
+		"/weight",
 		"Evaluate alternatives based on weighted criteria.",
 		"weightedSum",
+		"Weight",
 	),
 	new App(
-		"/pairwise-comparison",
+		"/compare",
 		"Compare alternatives against each possible option.",
 		"pairwise",
+		"Compare",
 	),
 	new App(
-		"/rank-order",
+		"/rank",
 		"Order alternatives from most to least preferred.",
 		"rankOrder",
+		"Rank",
 	),
 ];

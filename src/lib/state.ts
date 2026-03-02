@@ -1,6 +1,15 @@
 import type { Alternative, Criteria, Decision } from "$lib/types";
 import { PersistedState } from "runed";
 
+export type MethodKey = "weightedSum" | "pairwise" | "rankOrder";
+
+export interface MethodMeta {
+	included: boolean;
+	used: boolean;
+}
+
+export type MethodMetaState = Record<MethodKey, MethodMeta>;
+
 const getCriteria = (): Criteria[] => [
 	{ name: "Criteria #1", weight: 0.5 },
 	{ name: "Criteria #2", weight: 0.5 },
@@ -13,6 +22,38 @@ const getAlternatives = (): Alternative[] => [
 
 const getRankOrder = (count: number) => {
 	return Array.from({ length: count }, (_, i) => i);
+};
+
+const getMethodMetaDefaults = (
+	used = false,
+	included = false,
+): MethodMetaState => {
+	return {
+		weightedSum: { used, included },
+		pairwise: { used, included },
+		rankOrder: { used, included },
+	};
+};
+
+const getMethodMeta = (): MethodMetaState => {
+	const defaults = getMethodMetaDefaults();
+	if (typeof window === "undefined") {
+		return defaults;
+	}
+	try {
+		const storage = window.localStorage;
+		if (storage.getItem("methodMeta") != null) {
+			return defaults;
+		}
+		const hasLegacyData = ["criteria", "alternatives", "decision", "rankOrder"]
+			.some((key) => storage.getItem(key) != null);
+		if (hasLegacyData) {
+			return getMethodMetaDefaults(true, true);
+		}
+		return defaults;
+	} catch {
+		return defaults;
+	}
 };
 
 export const decisionDefaults: Decision = {
@@ -52,6 +93,7 @@ export const getRankScore = (rank: number, count: number) => {
 	return Number((((count - 1 - rank) / (count - 1)) * 10).toFixed(2));
 };
 
+export const methodMeta = new PersistedState("methodMeta", getMethodMeta());
 export const criteria = new PersistedState("criteria", getCriteria());
 export const alternatives = new PersistedState(
 	"alternatives",
@@ -76,9 +118,39 @@ export const syncRankOrder = (count = alternatives.current.length) => {
 	return next;
 };
 
+export const markMethodUsed = (method: MethodKey) => {
+	const item = methodMeta.current[method];
+	if (item == null || item.used) {
+		return;
+	}
+	item.used = true;
+	item.included = true;
+};
+
+export const setMethodIncluded = (method: MethodKey, included: boolean) => {
+	const item = methodMeta.current[method];
+	if (item == null) {
+		return;
+	}
+	item.included = included;
+};
+
+export const toggleMethodIncluded = (method: MethodKey) => {
+	setMethodIncluded(method, !isMethodIncluded(method));
+};
+
+export const isMethodUsed = (method: MethodKey) => {
+	return methodMeta.current[method]?.used ?? false;
+};
+
+export const isMethodIncluded = (method: MethodKey) => {
+	return methodMeta.current[method]?.included ?? false;
+};
+
 export const reset = () => {
 	criteria.current = getCriteria();
 	alternatives.current = getAlternatives();
 	decision.current = getDecision();
 	rankOrder.current = getRankOrder(getAlternatives().length);
+	methodMeta.current = getMethodMetaDefaults();
 };

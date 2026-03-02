@@ -3,7 +3,7 @@
 	import { ScrollArea } from "$lib/components/ui/scroll-area/index.js";
 	import * as Select from "$lib/components/ui/select/index.js";
 	import * as Table from "$lib/components/ui/table/index.js";
-	import { alternatives } from "$lib/state";
+	import { alternatives, markMethodUsed } from "$lib/state";
 
 	const updateInverse = (i: number, j: number) => {
 		const newScore = alternatives.current[i].pairwise[j];
@@ -14,6 +14,7 @@
 	const updateScore = (i: number, j: number, value: string) => {
 		alternatives.current[i].pairwise[j] = Number(value);
 		updateInverse(i, j);
+		markMethodUsed("pairwise");
 	};
 
 	const getSelection = (i: number, j: number) => {

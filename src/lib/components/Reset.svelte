@@ -5,6 +5,11 @@
 	import RotateCcwIcon from "@lucide/svelte/icons/rotate-ccw";
 
 	let open = $state(false);
+
+	const handleReset = () => {
+		reset();
+		open = false;
+	};
 </script>
 
 <AlertDialog.Root bind:open>
@@ -25,7 +30,7 @@
 		</AlertDialog.Header>
 		<AlertDialog.Footer>
 			<AlertDialog.Cancel class="h-8 px-3 text-sm">Cancel</AlertDialog.Cancel>
-			<AlertDialog.Action class="h-8 px-3 text-sm" onclick={reset}>
+			<AlertDialog.Action class="h-8 px-3 text-sm" onclick={handleReset}>
 				<RotateCcwIcon />
 				Reset
 			</AlertDialog.Action>

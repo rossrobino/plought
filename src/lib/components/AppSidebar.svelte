@@ -1,7 +1,8 @@
 <script lang="ts">
 	import { page } from "$app/state";
 	import * as Sidebar from "$lib/components/ui/sidebar/index.js";
-	import { info } from "$lib/info";
+	import { apps as appRegistry, info } from "$lib/info";
+	import { methodMeta } from "$lib/state";
 	import BarChart3Icon from "@lucide/svelte/icons/bar-chart-3";
 	import GitCompareIcon from "@lucide/svelte/icons/git-compare";
 	import GithubIcon from "@lucide/svelte/icons/github";
@@ -16,15 +17,24 @@
 		{ icon: SlidersHorizontalIcon, href: "/setup", label: "Setup" },
 	];
 
-	const apps = [
-		{ icon: ScaleIcon, href: "/weighted-sum", label: "Weighted Sum" },
-		{
-			icon: GitCompareIcon,
-			href: "/pairwise-comparison",
-			label: "Pairwise Comparison",
-		},
-		{ icon: ListOrderedIcon, href: "/rank-order", label: "Rank Order" },
-	];
+	const getAppIcon = (path: string) => {
+		if (path === "/weighted-sum") {
+			return ScaleIcon;
+		}
+		if (path === "/rank-order") {
+			return ListOrderedIcon;
+		}
+		return GitCompareIcon;
+	};
+
+	const apps = appRegistry.map((item) => {
+		return {
+			...item,
+			icon: getAppIcon(item.path),
+			href: item.path,
+			label: item.title,
+		};
+	});
 
 	const summary = [{ icon: BarChart3Icon, href: "/scores", label: "Scores" }];
 	const sidebar = Sidebar.useSidebar();
@@ -71,7 +81,6 @@
 							<Sidebar.MenuButton
 								isActive={active(item.href)}
 								tooltipContent={item.label}
-								class="hover:bg-transparent hover:text-sidebar-foreground data-[state=open]:hover:bg-transparent data-[state=open]:hover:text-sidebar-foreground"
 							>
 								{#snippet child({ props })}
 									<a {...withMobileClose(props)} href={item.href}>
@@ -103,6 +112,12 @@
 									</a>
 								{/snippet}
 							</Sidebar.MenuButton>
+							{#if methodMeta.current[item.method]?.used}
+								<Sidebar.MenuBadge
+									class="end-2 h-2 w-2 min-w-0 rounded-full bg-primary p-0 text-transparent peer-data-[size=sm]/menu-button:top-1/2 peer-data-[size=default]/menu-button:top-1/2 peer-data-[size=lg]/menu-button:top-1/2 -translate-y-1/2"
+									aria-hidden="true"
+								/>
+							{/if}
 						</Sidebar.MenuItem>
 					{/each}
 				</Sidebar.Menu>

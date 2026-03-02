@@ -6,7 +6,7 @@
 	import { ScrollArea } from "$lib/components/ui/scroll-area/index.js";
 	import * as Table from "$lib/components/ui/table/index.js";
 	import * as Tooltip from "$lib/components/ui/tooltip/index.js";
-	import { alternatives, criteria } from "$lib/state";
+	import { alternatives, criteria, markMethodUsed } from "$lib/state";
 	import XMark from "$lib/svg/XMark.svelte";
 	import type { Criteria } from "$lib/types";
 	import PlusIcon from "@lucide/svelte/icons/plus";
@@ -26,6 +26,7 @@
 		alternatives.current.forEach((alt) => {
 			alt.scores.push(0);
 		});
+		markMethodUsed("weightedSum");
 	};
 
 	const removeCriteria = (index: number) => {
@@ -33,6 +34,7 @@
 		alternatives.current.forEach((alt) => {
 			alt.scores.splice(index, 1);
 		});
+		markMethodUsed("weightedSum");
 	};
 
 	const getWeights = (criteria: Criteria[]) => {
@@ -92,6 +94,7 @@
 										name="name"
 										id={`name${i}`}
 										bind:value={item.name}
+										oninput={() => markMethodUsed("weightedSum")}
 										required
 										placeholder="Criteria"
 									/>
@@ -105,6 +108,7 @@
 											name="weight"
 											id={`weight${i}`}
 											bind:value={item.weight}
+											oninput={() => markMethodUsed("weightedSum")}
 											step="0.01"
 											min="0"
 											max="1"

@@ -4,6 +4,7 @@
 	import {
 		alternatives,
 		getRankScore,
+		markMethodUsed,
 		normalizeRankOrder,
 		rankOrder,
 	} from "$lib/state";
@@ -45,9 +46,10 @@
 
 	const moveItem = (i: number, to: number) => {
 		const order = getOrder();
-		if (to < 0 || to >= order.length) {
+		if (to < 0 || to >= order.length || i === to) {
 			return;
 		}
+		markMethodUsed("rankOrder");
 		rankOrder.current = move(order, i, to);
 	};
 

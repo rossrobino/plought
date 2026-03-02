@@ -6,7 +6,7 @@
 	import { Input } from "$lib/components/ui/input/index.js";
 	import { ScrollArea } from "$lib/components/ui/scroll-area/index.js";
 	import * as Table from "$lib/components/ui/table/index.js";
-	import { alternatives, criteria } from "$lib/state";
+	import { alternatives, criteria, markMethodUsed } from "$lib/state";
 
 	interface Props {
 		/** controls if criteria are displayed */
@@ -80,6 +80,7 @@
 											name={`alternative${i}score${j}`}
 											id={`alternative${i}score${j}`}
 											bind:value={alt.scores[j]}
+											oninput={() => markMethodUsed("weightedSum")}
 											min="0"
 											max="10"
 											required

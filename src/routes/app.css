@@ -117,7 +117,7 @@
 	}
 
 	body {
-		@apply bg-background text-foreground antialiased;
+		@apply bg-background text-foreground tabular-nums antialiased;
 	}
 
 	a {
@@ -129,7 +129,7 @@
 	}
 
 	section {
-		@apply mt-4 rounded-xl border bg-card p-3 shadow-sm;
+		@apply mt-4 min-w-0 rounded-xl border bg-card p-3 shadow-sm;
 	}
 
 	h2 {

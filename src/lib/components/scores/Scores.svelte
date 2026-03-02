@@ -180,7 +180,9 @@
 			<Table.Body>
 				{#each sortedAlternatives as item (`${item.i}-${item.alt.name}`)}
 					<Table.Row>
-						<Table.Cell>{item.alt.name}</Table.Cell>
+						<Table.Head scope="row" class="font-semibold">
+							{item.alt.name}
+						</Table.Head>
 						{#if weightedSum}
 							<Table.Cell class="font-semibold">
 								{getWeightedSum(item.alt, criteria.current)}

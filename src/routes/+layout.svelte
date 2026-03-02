@@ -19,6 +19,9 @@
 		if (page.url.pathname === "/") {
 			return "Home";
 		}
+		if (page.url.pathname.startsWith("/setup")) {
+			return "Setup";
+		}
 		if (page.url.pathname.startsWith("/scores")) {
 			return "Scores";
 		}
@@ -45,7 +48,7 @@
 			<Sidebar.Trigger />
 			<div class="min-w-0 truncate text-base font-semibold">{title}</div>
 		</header>
-		<div class="flex w-full flex-1 flex-col px-4 pt-0 pb-4">
+		<div class="flex w-full min-w-0 flex-1 flex-col px-4 pt-0 pb-4">
 			{@render children()}
 		</div>
 	</Sidebar.Inset>

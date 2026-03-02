@@ -85,7 +85,7 @@
 				<Table.Body>
 					{#each criteria.current as item, i (i)}
 						<Table.Row>
-							<Table.Cell>
+							<Table.Head scope="row" class="font-semibold">
 								<Field.Field>
 									<Input
 										type="text"
@@ -96,7 +96,7 @@
 										placeholder="Criteria"
 									/>
 								</Field.Field>
-							</Table.Cell>
+							</Table.Head>
 							{#if weights}
 								<Table.Cell>
 									<Field.Field>
@@ -151,7 +151,7 @@
 						<Table.Row
 							class="hover:[&,&>svelte-css-wrapper]:[&>th,td]:bg-transparent"
 						>
-							<Table.Head>Total</Table.Head>
+							<Table.Head scope="row" class="font-semibold">Total</Table.Head>
 							<Table.Cell>
 								<span class:text-destructive={Math.round(total * 100) !== 100}>
 									{(total * 100).toFixed()}

@@ -61,7 +61,9 @@
 			<Table.Body>
 				{#each alternatives.current as alt, i}
 					<Table.Row>
-						<Table.Head>{alt.name}</Table.Head>
+						<Table.Head scope="row" class="font-semibold">
+							{alt.name}
+						</Table.Head>
 						{#each alt.pairwise as _, j}
 							<Table.Cell>
 								{#if alternatives.current[i] !== alternatives.current[j]}

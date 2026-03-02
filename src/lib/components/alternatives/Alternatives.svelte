@@ -11,9 +11,17 @@
 	interface Props {
 		/** controls if criteria are displayed */
 		showCriteria?: boolean;
+		/** controls if alternative names are editable */
+		editNames?: boolean;
+		/** controls if add/remove alternative actions are displayed */
+		manageList?: boolean;
 	}
 
-	let { showCriteria = false }: Props = $props();
+	let {
+		showCriteria = false,
+		editNames = true,
+		manageList = true,
+	}: Props = $props();
 </script>
 
 <section>
@@ -26,40 +34,44 @@
 			</div>
 		</Info>
 	</div>
-	<ScrollArea
-		class="mt-3 w-full rounded-md border whitespace-nowrap"
-		orientation="horizontal"
-	>
-		<Table.Root class="min-w-full">
-			<Table.Header>
-				<Table.Row
-					class="hover:[&,&>svelte-css-wrapper]:[&>th,td]:bg-transparent"
-				>
-					<Table.Head class="min-w-56">Name</Table.Head>
-					{#if showCriteria}
+	{#if showCriteria}
+		<ScrollArea
+			class="mt-3 w-full rounded-md border whitespace-nowrap"
+			orientation="horizontal"
+		>
+			<Table.Root class="min-w-full">
+				<Table.Header>
+					<Table.Row
+						class="hover:[&,&>svelte-css-wrapper]:[&>th,td]:bg-transparent"
+					>
+						<Table.Head class="min-w-56">Name</Table.Head>
 						{#each criteria.current as item}
 							<Table.Head class="min-w-32">{item.name}</Table.Head>
 						{/each}
-					{/if}
-					<Table.Head class="w-16"></Table.Head>
-				</Table.Row>
-			</Table.Header>
-			<Table.Body>
-				{#each alternatives.current as alt, i}
-					<Table.Row>
-						<Table.Cell>
-							<Field.Field>
-								<Input
-									type="text"
-									name={`alternative${i}`}
-									id={`alternative${i}`}
-									bind:value={alt.name}
-									required
-									placeholder="Alternative"
-								/>
-							</Field.Field>
-						</Table.Cell>
-						{#if showCriteria}
+						{#if manageList}
+							<Table.Head class="w-16"></Table.Head>
+						{/if}
+					</Table.Row>
+				</Table.Header>
+				<Table.Body>
+					{#each alternatives.current as alt, i}
+						<Table.Row>
+							<Table.Head scope="row" class="font-semibold">
+								{#if editNames}
+									<Field.Field>
+										<Input
+											type="text"
+											name={`alternative${i}`}
+											id={`alternative${i}`}
+											bind:value={alt.name}
+											required
+											placeholder="Alternative"
+										/>
+									</Field.Field>
+								{:else}
+									<span class="block truncate font-semibold">{alt.name}</span>
+								{/if}
+							</Table.Head>
 							{#each alt.scores as _, j}
 								<Table.Cell>
 									<Field.Field>
@@ -77,14 +89,44 @@
 									</Field.Field>
 								</Table.Cell>
 							{/each}
+							{#if manageList}
+								<Table.Cell>
+									<RemoveAlternativeButton index={i} />
+								</Table.Cell>
+							{/if}
+						</Table.Row>
+					{/each}
+				</Table.Body>
+			</Table.Root>
+		</ScrollArea>
+	{:else}
+		<ul class="mt-3 grid gap-2">
+			{#each alternatives.current as alt, i}
+				<li class="flex items-center gap-2 rounded-md border bg-card p-2">
+					<div class="min-w-0 flex-1">
+						{#if editNames}
+							<Field.Field>
+								<Input
+									type="text"
+									name={`alternative${i}`}
+									id={`alternative${i}`}
+									bind:value={alt.name}
+									required
+									placeholder="Alternative"
+								/>
+							</Field.Field>
+						{:else}
+							<span class="block truncate font-semibold">{alt.name}</span>
 						{/if}
-						<Table.Cell>
-							<RemoveAlternativeButton index={i} />
-						</Table.Cell>
-					</Table.Row>
-				{/each}
-			</Table.Body>
-		</Table.Root>
-	</ScrollArea>
-	<AddAlternativeButton />
+					</div>
+					{#if manageList}
+						<RemoveAlternativeButton index={i} />
+					{/if}
+				</li>
+			{/each}
+		</ul>
+	{/if}
+	{#if manageList}
+		<AddAlternativeButton />
+	{/if}
 </section>

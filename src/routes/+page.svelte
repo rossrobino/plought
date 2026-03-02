@@ -1,6 +1,5 @@
 <script lang="ts">
 	import Head from "$lib/components/Head.svelte";
-	import DecisionSetup from "$lib/components/decision/DecisionSetup.svelte";
 	import { Separator } from "$lib/components/ui/separator/index.js";
 	import { apps, info } from "$lib/info";
 	import { alternatives, criteria } from "$lib/state";
@@ -9,6 +8,7 @@
 	import GitCompareIcon from "@lucide/svelte/icons/git-compare";
 	import ListOrderedIcon from "@lucide/svelte/icons/list-ordered";
 	import ScaleIcon from "@lucide/svelte/icons/scale";
+	import SlidersHorizontalIcon from "@lucide/svelte/icons/sliders-horizontal";
 
 	const getAppMeta = (path: string) => {
 		if (path === "/weighted-sum") {
@@ -24,14 +24,38 @@
 <div class="mx-auto w-full max-w-[80ch] pt-4">
 	<Head desc={info.tagline} />
 
-	<DecisionSetup />
+	<a href="/setup" class="group block no-underline">
+		<div
+			class="rounded-xl border bg-card p-3 shadow-sm transition-colors group-hover:bg-accent/35"
+		>
+			<div class="flex items-start justify-between gap-3">
+				<div>
+					<h2 class="mb-0">Get Started</h2>
+					<p class="mt-1 text-muted-foreground">
+						Set up your decision title, goal, and alternatives before scoring.
+					</p>
+				</div>
+				<div
+					class="inline-flex size-9 items-center justify-center rounded-md border bg-background"
+				>
+					<SlidersHorizontalIcon class="size-4" />
+				</div>
+			</div>
+			<div class="mt-3 inline-flex items-center gap-1 text-sm font-medium">
+				Open setup
+				<ArrowRightIcon
+					class="size-4 transition-transform group-hover:translate-x-0.5"
+				/>
+			</div>
+		</div>
+	</a>
 
 	<div class="mt-4 grid gap-4 sm:grid-cols-2">
 		{#each apps as app (app.path)}
 			{@const meta = getAppMeta(app.path)}
 			<a href={app.path} class="group block no-underline">
 				<div
-					class="h-full rounded-xl border bg-card p-3 shadow-sm transition-all group-hover:-translate-y-0.5 group-hover:bg-accent/35"
+					class="h-full rounded-xl border bg-card p-3 shadow-sm transition-colors group-hover:bg-accent/35"
 				>
 					<div class="flex items-start justify-between gap-2">
 						<div
@@ -103,53 +127,43 @@
 		</section>
 	</a>
 
-	<section class="border-secondary/30 bg-secondary text-secondary-foreground">
+	<section class="border-accent/70 bg-accent/45 text-foreground">
 		<div>
-			<h2>How It Works</h2>
-			<p class="text-2xl font-semibold tracking-tight sm:text-3xl">
+			<h2 class="mb-0 text-2xl tracking-tight sm:text-3xl">
 				Make better decisions with less noise.
-			</p>
-			<p class="mt-2 text-secondary-foreground/90">
-				Use one or more decision methods below to evaluate alternatives from
-				different angles.
-			</p>
-			<p class="mt-3 text-secondary-foreground/90">
+			</h2>
+			<p class="mt-3 mb-0 text-muted-foreground">
+				Use one or more methods to evaluate alternatives from different angles.
 				{info.name} turns complex choices into structured comparisons by separating
-				inputs from outcomes. You define criteria, score alternatives, and compare
-				results across methods before deciding.
+				inputs from outcomes.
 			</p>
-			<p class="mt-2 text-secondary-foreground/90">
-				This keeps the process consistent and reduces judgment noise, especially
-				when decisions involve many tradeoffs.
+			<p class="mt-3 mb-0 text-muted-foreground">
+				Define criteria, score alternatives, and compare results before
+				deciding. This keeps the process consistent and reduces judgment noise
+				when tradeoffs are involved.
 			</p>
 		</div>
-		<div class="mt-3 grid gap-2 text-sm sm:grid-cols-3">
-			<div
-				class="rounded-lg border border-secondary-foreground/20 bg-secondary-foreground/10 p-3"
-			>
-				<p class="font-medium">Score independently</p>
-				<p class="mt-1 text-secondary-foreground/90">
+		<div class="mt-5 grid gap-3 text-sm sm:grid-cols-3">
+			<div class="rounded-lg border border-accent/70 bg-background/85 p-3">
+				<p class="mb-0 font-medium">Score independently</p>
+				<p class="mt-1 mb-0 text-muted-foreground">
 					Rate each alternative without comparing everything at once.
 				</p>
 			</div>
-			<div
-				class="rounded-lg border border-secondary-foreground/20 bg-secondary-foreground/10 p-3"
-			>
-				<p class="font-medium">Weight priorities</p>
-				<p class="mt-1 text-secondary-foreground/90">
+			<div class="rounded-lg border border-accent/70 bg-background/85 p-3">
+				<p class="mb-0 font-medium">Weight priorities</p>
+				<p class="mt-1 mb-0 text-muted-foreground">
 					Let important criteria contribute more to your result.
 				</p>
 			</div>
-			<div
-				class="rounded-lg border border-secondary-foreground/20 bg-secondary-foreground/10 p-3"
-			>
-				<p class="font-medium">Compare outcomes</p>
-				<p class="mt-1 text-secondary-foreground/90">
+			<div class="rounded-lg border border-accent/70 bg-background/85 p-3">
+				<p class="mb-0 font-medium">Compare outcomes</p>
+				<p class="mt-1 mb-0 text-muted-foreground">
 					Review method outputs together before making a final choice.
 				</p>
 			</div>
 		</div>
-		<p class="mt-3 text-sm text-secondary-foreground/90">
+		<p class="mt-4 mb-0 text-sm text-muted-foreground">
 			Use results as guidance, not a verdict. Final decisions are still yours.
 		</p>
 	</section>

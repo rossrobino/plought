@@ -8,9 +8,13 @@
 	import HomeIcon from "@lucide/svelte/icons/home";
 	import ListOrderedIcon from "@lucide/svelte/icons/list-ordered";
 	import ScaleIcon from "@lucide/svelte/icons/scale";
+	import SlidersHorizontalIcon from "@lucide/svelte/icons/sliders-horizontal";
 	import { mergeProps } from "bits-ui";
 
-	const overview = [{ icon: HomeIcon, href: "/", label: "Home" }];
+	const overview = [
+		{ icon: HomeIcon, href: "/", label: "Home" },
+		{ icon: SlidersHorizontalIcon, href: "/setup", label: "Setup" },
+	];
 
 	const apps = [
 		{ icon: ScaleIcon, href: "/weighted-sum", label: "Weighted Sum" },

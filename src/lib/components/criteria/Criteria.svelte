@@ -1,5 +1,4 @@
 <script lang="ts">
-	import PlusIcon from "@lucide/svelte/icons/plus";
 	import Info from "$lib/components/Info.svelte";
 	import { Button } from "$lib/components/ui/button/index.js";
 	import * as Field from "$lib/components/ui/field/index.js";
@@ -10,6 +9,7 @@
 	import { alternatives, criteria } from "$lib/state";
 	import XMark from "$lib/svg/XMark.svelte";
 	import type { Criteria } from "$lib/types";
+	import PlusIcon from "@lucide/svelte/icons/plus";
 
 	interface Props {
 		weights?: boolean;
@@ -54,23 +54,27 @@
 		<Info label="About criteria">
 			<div class="space-y-2">
 				<p>
-					Create criteria for each factor in the decision and assign a weight from
-					0 to 1.
+					Create criteria for each factor in the decision and assign a weight
+					from 0 to 1.
 				</p>
+				<p>For example: Safety = 0.5, Speed = 0.25, Price = 0.25.</p>
 				<p>
-					For example: Safety = 0.5, Speed = 0.25, Price = 0.25.
-				</p>
-				<p>
-					A higher weight means that criterion contributes more to the final score.
+					A higher weight means that criterion contributes more to the final
+					score.
 				</p>
 			</div>
 		</Info>
 	</div>
 	<Tooltip.Provider>
-		<ScrollArea class="mt-3 w-full whitespace-nowrap rounded-md border" orientation="horizontal">
+		<ScrollArea
+			class="mt-3 w-full rounded-md border whitespace-nowrap"
+			orientation="horizontal"
+		>
 			<Table.Root class="min-w-full">
 				<Table.Header>
-					<Table.Row class="hover:[&,&>svelte-css-wrapper]:[&>th,td]:bg-transparent">
+					<Table.Row
+						class="hover:[&,&>svelte-css-wrapper]:[&>th,td]:bg-transparent"
+					>
 						<Table.Head class="min-w-56">Name</Table.Head>
 						{#if weights}
 							<Table.Head class="min-w-40">Weight</Table.Head>
@@ -144,7 +148,9 @@
 						</Table.Row>
 					{/each}
 					{#if weights}
-						<Table.Row class="hover:[&,&>svelte-css-wrapper]:[&>th,td]:bg-transparent">
+						<Table.Row
+							class="hover:[&,&>svelte-css-wrapper]:[&>th,td]:bg-transparent"
+						>
 							<Table.Head>Total</Table.Head>
 							<Table.Cell>
 								<span class:text-destructive={Math.round(total * 100) !== 100}>

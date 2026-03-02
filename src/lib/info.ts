@@ -27,4 +27,5 @@ export const apps = [
 		"/pairwise-comparison",
 		"Compare alternatives against each possible option.",
 	),
+	new App("/rank-order", "Order alternatives from most to least preferred."),
 ];

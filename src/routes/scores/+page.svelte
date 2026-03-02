@@ -5,4 +5,4 @@
 
 <Head title="Scores" />
 
-<Scores weightedSum={true} pairwise={true} />
+<Scores weightedSum={true} pairwise={true} rankOrder={true} />

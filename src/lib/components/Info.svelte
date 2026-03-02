@@ -15,14 +15,17 @@
 
 <Popover.Root>
 	<Popover.Trigger>
-		<Button
-			variant="ghost"
-			size="icon-sm"
-			class="size-7 text-muted-foreground hover:text-foreground"
-			aria-label={label}
-		>
-			<CircleHelpIcon class="size-4" />
-		</Button>
+		{#snippet child({ props })}
+			<Button
+				{...props}
+				variant="ghost"
+				size="icon-sm"
+				class="size-7 text-muted-foreground hover:text-foreground"
+				aria-label={label}
+			>
+				<CircleHelpIcon class="size-4" />
+			</Button>
+		{/snippet}
 	</Popover.Trigger>
 	<Popover.Content {align} class="w-80 text-sm text-muted-foreground">
 		{@render children?.()}

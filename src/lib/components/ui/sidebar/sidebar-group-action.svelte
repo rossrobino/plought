@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { cn, type WithElementRef } from "$lib/utils.js";
+	import { type WithElementRef, cn } from "$lib/utils.js";
 	import type { Snippet } from "svelte";
 	import type { HTMLButtonAttributes } from "svelte/elements";
 
@@ -19,7 +19,7 @@
 			// Increases the hit area of the button on mobile.
 			"after:absolute after:-inset-2 md:after:hidden",
 			"group-data-[collapsible=icon]:hidden",
-			className
+			className,
 		),
 		"data-slot": "sidebar-group-action",
 		"data-sidebar": "group-action",

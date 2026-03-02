@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { cn, type WithElementRef } from "$lib/utils.js";
+	import { type WithElementRef, cn } from "$lib/utils.js";
 	import type { HTMLAttributes } from "svelte/elements";
 
 	let {
@@ -21,7 +21,7 @@
 		"mb-3 font-medium",
 		"data-[variant=legend]:text-base",
 		"data-[variant=label]:text-sm",
-		className
+		className,
 	)}
 	{...restProps}
 >

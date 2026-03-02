@@ -1,7 +1,7 @@
 <script lang="ts">
-	import PlusIcon from "@lucide/svelte/icons/plus";
 	import { Button } from "$lib/components/ui/button/index.js";
-	import { alternatives, criteria } from "$lib/state";
+	import { alternatives, criteria, syncRankOrder } from "$lib/state";
+	import PlusIcon from "@lucide/svelte/icons/plus";
 
 	export const addAlternative = () => {
 		// create an array of zeros based on the number of criteria
@@ -24,6 +24,8 @@
 			scores,
 			pairwise,
 		});
+
+		syncRankOrder();
 	};
 </script>
 

@@ -1,6 +1,6 @@
 <script lang="ts">
-	import AddAlternativeButton from "$lib/components/alternatives/AddAlternativeButton.svelte";
 	import Info from "$lib/components/Info.svelte";
+	import AddAlternativeButton from "$lib/components/alternatives/AddAlternativeButton.svelte";
 	import RemoveAlternativeButton from "$lib/components/alternatives/RemoveAlternativeButton.svelte";
 	import * as Field from "$lib/components/ui/field/index.js";
 	import { Input } from "$lib/components/ui/input/index.js";
@@ -22,16 +22,19 @@
 		<Info label="About alternatives">
 			<div class="space-y-2">
 				<p>Create alternatives for each option you are comparing.</p>
-				<p>
-					Examples: Ford F-150, Aston Martin DB9, Volvo XC60.
-				</p>
+				<p>Examples: Ford F-150, Aston Martin DB9, Volvo XC60.</p>
 			</div>
 		</Info>
 	</div>
-	<ScrollArea class="mt-3 w-full whitespace-nowrap rounded-md border" orientation="horizontal">
+	<ScrollArea
+		class="mt-3 w-full rounded-md border whitespace-nowrap"
+		orientation="horizontal"
+	>
 		<Table.Root class="min-w-full">
 			<Table.Header>
-				<Table.Row class="hover:[&,&>svelte-css-wrapper]:[&>th,td]:bg-transparent">
+				<Table.Row
+					class="hover:[&,&>svelte-css-wrapper]:[&>th,td]:bg-transparent"
+				>
 					<Table.Head class="min-w-56">Name</Table.Head>
 					{#if showCriteria}
 						{#each criteria.current as item}

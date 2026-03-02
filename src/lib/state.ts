@@ -11,15 +11,45 @@ const getAlternatives = (): Alternative[] => [
 	{ name: "Alternative #2", scores: [5, 5], pairwise: [0.5, 0.5] },
 ];
 
+const getRankOrder = (count: number) => {
+	return Array.from({ length: count }, (_, i) => i);
+};
+
 export const decisionDefaults: Decision = {
 	title: "My Decision",
 	goal: "Choose the best option based on my priorities.",
 };
 
 const getDecision = (): Decision => {
-	return {
-		...decisionDefaults,
-	};
+	return { ...decisionDefaults };
+};
+
+export const normalizeRankOrder = (order: number[], count: number) => {
+	const next = [];
+	const seen = new Set<number>();
+
+	for (const id of order) {
+		if (!Number.isInteger(id) || id < 0 || id >= count || seen.has(id)) {
+			continue;
+		}
+		seen.add(id);
+		next.push(id);
+	}
+
+	for (let i = 0; i < count; i++) {
+		if (!seen.has(i)) {
+			next.push(i);
+		}
+	}
+
+	return next;
+};
+
+export const getRankScore = (rank: number, count: number) => {
+	if (count <= 1) {
+		return 10;
+	}
+	return Number((((count - 1 - rank) / (count - 1)) * 10).toFixed(2));
 };
 
 export const criteria = new PersistedState("criteria", getCriteria());
@@ -28,9 +58,27 @@ export const alternatives = new PersistedState(
 	getAlternatives(),
 );
 export const decision = new PersistedState("decision", getDecision());
+export const rankOrder = new PersistedState(
+	"rankOrder",
+	getRankOrder(getAlternatives().length),
+);
+
+export const syncRankOrder = (count = alternatives.current.length) => {
+	const order = Array.isArray(rankOrder.current) ? rankOrder.current : [];
+	const next = normalizeRankOrder(order, count);
+	const current = Array.isArray(rankOrder.current) ? rankOrder.current : [];
+	if (
+		next.length !== current.length ||
+		next.some((id, i) => id !== current[i])
+	) {
+		rankOrder.current = next;
+	}
+	return next;
+};
 
 export const reset = () => {
 	criteria.current = getCriteria();
 	alternatives.current = getAlternatives();
 	decision.current = getDecision();
+	rankOrder.current = getRankOrder(getAlternatives().length);
 };

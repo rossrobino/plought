@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { cn, type WithElementRef } from "$lib/utils.js";
+	import { type WithElementRef, cn } from "$lib/utils.js";
 	import type { HTMLAttributes } from "svelte/elements";
 
 	let {
@@ -15,7 +15,7 @@
 	data-slot="field-title"
 	class={cn(
 		"flex w-fit items-center gap-2 text-sm leading-snug font-medium group-data-[disabled=true]/field:opacity-50",
-		className
+		className,
 	)}
 	{...restProps}
 >

@@ -43,10 +43,15 @@
 			</div>
 		</Info>
 	</div>
-	<ScrollArea class="mt-3 w-full whitespace-nowrap rounded-md border" orientation="horizontal">
+	<ScrollArea
+		class="mt-3 w-full rounded-md border whitespace-nowrap"
+		orientation="horizontal"
+	>
 		<Table.Root class="min-w-full">
 			<Table.Header>
-				<Table.Row class="hover:[&,&>svelte-css-wrapper]:[&>th,td]:bg-transparent">
+				<Table.Row
+					class="hover:[&,&>svelte-css-wrapper]:[&>th,td]:bg-transparent"
+				>
 					<Table.Head class="w-28"></Table.Head>
 					{#each alternatives.current as { name }}
 						<Table.Head class="min-w-40">{name}</Table.Head>
@@ -66,7 +71,9 @@
 											value={getSelection(i, j)}
 											onValueChange={(value) => updateScore(i, j, value)}
 										>
-											<Select.Trigger class="h-8 w-full min-w-40 justify-between">
+											<Select.Trigger
+												class="h-8 w-full min-w-40 justify-between"
+											>
 												{getLabel(i, j)}
 											</Select.Trigger>
 											<Select.Content>

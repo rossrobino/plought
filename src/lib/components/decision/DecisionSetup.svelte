@@ -7,8 +7,8 @@
 <div class="rounded-lg border bg-muted/25 p-3">
 	<h2 class="mb-0 text-base">Decision Setup</h2>
 	<p class="mt-1 text-sm text-muted-foreground">
-		Set your context first, then use one or more methods below. You can edit this
-		anytime.
+		Set your context first, then use one or more methods below. You can edit
+		this anytime.
 	</p>
 	<div class="mt-3 grid gap-3 sm:grid-cols-2">
 		<Field.Field>

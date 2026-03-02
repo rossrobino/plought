@@ -1,17 +1,21 @@
 <script lang="ts">
-	import DecisionSetup from "$lib/components/decision/DecisionSetup.svelte";
 	import Head from "$lib/components/Head.svelte";
+	import DecisionSetup from "$lib/components/decision/DecisionSetup.svelte";
 	import { Separator } from "$lib/components/ui/separator/index.js";
 	import { apps, info } from "$lib/info";
 	import { alternatives, criteria } from "$lib/state";
 	import ArrowRightIcon from "@lucide/svelte/icons/arrow-right";
 	import BarChart3Icon from "@lucide/svelte/icons/bar-chart-3";
 	import GitCompareIcon from "@lucide/svelte/icons/git-compare";
+	import ListOrderedIcon from "@lucide/svelte/icons/list-ordered";
 	import ScaleIcon from "@lucide/svelte/icons/scale";
 
 	const getAppMeta = (path: string) => {
 		if (path === "/weighted-sum") {
 			return { icon: ScaleIcon, badge: "Weighted criteria" };
+		}
+		if (path === "/rank-order") {
+			return { icon: ListOrderedIcon, badge: "Manual ranking" };
 		}
 		return { icon: GitCompareIcon, badge: "Head-to-head" };
 	};
@@ -62,7 +66,7 @@
 				<div>
 					<h2 class="mb-0">Summary</h2>
 					<p class="mt-1 text-muted-foreground">
-						Compare Weighted Sum and Pairwise rankings side by side.
+						Compare Weighted Sum, Pairwise, and Rank Order side by side.
 					</p>
 				</div>
 				<div
@@ -77,7 +81,7 @@
 					class="rounded-md border bg-card/70 px-2.5 py-1.5 text-muted-foreground"
 				>
 					<span class="font-semibold text-foreground">{apps.length}</span>
-					 methods
+					methods
 				</div>
 				<div
 					class="rounded-md border bg-card/70 px-2.5 py-1.5 text-muted-foreground"
@@ -85,7 +89,7 @@
 					<span class="font-semibold text-foreground">
 						{criteria.current.length}
 					</span>
-					 criteria
+					criteria
 				</div>
 				<div
 					class="rounded-md border bg-card/70 px-2.5 py-1.5 text-muted-foreground"
@@ -93,7 +97,7 @@
 					<span class="font-semibold text-foreground">
 						{alternatives.current.length}
 					</span>
-					 alternatives
+					alternatives
 				</div>
 			</div>
 		</section>

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { cn, type WithElementRef } from "$lib/utils.js";
+	import { type WithElementRef, cn } from "$lib/utils.js";
 	import type { HTMLAttributes } from "svelte/elements";
 
 	let {
@@ -7,7 +7,10 @@
 		class: className,
 		children,
 		...restProps
-	}: WithElementRef<HTMLAttributes<HTMLUListElement>, HTMLUListElement> = $props();
+	}: WithElementRef<
+		HTMLAttributes<HTMLUListElement>,
+		HTMLUListElement
+	> = $props();
 </script>
 
 <ul

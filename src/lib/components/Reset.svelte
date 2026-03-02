@@ -1,8 +1,8 @@
 <script lang="ts">
-	import RotateCcwIcon from "@lucide/svelte/icons/rotate-ccw";
-	import { Button } from "$lib/components/ui/button/index.js";
 	import * as AlertDialog from "$lib/components/ui/alert-dialog/index.js";
+	import { Button } from "$lib/components/ui/button/index.js";
 	import { reset } from "$lib/state";
+	import RotateCcwIcon from "@lucide/svelte/icons/rotate-ccw";
 
 	let open = $state(false);
 </script>

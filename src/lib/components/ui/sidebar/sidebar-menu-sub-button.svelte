@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { cn, type WithElementRef } from "$lib/utils.js";
+	import { type WithElementRef, cn } from "$lib/utils.js";
 	import type { Snippet } from "svelte";
 	import type { HTMLAnchorAttributes } from "svelte/elements";
 
@@ -24,7 +24,7 @@
 			size === "sm" && "text-xs",
 			size === "md" && "text-sm",
 			"group-data-[collapsible=icon]:hidden",
-			className
+			className,
 		),
 		"data-slot": "sidebar-menu-sub-button",
 		"data-sidebar": "menu-sub-button",

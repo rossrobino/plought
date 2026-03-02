@@ -6,7 +6,9 @@
 	import GitCompareIcon from "@lucide/svelte/icons/git-compare";
 	import GithubIcon from "@lucide/svelte/icons/github";
 	import HomeIcon from "@lucide/svelte/icons/home";
+	import ListOrderedIcon from "@lucide/svelte/icons/list-ordered";
 	import ScaleIcon from "@lucide/svelte/icons/scale";
+	import { mergeProps } from "bits-ui";
 
 	const overview = [{ icon: HomeIcon, href: "/", label: "Home" }];
 
@@ -17,15 +19,27 @@
 			href: "/pairwise-comparison",
 			label: "Pairwise Comparison",
 		},
+		{ icon: ListOrderedIcon, href: "/rank-order", label: "Rank Order" },
 	];
 
 	const summary = [{ icon: BarChart3Icon, href: "/scores", label: "Scores" }];
+	const sidebar = Sidebar.useSidebar();
 
 	const active = (href: string) => {
 		if (href === "/") {
 			return page.url.pathname === href;
 		}
 		return page.url.pathname.startsWith(href);
+	};
+
+	const closeSidebarOnMobile = () => {
+		if (sidebar.isMobile) {
+			sidebar.setOpenMobile(false);
+		}
+	};
+
+	const withMobileClose = (props: Record<string, unknown>) => {
+		return mergeProps(props, { onclick: closeSidebarOnMobile });
 	};
 </script>
 
@@ -34,6 +48,7 @@
 		<a
 			href="/"
 			class="flex items-center gap-2 rounded-md p-2 text-sidebar-foreground no-underline transition-colors hover:bg-transparent"
+			onclick={closeSidebarOnMobile}
 		>
 			<img
 				src="/plought-text-logo-dark.svg"
@@ -47,7 +62,7 @@
 			<Sidebar.GroupLabel>Overview</Sidebar.GroupLabel>
 			<Sidebar.GroupContent>
 				<Sidebar.Menu>
-					{#each overview as item}
+					{#each overview as item (item.href)}
 						<Sidebar.MenuItem>
 							<Sidebar.MenuButton
 								isActive={active(item.href)}
@@ -55,7 +70,7 @@
 								class="hover:bg-transparent hover:text-sidebar-foreground data-[state=open]:hover:bg-transparent data-[state=open]:hover:text-sidebar-foreground"
 							>
 								{#snippet child({ props })}
-									<a {...props} href={item.href}>
+									<a {...withMobileClose(props)} href={item.href}>
 										<item.icon />
 										<span>{item.label}</span>
 									</a>
@@ -71,14 +86,14 @@
 			<Sidebar.GroupLabel>Apps</Sidebar.GroupLabel>
 			<Sidebar.GroupContent>
 				<Sidebar.Menu>
-					{#each apps as item}
+					{#each apps as item (item.href)}
 						<Sidebar.MenuItem>
 							<Sidebar.MenuButton
 								isActive={active(item.href)}
 								tooltipContent={item.label}
 							>
 								{#snippet child({ props })}
-									<a {...props} href={item.href}>
+									<a {...withMobileClose(props)} href={item.href}>
 										<item.icon />
 										<span>{item.label}</span>
 									</a>
@@ -94,14 +109,14 @@
 			<Sidebar.GroupLabel>Summary</Sidebar.GroupLabel>
 			<Sidebar.GroupContent>
 				<Sidebar.Menu>
-					{#each summary as item}
+					{#each summary as item (item.href)}
 						<Sidebar.MenuItem>
 							<Sidebar.MenuButton
 								isActive={active(item.href)}
 								tooltipContent={item.label}
 							>
 								{#snippet child({ props })}
-									<a {...props} href={item.href}>
+									<a {...withMobileClose(props)} href={item.href}>
 										<item.icon />
 										<span>{item.label}</span>
 									</a>
@@ -120,7 +135,7 @@
 				<Sidebar.MenuButton tooltipContent="GitHub Repository">
 					{#snippet child({ props })}
 						<a
-							{...props}
+							{...withMobileClose(props)}
 							href="https://github.com/rossrobino/plought"
 							target="_blank"
 							rel="noreferrer"

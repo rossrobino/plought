@@ -132,7 +132,6 @@
 		@apply mt-4 rounded-xl border bg-card p-3 shadow-sm;
 	}
 
-
 	h2 {
 		@apply mb-1 text-lg font-semibold;
 	}
@@ -140,9 +139,5 @@
 	section p,
 	section ul {
 		@apply mb-3 last:mb-0;
-	}
-
-	section li {
-		@apply ms-6 list-disc;
 	}
 }

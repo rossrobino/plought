@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { cn, type WithElementRef } from "$lib/utils.js";
+	import { type WithElementRef, cn } from "$lib/utils.js";
 	import type { HTMLFieldsetAttributes } from "svelte/elements";
 
 	let {
@@ -16,7 +16,7 @@
 	class={cn(
 		"flex flex-col gap-6",
 		"has-[>[data-slot=checkbox-group]]:gap-3 has-[>[data-slot=radio-group]]:gap-3",
-		className
+		className,
 	)}
 	{...restProps}
 >

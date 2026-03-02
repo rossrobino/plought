@@ -6,9 +6,11 @@
 	import { apps, info } from "$lib/info";
 	import { decision, decisionDefaults } from "$lib/state";
 	import "./app.css";
-	import { inject } from "@vercel/analytics";
+	import { injectAnalytics } from "@vercel/analytics/sveltekit";
 
-	inject({ mode: dev ? "development" : "production" });
+	if (!dev) {
+		injectAnalytics({ mode: "production" });
+	}
 
 	let open = $state(true);
 	let { children } = $props();

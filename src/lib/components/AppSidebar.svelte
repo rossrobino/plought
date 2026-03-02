@@ -4,6 +4,7 @@
 	import { apps as appRegistry, info } from "$lib/info";
 	import { methodMeta } from "$lib/state";
 	import BarChart3Icon from "@lucide/svelte/icons/bar-chart-3";
+	import CheckIcon from "@lucide/svelte/icons/check";
 	import GitCompareIcon from "@lucide/svelte/icons/git-compare";
 	import GithubIcon from "@lucide/svelte/icons/github";
 	import HomeIcon from "@lucide/svelte/icons/home";
@@ -114,9 +115,11 @@
 							</Sidebar.MenuButton>
 							{#if methodMeta.current[item.method]?.used}
 								<Sidebar.MenuBadge
-									class="end-2 h-2 w-2 min-w-0 rounded-full bg-primary p-0 text-transparent peer-data-[size=sm]/menu-button:top-1/2 peer-data-[size=default]/menu-button:top-1/2 peer-data-[size=lg]/menu-button:top-1/2 -translate-y-1/2"
+									class="inset-e-2 h-4 w-4 min-w-0 -translate-y-1/2 rounded-full border border-sidebar-border bg-sidebar-accent/45 p-0 text-sidebar-foreground/80 peer-hover/menu-button:text-sidebar-foreground/80 peer-data-[active=true]/menu-button:text-sidebar-foreground/80 peer-data-[size=default]/menu-button:top-1/2 peer-data-[size=lg]/menu-button:top-1/2 peer-data-[size=sm]/menu-button:top-1/2"
 									aria-hidden="true"
-								/>
+								>
+									<CheckIcon class="size-2.5" />
+								</Sidebar.MenuBadge>
 							{/if}
 						</Sidebar.MenuItem>
 					{/each}

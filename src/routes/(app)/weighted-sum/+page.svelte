@@ -4,7 +4,7 @@
 	import Scores from "$lib/components/scores/Scores.svelte";
 </script>
 
-<div class="grid grid-cols-1 items-start gap-4 sm:grid-cols-2 [&>*]:min-w-0">
+<div class="grid grid-cols-1 items-start gap-4 *:min-w-0 sm:grid-cols-2">
 	<Criteria />
 	<div class="hidden sm:block">
 		<Scores sortBy="weightedSum" weightedSum={true} />

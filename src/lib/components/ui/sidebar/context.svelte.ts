@@ -4,7 +4,7 @@ import { getContext, setContext } from "svelte";
 
 type Getter<T> = () => T;
 
-export type SidebarStateProps = {
+type SidebarStateProps = {
 	/**
 	 * A getter function that returns the current open state of the sidebar.
 	 * We use a getter function here to support `bind:open` on the `Sidebar.Provider`

@@ -5,12 +5,12 @@ const methodKeys = ["weightedSum", "pairwise", "rankOrder", "topsis"] as const;
 
 export type MethodKey = (typeof methodKeys)[number];
 
-export interface MethodMeta {
+interface MethodMeta {
 	included: boolean;
 	used: boolean;
 }
 
-export type MethodMetaState = Record<MethodKey, MethodMeta>;
+type MethodMetaState = Record<MethodKey, MethodMeta>;
 
 const getCriteria = (): Criteria[] => [
 	{ name: "Criterion #1", weight: 0.5 },
@@ -127,7 +127,7 @@ export const getRankScore = (rank: number, count: number) => {
 	return Number((((count - 1 - rank) / (count - 1)) * 10).toFixed(2));
 };
 
-export const methodMeta = new PersistedState("methodMeta", getMethodMeta());
+const methodMeta = new PersistedState("methodMeta", getMethodMeta());
 export const criteria = new PersistedState("criteria", getCriteria());
 export const alternatives = new PersistedState(
 	"alternatives",
@@ -176,7 +176,7 @@ export const markMethodUsed = (method: MethodKey) => {
 	item.included = true;
 };
 
-export const setMethodIncluded = (method: MethodKey, included: boolean) => {
+const setMethodIncluded = (method: MethodKey, included: boolean) => {
 	const item = syncMethodMeta()[method];
 	if (item == null) {
 		return;

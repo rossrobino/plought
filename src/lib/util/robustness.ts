@@ -1,9 +1,9 @@
 import type { Alternative, Criteria } from "$lib/types";
 import { getTopsisCloseness } from "$lib/util/topsis";
 
-export type RobustnessMethodKey = "weightedSum" | "topsis" | "combined";
+type RobustnessMethodKey = "weightedSum" | "topsis" | "combined";
 
-export interface RobustnessAltStats {
+interface RobustnessAltStats {
 	name: string;
 	winRatePct: number;
 	avgRank: number;
@@ -11,13 +11,13 @@ export interface RobustnessAltStats {
 	worstRank: number;
 }
 
-export interface RobustnessMethodStats {
+interface RobustnessMethodStats {
 	method: RobustnessMethodKey;
 	alternatives: RobustnessAltStats[];
 	winnerIndex: number | null;
 }
 
-export interface RobustnessResult {
+interface RobustnessResult {
 	runs: number;
 	methods: Record<RobustnessMethodKey, RobustnessMethodStats>;
 }
@@ -41,7 +41,7 @@ const safeNumber = (value: number) => {
 	return 0;
 };
 
-export const normalizeWeights = (weights: number[]) => {
+const normalizeWeights = (weights: number[]) => {
 	if (weights.length === 0) {
 		return [];
 	}
@@ -60,7 +60,7 @@ export const normalizeWeights = (weights: number[]) => {
 	return clean.map((value) => value / total);
 };
 
-export const perturbWeights = (
+const perturbWeights = (
 	base: number[],
 	rng: () => number,
 	strength = robustnessStrength,
@@ -77,7 +77,7 @@ export const perturbWeights = (
 	return normalizeWeights(jittered);
 };
 
-export const rankFromScores = (scores: number[]) => {
+const rankFromScores = (scores: number[]) => {
 	const sorted = scores
 		.map((value, i) => ({ i, value: safeNumber(value) }))
 		.sort((a, b) => {
@@ -108,7 +108,7 @@ export const rankFromScores = (scores: number[]) => {
 	return ranks;
 };
 
-export const accumulateWinCredit = (scores: number[], wins: number[]) => {
+const accumulateWinCredit = (scores: number[], wins: number[]) => {
 	if (scores.length === 0) {
 		return wins;
 	}

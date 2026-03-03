@@ -7,7 +7,7 @@ const getSafeValue = (value: number) => {
 	return 0;
 };
 
-export interface TopsisDiagnostics {
+interface TopsisDiagnostics {
 	closeness: number[];
 	distanceBest: number[];
 	distanceWorst: number[];
@@ -101,14 +101,4 @@ export const getTopsisCloseness = (
 	criteria: Criteria[],
 ) => {
 	return getTopsisDiagnostics(alternatives, criteria).closeness;
-};
-
-export const getTopsisScore10 = (
-	alternatives: Alternative[],
-	criteria: Criteria[],
-	index: number,
-) => {
-	const closeness = getTopsisCloseness(alternatives, criteria);
-	const value = closeness[index] ?? 0;
-	return Number((value * 10).toFixed(2));
 };

@@ -8,8 +8,10 @@
 		"dev": "vite dev",
 		"build": "vite build",
 		"preview": "vite preview",
-		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
-		"format": "prettier --write ."
+		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json && npm run knip && npm run check:format",
+		"check:format": "prettier --check .",
+		"format": "prettier --write .",
+		"knip": "knip"
 	},
 	"devDependencies": {
 		"@lucide/svelte": "^0.561.0",
@@ -18,7 +20,9 @@
 		"@sveltejs/kit": "^2.53.3",
 		"@sveltejs/vite-plugin-svelte": "^6.2.4",
 		"@tailwindcss/vite": "^4.2.1",
+		"@types/node": "^25.3.3",
 		"clsx": "^2.1.1",
+		"knip": "^5.85.0",
 		"layerchart": "^2.0.0-next.43",
 		"prettier": "^3.8.1",
 		"prettier-plugin-svelte": "^3.5.0",

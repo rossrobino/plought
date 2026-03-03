@@ -2,14 +2,14 @@ import { type MethodKey, getRankScore, normalizeRankOrder } from "$lib/state";
 import type { Alternative, Criteria } from "$lib/types";
 import { getTopsisCloseness } from "$lib/util/topsis";
 
-export type MethodScoreMap = Record<MethodKey, number[]>;
+type MethodScoreMap = Record<MethodKey, number[]>;
 
-export interface MethodScores {
+interface MethodScores {
 	raw: MethodScoreMap;
 	normalized10: MethodScoreMap;
 }
 
-export interface ConsensusRank {
+interface ConsensusRank {
 	meanRank: number[];
 	winnerIndex: number | null;
 	runnerUpIndex: number | null;
@@ -17,7 +17,7 @@ export interface ConsensusRank {
 	order: number[];
 }
 
-export interface GuidanceCopy {
+interface GuidanceCopy {
 	summary: string;
 	comparison: string;
 	caveat: string;

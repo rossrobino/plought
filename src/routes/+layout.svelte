@@ -28,28 +28,22 @@
 		if (page.url.pathname.startsWith("/setup/criteria")) {
 			return "Criteria";
 		}
-		if (page.url.pathname.startsWith("/summary/weight")) {
+		if (page.url.pathname.startsWith("/analysis/weight")) {
 			return "Weighted Sum";
 		}
-		if (page.url.pathname.startsWith("/summary/compare")) {
+		if (page.url.pathname.startsWith("/analysis/compare")) {
 			return "Pairwise Comparison";
 		}
-		if (page.url.pathname.startsWith("/summary/rank")) {
+		if (page.url.pathname.startsWith("/analysis/rank")) {
 			return "Rank Order";
 		}
-		if (page.url.pathname.startsWith("/summary/topsis")) {
+		if (page.url.pathname.startsWith("/analysis/topsis")) {
 			return "TOPSIS";
 		}
-		if (page.url.pathname.startsWith("/summary/robustness")) {
+		if (page.url.pathname.startsWith("/analysis/robustness")) {
 			return "Robustness";
 		}
-		if (page.url.pathname.startsWith("/summary")) {
-			return "Summary";
-		}
-		if (page.url.pathname.startsWith("/scores")) {
-			return "Summary";
-		}
-		if (page.url.pathname.startsWith("/overview")) {
+		if (page.url.pathname.startsWith("/analysis")) {
 			return "Summary";
 		}
 		const app = apps.find((item) => page.url.pathname.startsWith(item.path));

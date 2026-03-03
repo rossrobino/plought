@@ -44,25 +44,25 @@
 	});
 
 	const output = [
-		{ icon: BarChart3Icon, href: "/summary", label: "Summary" },
-		{ icon: ScaleIcon, href: "/summary/weight", label: "Weighted Sum" },
+		{ icon: BarChart3Icon, href: "/analysis", label: "Summary" },
+		{ icon: ScaleIcon, href: "/analysis/weight", label: "Weighted Sum" },
 		{
 			icon: GitCompareIcon,
-			href: "/summary/compare",
+			href: "/analysis/compare",
 			label: "Pairwise Comparison",
 		},
-		{ icon: ListOrderedIcon, href: "/summary/rank", label: "Rank Order" },
-		{ icon: TargetIcon, href: "/summary/topsis", label: "TOPSIS" },
+		{ icon: ListOrderedIcon, href: "/analysis/rank", label: "Rank Order" },
+		{ icon: TargetIcon, href: "/analysis/topsis", label: "TOPSIS" },
 		{
 			icon: ShieldCheckIcon,
-			href: "/summary/robustness",
+			href: "/analysis/robustness",
 			label: "Robustness",
 		},
 	];
 	const sidebar = Sidebar.useSidebar();
 
 	const active = (href: string) => {
-		if (href === "/setup" || href === "/summary") {
+		if (href === "/setup" || href === "/analysis") {
 			return page.url.pathname === href;
 		}
 		return page.url.pathname.startsWith(href);

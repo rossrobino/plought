@@ -115,6 +115,10 @@
 		This view runs {robustnessRuns} random simulations and changes each weight
 		by up to {Math.round(perturbationStrength * 100)}% on each run.
 	</p>
+	<p class="mt-1 mb-0 text-sm text-muted-foreground">
+		This helps check whether your top-ranked option still holds up even if
+		criterion weights are not perfectly tuned.
+	</p>
 	<div class="mt-3 max-w-xs">
 		<Field.Field>
 			<Field.Label for="robustness-perturbation">Weight change range (%)</Field.Label>

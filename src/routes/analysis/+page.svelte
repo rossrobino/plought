@@ -20,6 +20,7 @@
 		getMethodScores,
 	} from "$lib/util/analysis";
 	import { chartColors } from "$lib/util/chart-colors";
+	import { getRobustnessAnalysis, robustnessStrength } from "$lib/util/robustness";
 
 	const methods: {
 		color: string;
@@ -30,28 +31,28 @@
 	}[] = [
 		{
 			color: chartColors[0],
-			href: "/summary/weight",
+			href: "/analysis/weight",
 			key: "weightedSum",
 			label: "Weighted Sum",
 			note: "Weighted totals and criterion contribution breakdown.",
 		},
 		{
 			color: chartColors[1],
-			href: "/summary/compare",
+			href: "/analysis/compare",
 			key: "pairwise",
 			label: "Pairwise Comparison",
 			note: "Head-to-head win, tie, and loss patterns.",
 		},
 		{
 			color: chartColors[2],
-			href: "/summary/rank",
+			href: "/analysis/rank",
 			key: "rankOrder",
 			label: "Rank Order",
 			note: "Ordinal ranking translated to a 0-10 score scale.",
 		},
 		{
 			color: chartColors[3],
-			href: "/summary/topsis",
+			href: "/analysis/topsis",
 			key: "topsis",
 			label: "TOPSIS",
 			note: "Closeness to ideal and distance from worst profile.",
@@ -141,6 +142,48 @@
 		}
 		return "None";
 	});
+
+	const hasRobustnessInputs = $derived(
+		alternatives.current.length >= 2 && criteria.current.length >= 1,
+	);
+
+	const robustness = $derived.by(() => {
+		if (!hasRobustnessInputs) {
+			return null;
+		}
+		return getRobustnessAnalysis(
+			alternatives.current,
+			criteria.current,
+			robustnessStrength,
+		);
+	});
+
+	const winnerRobustness = $derived.by(() => {
+		if (robustness == null || consensus.winnerIndex == null) {
+			return null;
+		}
+		const name = alternatives.current[consensus.winnerIndex]?.name;
+		if (name == null) {
+			return null;
+		}
+		return (
+			robustness.methods.combined.alternatives.find((item) => item.name === name) ??
+			null
+		);
+	});
+
+	const sensitivityLabel = $derived.by(() => {
+		if (winnerRobustness == null) {
+			return null;
+		}
+		if (winnerRobustness.winRatePct >= 60) {
+			return "Stable";
+		}
+		if (winnerRobustness.winRatePct >= 35) {
+			return "Mixed";
+		}
+		return "Sensitive";
+	});
 </script>
 
 <Head title="Summary" />
@@ -189,6 +232,19 @@
 				<p class="mt-1 mb-0 text-xs text-muted-foreground">
 					{guidance.comparison}
 				</p>
+				{#if winnerRobustness != null && sensitivityLabel != null}
+					<p class="mt-2 mb-0 text-xs text-muted-foreground">
+						Weight sensitivity:
+						<span class="font-medium text-foreground">{sensitivityLabel}</span>
+						({winnerRobustness.winRatePct.toFixed(2)}% hold rate)
+					</p>
+					<a
+						href="/analysis/robustness"
+						class="mt-1 inline-flex text-xs text-foreground underline-offset-2 hover:underline"
+					>
+						View robustness details
+					</a>
+				{/if}
 			</div>
 			<div class="rounded-lg border bg-muted/25 p-3 shadow-xs">
 				<p class="mb-0 text-xs tracking-wide text-muted-foreground uppercase">
@@ -240,7 +296,7 @@
 				</a>
 			{/each}
 			<a
-				href="/summary/robustness"
+				href="/analysis/robustness"
 				class="block rounded-lg border p-3 no-underline shadow-xs hover:bg-accent/35"
 			>
 				<p class="mb-0 text-sm font-semibold">Robustness</p>

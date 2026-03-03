@@ -82,7 +82,7 @@
 		{/each}
 	</div>
 
-	<a href="/summary" class="group block no-underline">
+	<a href="/analysis" class="group block no-underline">
 		<section
 			class="border-primary/35 bg-primary/10 transition-colors group-hover:bg-primary/15"
 		>

@@ -20,7 +20,10 @@
 		getMethodScores,
 	} from "$lib/util/analysis";
 	import { chartColors } from "$lib/util/chart-colors";
-	import { getRobustnessAnalysis, robustnessStrength } from "$lib/util/robustness";
+	import {
+		getRobustnessAnalysis,
+		robustnessStrength,
+	} from "$lib/util/robustness";
 
 	const methods: {
 		color: string;
@@ -167,8 +170,9 @@
 			return null;
 		}
 		return (
-			robustness.methods.combined.alternatives.find((item) => item.name === name) ??
-			null
+			robustness.methods.combined.alternatives.find(
+				(item) => item.name === name,
+			) ?? null
 		);
 	});
 

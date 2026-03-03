@@ -176,12 +176,10 @@ const getWinnerIndex = (wins: number[], rankSums: number[]) => {
 	return winner;
 };
 
-const buildEmptyMethod = (method: RobustnessMethodKey): RobustnessMethodStats => {
-	return {
-		method,
-		alternatives: [],
-		winnerIndex: null,
-	};
+const buildEmptyMethod = (
+	method: RobustnessMethodKey,
+): RobustnessMethodStats => {
+	return { method, alternatives: [], winnerIndex: null };
 };
 
 export const getRobustnessAnalysis = (
@@ -285,8 +283,5 @@ export const getRobustnessAnalysis = (
 		{} as Record<RobustnessMethodKey, RobustnessMethodStats>,
 	);
 
-	return {
-		runs: robustnessRuns,
-		methods: methodsResult,
-	};
+	return { runs: robustnessRuns, methods: methodsResult };
 };

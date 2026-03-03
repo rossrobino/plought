@@ -7,12 +7,12 @@
 	import { ScrollArea } from "$lib/components/ui/scroll-area/index.js";
 	import * as Table from "$lib/components/ui/table/index.js";
 	import { alternatives, criteria } from "$lib/state";
+	import { chartColors } from "$lib/util/chart-colors";
 	import {
 		getRobustnessAnalysis,
 		robustnessRuns,
 		robustnessStrength,
 	} from "$lib/util/robustness";
-	import { chartColors } from "$lib/util/chart-colors";
 
 	let perturbationPct = $state(Math.round(robustnessStrength * 100));
 
@@ -112,8 +112,8 @@
 		weights shift a little.
 	</p>
 	<p class="mt-2 mb-0 text-sm text-muted-foreground">
-		This view runs {robustnessRuns} random simulations and changes each weight
-		by up to {Math.round(perturbationStrength * 100)}% on each run.
+		This view runs {robustnessRuns} random simulations and changes each weight by
+		up to {Math.round(perturbationStrength * 100)}% on each run.
 	</p>
 	<p class="mt-1 mb-0 text-sm text-muted-foreground">
 		This helps check whether your top-ranked option still holds up even if
@@ -121,7 +121,9 @@
 	</p>
 	<div class="mt-3 max-w-xs">
 		<Field.Field>
-			<Field.Label for="robustness-perturbation">Weight change range (%)</Field.Label>
+			<Field.Label for="robustness-perturbation">
+				Weight change range (%)
+			</Field.Label>
 			<Input
 				type="number"
 				id="robustness-perturbation"
@@ -222,10 +224,15 @@
 		<p class="mt-1 text-muted-foreground">
 			Lower average rank is better. Combined worst rank shows downside.
 		</p>
-		<ScrollArea class="mt-3 w-full rounded-md border whitespace-nowrap" orientation="horizontal">
+		<ScrollArea
+			class="mt-3 w-full rounded-md border whitespace-nowrap"
+			orientation="horizontal"
+		>
 			<Table.Root class="min-w-full">
 				<Table.Header>
-					<Table.Row class="hover:[&,&>svelte-css-wrapper]:[&>th,td]:bg-transparent">
+					<Table.Row
+						class="hover:[&,&>svelte-css-wrapper]:[&>th,td]:bg-transparent"
+					>
 						<Table.Head>Alternative</Table.Head>
 						<Table.Head>Weighted Win %</Table.Head>
 						<Table.Head>Weighted Avg Rank</Table.Head>
@@ -245,13 +252,21 @@
 							<Table.Head scope="row" class="font-semibold">
 								{weighted?.name ?? `Alternative #${i + 1}`}
 							</Table.Head>
-							<Table.Cell>{weighted?.winRatePct.toFixed(2) ?? "0.00"}%</Table.Cell>
+							<Table.Cell>
+								{weighted?.winRatePct.toFixed(2) ?? "0.00"}%
+							</Table.Cell>
 							<Table.Cell>{weighted?.avgRank.toFixed(2) ?? "0.00"}</Table.Cell>
-							<Table.Cell>{topsis?.winRatePct.toFixed(2) ?? "0.00"}%</Table.Cell>
+							<Table.Cell>
+								{topsis?.winRatePct.toFixed(2) ?? "0.00"}%
+							</Table.Cell>
 							<Table.Cell>{topsis?.avgRank.toFixed(2) ?? "0.00"}</Table.Cell>
-							<Table.Cell>{combined?.winRatePct.toFixed(2) ?? "0.00"}%</Table.Cell>
+							<Table.Cell>
+								{combined?.winRatePct.toFixed(2) ?? "0.00"}%
+							</Table.Cell>
 							<Table.Cell>{combined?.avgRank.toFixed(2) ?? "0.00"}</Table.Cell>
-							<Table.Cell>{combined?.worstRank.toFixed(2) ?? "0.00"}</Table.Cell>
+							<Table.Cell>
+								{combined?.worstRank.toFixed(2) ?? "0.00"}
+							</Table.Cell>
 						</Table.Row>
 					{/each}
 				</Table.Body>

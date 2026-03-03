@@ -21,8 +21,55 @@
 	};
 </script>
 
-<div class="w-full pt-4">
+<div class="w-full space-y-4 pt-4">
 	<Head desc={info.tagline} />
+
+	<section class="border-accent/70 bg-accent/45 text-foreground">
+		<div>
+			<h2 class="mb-0 text-2xl tracking-tight sm:text-3xl">
+				Make better decisions with less noise.
+			</h2>
+			<p class="mt-3 mb-0 text-muted-foreground">
+				Use one or more methods to evaluate alternatives from different angles.
+				{info.name} turns complex choices into structured comparisons by separating
+				inputs from outcomes.
+			</p>
+			<p class="mt-3 mb-0 text-muted-foreground">
+				Define criteria, score alternatives, and compare results before
+				deciding. This keeps the process consistent and reduces judgment noise
+				when tradeoffs are involved.
+			</p>
+		</div>
+		<div class="mt-5 grid gap-3 text-sm sm:grid-cols-3">
+			<div
+				class="rounded-lg border border-accent/70 bg-background/85 p-3 shadow-xs"
+			>
+				<p class="mb-0 font-medium">Score independently</p>
+				<p class="mt-1 mb-0 text-muted-foreground">
+					Rate each alternative without comparing everything at once.
+				</p>
+			</div>
+			<div
+				class="rounded-lg border border-accent/70 bg-background/85 p-3 shadow-xs"
+			>
+				<p class="mb-0 font-medium">Weight priorities</p>
+				<p class="mt-1 mb-0 text-muted-foreground">
+					Let important criteria contribute more to your result.
+				</p>
+			</div>
+			<div
+				class="rounded-lg border border-accent/70 bg-background/85 p-3 shadow-xs"
+			>
+				<p class="mb-0 font-medium">Compare outcomes</p>
+				<p class="mt-1 mb-0 text-muted-foreground">
+					Review method outputs together before making a final choice.
+				</p>
+			</div>
+		</div>
+		<p class="mt-4 mb-0 text-sm text-muted-foreground">
+			Use results as guidance, not a verdict. Final decisions are still yours.
+		</p>
+	</section>
 
 	<a href="/setup" class="group block no-underline">
 		<div
@@ -125,50 +172,4 @@
 		</section>
 	</a>
 
-	<section class="border-accent/70 bg-accent/45 text-foreground">
-		<div>
-			<h2 class="mb-0 text-2xl tracking-tight sm:text-3xl">
-				Make better decisions with less noise.
-			</h2>
-			<p class="mt-3 mb-0 text-muted-foreground">
-				Use one or more methods to evaluate alternatives from different angles.
-				{info.name} turns complex choices into structured comparisons by separating
-				inputs from outcomes.
-			</p>
-			<p class="mt-3 mb-0 text-muted-foreground">
-				Define criteria, score alternatives, and compare results before
-				deciding. This keeps the process consistent and reduces judgment noise
-				when tradeoffs are involved.
-			</p>
-		</div>
-		<div class="mt-5 grid gap-3 text-sm sm:grid-cols-3">
-			<div
-				class="rounded-lg border border-accent/70 bg-background/85 p-3 shadow-xs"
-			>
-				<p class="mb-0 font-medium">Score independently</p>
-				<p class="mt-1 mb-0 text-muted-foreground">
-					Rate each alternative without comparing everything at once.
-				</p>
-			</div>
-			<div
-				class="rounded-lg border border-accent/70 bg-background/85 p-3 shadow-xs"
-			>
-				<p class="mb-0 font-medium">Weight priorities</p>
-				<p class="mt-1 mb-0 text-muted-foreground">
-					Let important criteria contribute more to your result.
-				</p>
-			</div>
-			<div
-				class="rounded-lg border border-accent/70 bg-background/85 p-3 shadow-xs"
-			>
-				<p class="mb-0 font-medium">Compare outcomes</p>
-				<p class="mt-1 mb-0 text-muted-foreground">
-					Review method outputs together before making a final choice.
-				</p>
-			</div>
-		</div>
-		<p class="mt-4 mb-0 text-sm text-muted-foreground">
-			Use results as guidance, not a verdict. Final decisions are still yours.
-		</p>
-	</section>
 </div>

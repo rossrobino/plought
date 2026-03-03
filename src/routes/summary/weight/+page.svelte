@@ -1,11 +1,12 @@
 <script lang="ts">
-	import Head from "$lib/components/Head.svelte";
-	import ScoreBars from "$lib/components/output/charts/score-bars.svelte";
-	import StackedBars from "$lib/components/output/charts/stacked-bars.svelte";
-	import Scores from "$lib/components/scores/Scores.svelte";
-	import { alternatives, criteria, rankOrder } from "$lib/state";
-	import { getGuidanceCopy, getMethodScores } from "$lib/util/analysis";
-	import { chartColors } from "$lib/util/chart-colors";
+import Head from "$lib/components/Head.svelte";
+import ScoreBars from "$lib/components/output/charts/score-bars.svelte";
+import StackedBars from "$lib/components/output/charts/stacked-bars.svelte";
+import Scores from "$lib/components/scores/Scores.svelte";
+import { Button } from "$lib/components/ui/button/index.js";
+import { alternatives, criteria, rankOrder } from "$lib/state";
+import { getGuidanceCopy, getMethodScores } from "$lib/util/analysis";
+import { chartColors } from "$lib/util/chart-colors";
 
 	const scores = $derived(
 		getMethodScores(
@@ -44,6 +45,17 @@
 	<p class="mt-1 text-muted-foreground">{guidance.summary}</p>
 	<p class="mt-3 mb-0 text-sm text-muted-foreground">{guidance.comparison}</p>
 	<p class="mt-2 mb-0 text-sm text-muted-foreground">{guidance.caveat}</p>
+	<div class="mt-3 flex flex-wrap gap-2 border-t border-border/60 pt-3">
+		<Button href="/setup/criteria" size="sm" variant="outline">
+			Edit criteria
+		</Button>
+		<Button href="/setup/alternatives" size="sm" variant="outline">
+			Edit alternatives
+		</Button>
+		<Button href="/weight" size="sm" variant="outline">
+			Edit weighted scores
+		</Button>
+	</div>
 </section>
 
 <section>

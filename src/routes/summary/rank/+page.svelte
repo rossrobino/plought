@@ -1,11 +1,12 @@
 <script lang="ts">
-	import Head from "$lib/components/Head.svelte";
-	import ScoreBars from "$lib/components/output/charts/score-bars.svelte";
-	import Scores from "$lib/components/scores/Scores.svelte";
-	import {
-		alternatives,
-		getRankScore,
-		normalizeRankOrder,
+import Head from "$lib/components/Head.svelte";
+import ScoreBars from "$lib/components/output/charts/score-bars.svelte";
+import Scores from "$lib/components/scores/Scores.svelte";
+import { Button } from "$lib/components/ui/button/index.js";
+import {
+	alternatives,
+	getRankScore,
+	normalizeRankOrder,
 		rankOrder,
 	} from "$lib/state";
 	import { getGuidanceCopy } from "$lib/util/analysis";
@@ -42,6 +43,14 @@
 	<p class="mt-1 text-muted-foreground">{guidance.summary}</p>
 	<p class="mt-3 mb-0 text-sm text-muted-foreground">{guidance.comparison}</p>
 	<p class="mt-2 mb-0 text-sm text-muted-foreground">{guidance.caveat}</p>
+	<div class="mt-3 flex flex-wrap gap-2 border-t border-border/60 pt-3">
+		<Button href="/setup/alternatives" size="sm" variant="outline">
+			Edit alternatives
+		</Button>
+		<Button href="/rank" size="sm" variant="outline">
+			Edit rank order
+		</Button>
+	</div>
 </section>
 
 <section>

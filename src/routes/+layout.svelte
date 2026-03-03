@@ -40,6 +40,9 @@
 		if (page.url.pathname.startsWith("/summary/topsis")) {
 			return "TOPSIS";
 		}
+		if (page.url.pathname.startsWith("/summary/robustness")) {
+			return "Robustness";
+		}
 		if (page.url.pathname.startsWith("/summary")) {
 			return "Summary";
 		}

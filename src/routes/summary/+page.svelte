@@ -239,6 +239,15 @@
 					<p class="mt-1 mb-0 text-xs text-muted-foreground">{item.note}</p>
 				</a>
 			{/each}
+			<a
+				href="/summary/robustness"
+				class="block rounded-lg border p-3 no-underline shadow-xs hover:bg-accent/35"
+			>
+				<p class="mb-0 text-sm font-semibold">Robustness</p>
+				<p class="mt-1 mb-0 text-xs text-muted-foreground">
+					Stability of recommendations under simulated weight variation.
+				</p>
+			</a>
 		</div>
 	</section>
 

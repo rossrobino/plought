@@ -9,6 +9,7 @@
 	import GithubIcon from "@lucide/svelte/icons/github";
 	import ListOrderedIcon from "@lucide/svelte/icons/list-ordered";
 	import ScaleIcon from "@lucide/svelte/icons/scale";
+	import ShieldCheckIcon from "@lucide/svelte/icons/shield-check";
 	import SlidersHorizontalIcon from "@lucide/svelte/icons/sliders-horizontal";
 	import TargetIcon from "@lucide/svelte/icons/target";
 	import { mergeProps } from "bits-ui";
@@ -52,6 +53,11 @@
 		},
 		{ icon: ListOrderedIcon, href: "/summary/rank", label: "Rank Order" },
 		{ icon: TargetIcon, href: "/summary/topsis", label: "TOPSIS" },
+		{
+			icon: ShieldCheckIcon,
+			href: "/summary/robustness",
+			label: "Robustness",
+		},
 	];
 	const sidebar = Sidebar.useSidebar();
 

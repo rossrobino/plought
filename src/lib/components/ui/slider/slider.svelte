@@ -42,7 +42,7 @@
 >
 	<span
 		data-slot="slider-track"
-		class="relative h-1.5 w-full grow overflow-hidden rounded-full bg-muted"
+		class="relative h-1.5 w-full grow overflow-hidden rounded-[2px] bg-muted"
 	>
 		<SliderPrimitive.Range
 			data-slot="slider-range"
@@ -53,7 +53,7 @@
 		data-slot="slider-thumb"
 		index={0}
 		class={cn(
-			"block size-4 rounded-full border border-primary/50 bg-background shadow-sm transition-[color,box-shadow] outline-none",
+			"block size-4 rounded-[2px] border border-primary/50 bg-background shadow-sm transition-[color,box-shadow] outline-none",
 			"focus-visible:ring-2 focus-visible:ring-ring/50 focus-visible:outline-1 focus-visible:outline-ring",
 			"disabled:pointer-events-none disabled:opacity-50",
 		)}

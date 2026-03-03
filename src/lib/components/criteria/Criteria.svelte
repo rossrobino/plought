@@ -35,6 +35,11 @@
 		tableView = true,
 	}: Props = $props();
 	let keepTotal = $state(true);
+	const guidance = $derived(
+		weights
+			? "Set how important each criterion is. With 'Keep total at 100%' enabled, adjusting one redistributes the others."
+			: "List the factors you will use to evaluate alternatives.",
+	);
 
 	const markUsed = () => {
 		if (method == null) {
@@ -194,19 +199,30 @@
 	<div class="flex items-center justify-between gap-2">
 		<h2 class="mb-0">Criteria</h2>
 		<Info label="About criteria">
-			<div class="space-y-2">
-				<p>
-					Create criteria for each factor in the decision and assign a weight
-					from 0 to 100.
-				</p>
-				<p>For example: Safety = 50, Speed = 25, Price = 25.</p>
-				<p>
-					A higher weight means that criterion contributes more to the final
-					score.
-				</p>
-			</div>
+			{#if weights}
+				<div class="space-y-2">
+					<p>
+						Use criteria to represent the factors that matter most to this
+						decision.
+					</p>
+					<p>
+						Set each weight as a percentage of importance. Higher weight means
+						more influence on the final weighted result.
+					</p>
+					<p>Example criteria: Safety, Reliability, Cost, Speed.</p>
+				</div>
+			{:else}
+				<div class="space-y-2">
+					<p>
+						Use criteria to represent the factors that matter most to this
+						decision.
+					</p>
+					<p>Example criteria: Safety, Reliability, Cost, Speed.</p>
+				</div>
+			{/if}
 		</Info>
 	</div>
+	<p class="mt-2 text-sm text-muted-foreground">{guidance}</p>
 	<Tooltip.Provider>
 		{#if tableView}
 			<ScrollArea
@@ -218,12 +234,16 @@
 						<Table.Row
 							class="hover:[&,&>svelte-css-wrapper]:[&>th,td]:bg-transparent"
 						>
-							<Table.Head class="min-w-56">Name</Table.Head>
+							<Table.Head class="min-w-56">
+								<span class="sr-only">Criterion name</span>
+							</Table.Head>
 							{#if weights}
 								<Table.Head class="min-w-56">Weight</Table.Head>
 							{/if}
 							{#if manageList}
-								<Table.Head class="w-16"></Table.Head>
+								<Table.Head class="w-16">
+									<span class="sr-only">Actions</span>
+								</Table.Head>
 							{/if}
 						</Table.Row>
 					</Table.Header>

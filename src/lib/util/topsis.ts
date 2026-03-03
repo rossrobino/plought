@@ -7,14 +7,25 @@ const getSafeValue = (value: number) => {
 	return 0;
 };
 
-export const getTopsisCloseness = (
+export interface TopsisDiagnostics {
+	closeness: number[];
+	distanceBest: number[];
+	distanceWorst: number[];
+}
+
+export const getTopsisDiagnostics = (
 	alternatives: Alternative[],
 	criteria: Criteria[],
-) => {
+): TopsisDiagnostics => {
 	const rows = alternatives.length;
 	const cols = criteria.length;
 	if (rows === 0 || cols === 0) {
-		return alternatives.map(() => 0);
+		const empty = alternatives.map(() => 0);
+		return {
+			closeness: empty,
+			distanceBest: empty,
+			distanceWorst: empty,
+		};
 	}
 
 	const normalized = Array.from({ length: rows }, () =>
@@ -59,23 +70,45 @@ export const getTopsisCloseness = (
 		idealWorst[j] = min === Infinity ? 0 : min;
 	}
 
-	return weighted.map((row) => {
-		let bestDistance = 0;
-		let worstDistance = 0;
+	const distanceBest = weighted.map((row) => {
+		let sum = 0;
 		for (let j = 0; j < cols; j++) {
-			const diffBest = row[j] - idealBest[j];
-			const diffWorst = row[j] - idealWorst[j];
-			bestDistance += diffBest * diffBest;
-			worstDistance += diffWorst * diffWorst;
+			const diff = row[j] - idealBest[j];
+			sum += diff * diff;
 		}
-		const dBest = Math.sqrt(bestDistance);
-		const dWorst = Math.sqrt(worstDistance);
+		return Math.sqrt(sum);
+	});
+
+	const distanceWorst = weighted.map((row) => {
+		let sum = 0;
+		for (let j = 0; j < cols; j++) {
+			const diff = row[j] - idealWorst[j];
+			sum += diff * diff;
+		}
+		return Math.sqrt(sum);
+	});
+
+	const closeness = distanceBest.map((dBest, i) => {
+		const dWorst = distanceWorst[i];
 		const denominator = dBest + dWorst;
 		if (denominator === 0) {
 			return 0;
 		}
 		return dWorst / denominator;
 	});
+
+	return {
+		closeness,
+		distanceBest,
+		distanceWorst,
+	};
+};
+
+export const getTopsisCloseness = (
+	alternatives: Alternative[],
+	criteria: Criteria[],
+) => {
+	return getTopsisDiagnostics(alternatives, criteria).closeness;
 };
 
 export const getTopsisScore10 = (

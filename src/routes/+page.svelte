@@ -26,7 +26,7 @@
 
 	<a href="/setup" class="group block no-underline">
 		<div
-			class="rounded-xl border bg-card p-3 shadow-sm transition-colors group-hover:bg-accent/35"
+			class="rounded-lg border bg-card p-3 shadow-xs transition-colors group-hover:bg-accent/35"
 		>
 			<div class="flex items-start justify-between gap-3">
 				<div>
@@ -36,7 +36,7 @@
 					</p>
 				</div>
 				<div
-					class="inline-flex size-9 items-center justify-center rounded-md border bg-background"
+					class="inline-flex size-9 shrink-0 items-center justify-center rounded-md border bg-background"
 				>
 					<SlidersHorizontalIcon class="size-4" />
 				</div>
@@ -55,11 +55,11 @@
 			{@const meta = getAppMeta(app.path)}
 			<a href={app.path} class="group block no-underline">
 				<div
-					class="h-full rounded-xl border bg-card p-3 shadow-sm transition-colors group-hover:bg-accent/35"
+					class="h-full rounded-lg border bg-card p-3 shadow-xs transition-colors group-hover:bg-accent/35"
 				>
 					<div class="flex items-start justify-between gap-2">
 						<div
-							class="inline-flex size-9 items-center justify-center rounded-md border bg-background"
+							class="inline-flex size-9 shrink-0 items-center justify-center rounded-md border bg-background"
 						>
 							<meta.icon class="size-4" />
 						</div>
@@ -94,34 +94,28 @@
 					</p>
 				</div>
 				<div
-					class="inline-flex size-9 items-center justify-center rounded-md border border-primary/40 bg-background/70"
+					class="inline-flex size-9 shrink-0 items-center justify-center rounded-md border border-primary/40 bg-background/70"
 				>
 					<BarChart3Icon class="size-4" />
 				</div>
 			</div>
 			<Separator class="my-3" />
-			<div class="grid gap-2 text-sm sm:grid-cols-3">
-				<div
-					class="rounded-md border bg-card/70 px-2.5 py-1.5 text-muted-foreground"
-				>
-					<span class="font-semibold text-foreground">{apps.length + 1}</span>
-					scoring methods
-				</div>
-				<div
-					class="rounded-md border bg-card/70 px-2.5 py-1.5 text-muted-foreground"
-				>
-					<span class="font-semibold text-foreground">
+			<div class="grid gap-2 sm:grid-cols-2">
+				<div class="rounded-lg border bg-card/70 p-3 shadow-xs">
+					<p class="mb-0 text-xs tracking-wide uppercase text-muted-foreground">
+						Criteria
+					</p>
+					<p class="mt-1 mb-0 text-2xl font-semibold leading-none text-foreground">
 						{criteria.current.length}
-					</span>
-					criteria
+					</p>
 				</div>
-				<div
-					class="rounded-md border bg-card/70 px-2.5 py-1.5 text-muted-foreground"
-				>
-					<span class="font-semibold text-foreground">
+				<div class="rounded-lg border bg-card/70 p-3 shadow-xs">
+					<p class="mb-0 text-xs tracking-wide uppercase text-muted-foreground">
+						Alternatives
+					</p>
+					<p class="mt-1 mb-0 text-2xl font-semibold leading-none text-foreground">
 						{alternatives.current.length}
-					</span>
-					alternatives
+					</p>
 				</div>
 			</div>
 		</section>
@@ -144,19 +138,19 @@
 			</p>
 		</div>
 		<div class="mt-5 grid gap-3 text-sm sm:grid-cols-3">
-			<div class="rounded-lg border border-accent/70 bg-background/85 p-3">
+			<div class="rounded-lg border border-accent/70 bg-background/85 p-3 shadow-xs">
 				<p class="mb-0 font-medium">Score independently</p>
 				<p class="mt-1 mb-0 text-muted-foreground">
 					Rate each alternative without comparing everything at once.
 				</p>
 			</div>
-			<div class="rounded-lg border border-accent/70 bg-background/85 p-3">
+			<div class="rounded-lg border border-accent/70 bg-background/85 p-3 shadow-xs">
 				<p class="mb-0 font-medium">Weight priorities</p>
 				<p class="mt-1 mb-0 text-muted-foreground">
 					Let important criteria contribute more to your result.
 				</p>
 			</div>
-			<div class="rounded-lg border border-accent/70 bg-background/85 p-3">
+			<div class="rounded-lg border border-accent/70 bg-background/85 p-3 shadow-xs">
 				<p class="mb-0 font-medium">Compare outcomes</p>
 				<p class="mt-1 mb-0 text-muted-foreground">
 					Review method outputs together before making a final choice.

@@ -4,10 +4,11 @@
 	import { decision, decisionDefaults } from "$lib/state";
 </script>
 
-<div class="rounded-lg border bg-muted/25 p-3">
-	<h2 class="mb-0">Decision Setup</h2>
+<div class="rounded-lg border bg-muted/25 p-3 shadow-xs">
+	<h2 class="mb-0">Start</h2>
 	<p class="mt-1 text-sm text-muted-foreground">
-		Set your decision context here before scoring. You can update this anytime.
+		Define what you are deciding and what success looks like. You can update this
+		anytime.
 	</p>
 	<div class="mt-3 grid gap-3 sm:grid-cols-2">
 		<Field.Field>
@@ -19,6 +20,9 @@
 				bind:value={decision.current.title}
 				placeholder={decisionDefaults.title}
 			/>
+			<Field.Description>
+				A short name for this decision, like “Choose a car” or “Pick a city”.
+			</Field.Description>
 		</Field.Field>
 		<Field.Field>
 			<Field.Label for="decision-goal">Goal</Field.Label>
@@ -29,6 +33,10 @@
 				bind:value={decision.current.goal}
 				placeholder={decisionDefaults.goal}
 			/>
+			<Field.Description>
+				Describe what outcome you want, so criteria and method results stay
+				aligned.
+			</Field.Description>
 		</Field.Field>
 	</div>
 </div>

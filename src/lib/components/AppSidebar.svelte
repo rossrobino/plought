@@ -10,6 +10,7 @@
 	import ListOrderedIcon from "@lucide/svelte/icons/list-ordered";
 	import ScaleIcon from "@lucide/svelte/icons/scale";
 	import SlidersHorizontalIcon from "@lucide/svelte/icons/sliders-horizontal";
+	import TargetIcon from "@lucide/svelte/icons/target";
 	import { mergeProps } from "bits-ui";
 
 	const setup = [
@@ -41,11 +42,21 @@
 		};
 	});
 
-	const output = [{ icon: BarChart3Icon, href: "/summary", label: "Summary" }];
+	const output = [
+		{ icon: BarChart3Icon, href: "/summary", label: "Summary" },
+		{ icon: ScaleIcon, href: "/summary/weight", label: "Weighted Sum" },
+		{
+			icon: GitCompareIcon,
+			href: "/summary/compare",
+			label: "Pairwise Comparison",
+		},
+		{ icon: ListOrderedIcon, href: "/summary/rank", label: "Rank Order" },
+		{ icon: TargetIcon, href: "/summary/topsis", label: "TOPSIS" },
+	];
 	const sidebar = Sidebar.useSidebar();
 
 	const active = (href: string) => {
-		if (href === "/setup") {
+		if (href === "/setup" || href === "/summary") {
 			return page.url.pathname === href;
 		}
 		return page.url.pathname.startsWith(href);
@@ -119,10 +130,10 @@
 							</Sidebar.MenuButton>
 							{#if isMethodUsed(item.method)}
 								<Sidebar.MenuBadge
-									class="inset-e-2 h-4 w-4 min-w-0 -translate-y-1/2 rounded-full border border-sidebar-border bg-sidebar-accent/45 p-0 text-sidebar-foreground/80 peer-hover/menu-button:text-sidebar-foreground/80 peer-data-[active=true]/menu-button:text-sidebar-foreground/80 peer-data-[size=default]/menu-button:top-1/2 peer-data-[size=lg]/menu-button:top-1/2 peer-data-[size=sm]/menu-button:top-1/2"
+									class="inset-e-2 top-1/2 h-4 w-4 min-w-0 -translate-y-1/2 rounded-none bg-transparent p-0 text-sidebar-foreground/70 peer-hover/menu-button:text-sidebar-foreground/80 peer-data-[active=true]/menu-button:text-sidebar-foreground peer-data-[size=default]/menu-button:top-1/2 peer-data-[size=lg]/menu-button:top-1/2 peer-data-[size=sm]/menu-button:top-1/2"
 									aria-hidden="true"
 								>
-									<CheckIcon class="size-2.5" />
+									<CheckIcon class="size-3" />
 								</Sidebar.MenuBadge>
 							{/if}
 						</Sidebar.MenuItem>
@@ -132,7 +143,7 @@
 		</Sidebar.Group>
 
 		<Sidebar.Group>
-			<Sidebar.GroupLabel>Output</Sidebar.GroupLabel>
+			<Sidebar.GroupLabel>Analysis</Sidebar.GroupLabel>
 			<Sidebar.GroupContent>
 				<Sidebar.Menu>
 					{#each output as item (item.href)}

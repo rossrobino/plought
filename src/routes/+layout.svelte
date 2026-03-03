@@ -28,6 +28,18 @@
 		if (page.url.pathname.startsWith("/setup/criteria")) {
 			return "Criteria";
 		}
+		if (page.url.pathname.startsWith("/summary/weight")) {
+			return "Weighted Sum";
+		}
+		if (page.url.pathname.startsWith("/summary/compare")) {
+			return "Pairwise Comparison";
+		}
+		if (page.url.pathname.startsWith("/summary/rank")) {
+			return "Rank Order";
+		}
+		if (page.url.pathname.startsWith("/summary/topsis")) {
+			return "TOPSIS";
+		}
 		if (page.url.pathname.startsWith("/summary")) {
 			return "Summary";
 		}
@@ -51,7 +63,7 @@
 	});
 </script>
 
-<Sidebar.Provider bind:open>
+<Sidebar.Provider bind:open class="min-w-[18rem]">
 	<AppSidebar />
 	<Sidebar.Inset class="selection:bg-foreground selection:text-background">
 		<header

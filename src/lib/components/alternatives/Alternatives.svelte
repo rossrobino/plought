@@ -30,6 +30,11 @@
 		manageList = true,
 		method = "weightedSum",
 	}: Props = $props();
+	const guidance = $derived(
+		showCriteria
+			? "Score each alternative from 0 to 10 for every criterion. Higher numbers mean a stronger fit for that criterion."
+			: "Add the options you are deciding between.",
+	);
 
 	const markUsed = () => {
 		if (method == null) {
@@ -43,12 +48,10 @@
 	<div class="flex items-center justify-between gap-2">
 		<h2 class="mb-0">Alternatives</h2>
 		<Info label="About alternatives">
-			<div class="space-y-2">
-				<p>Create alternatives for each option you are comparing.</p>
-				<p>Examples: Ford F-150, Aston Martin DB9, Volvo XC60.</p>
-			</div>
+			<p>Examples: Ford F-150, Aston Martin DB9, Volvo XC60.</p>
 		</Info>
 	</div>
+	<p class="mt-2 text-sm text-muted-foreground">{guidance}</p>
 	{#if showCriteria}
 		<ScrollArea
 			class="mt-3 w-full rounded-md border whitespace-nowrap"
@@ -59,12 +62,16 @@
 					<Table.Row
 						class="hover:[&,&>svelte-css-wrapper]:[&>th,td]:bg-transparent"
 					>
-						<Table.Head class="min-w-56">Name</Table.Head>
+						<Table.Head class="min-w-56">
+							<span class="sr-only">Alternative name</span>
+						</Table.Head>
 						{#each criteria.current as item}
 							<Table.Head class="min-w-32">{item.name}</Table.Head>
 						{/each}
 						{#if manageList}
-							<Table.Head class="w-16"></Table.Head>
+							<Table.Head class="w-16">
+								<span class="sr-only">Actions</span>
+							</Table.Head>
 						{/if}
 					</Table.Row>
 				</Table.Header>

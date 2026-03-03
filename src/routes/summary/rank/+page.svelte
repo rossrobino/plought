@@ -1,8 +1,13 @@
 <script lang="ts">
-	import ScoreBars from "$lib/components/output/charts/score-bars.svelte";
 	import Head from "$lib/components/Head.svelte";
+	import ScoreBars from "$lib/components/output/charts/score-bars.svelte";
 	import Scores from "$lib/components/scores/Scores.svelte";
-	import { alternatives, getRankScore, normalizeRankOrder, rankOrder } from "$lib/state";
+	import {
+		alternatives,
+		getRankScore,
+		normalizeRankOrder,
+		rankOrder,
+	} from "$lib/state";
 	import { getGuidanceCopy } from "$lib/util/analysis";
 	import { chartColors } from "$lib/util/chart-colors";
 
@@ -12,7 +17,8 @@
 			alternatives.current.length,
 		);
 		return order.map((altIndex, i) => {
-			const name = alternatives.current[altIndex]?.name ?? `Alternative #${altIndex + 1}`;
+			const name =
+				alternatives.current[altIndex]?.name ?? `Alternative #${altIndex + 1}`;
 			return {
 				label: `#${i + 1} ${name}`,
 				score: getRankScore(i, alternatives.current.length),

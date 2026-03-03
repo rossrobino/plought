@@ -1,15 +1,15 @@
 <script lang="ts">
-	import MethodMatrixChart from "$lib/components/output/charts/method-matrix-chart.svelte";
 	import Head from "$lib/components/Head.svelte";
+	import MethodMatrixChart from "$lib/components/output/charts/method-matrix-chart.svelte";
 	import Scores from "$lib/components/scores/Scores.svelte";
 	import { Button } from "$lib/components/ui/button/index.js";
 	import {
+		type MethodKey,
 		alternatives,
 		criteria,
 		isMethodIncluded,
 		rankOrder,
 		toggleMethodIncluded,
-		type MethodKey,
 	} from "$lib/state";
 	import {
 		getAgreementLevel,
@@ -171,7 +171,7 @@
 		<p class="mt-1 text-muted-foreground">{guidance.summary}</p>
 		<div class="mt-3 grid gap-3 sm:grid-cols-3">
 			<div class="rounded-lg border bg-muted/25 p-3 shadow-xs">
-				<p class="mb-0 text-xs uppercase tracking-wide text-muted-foreground">
+				<p class="mb-0 text-xs tracking-wide text-muted-foreground uppercase">
 					Recommended Option
 				</p>
 				<p class="mt-1 mb-0 truncate text-base font-semibold">{winnerName}</p>
@@ -182,14 +182,16 @@
 				{/if}
 			</div>
 			<div class="rounded-lg border bg-muted/25 p-3 shadow-xs">
-				<p class="mb-0 text-xs uppercase tracking-wide text-muted-foreground">
+				<p class="mb-0 text-xs tracking-wide text-muted-foreground uppercase">
 					Agreement Level
 				</p>
 				<p class="mt-1 mb-0 text-base font-semibold">{agreementLabel}</p>
-				<p class="mt-1 mb-0 text-xs text-muted-foreground">{guidance.comparison}</p>
+				<p class="mt-1 mb-0 text-xs text-muted-foreground">
+					{guidance.comparison}
+				</p>
 			</div>
 			<div class="rounded-lg border bg-muted/25 p-3 shadow-xs">
-				<p class="mb-0 text-xs uppercase tracking-wide text-muted-foreground">
+				<p class="mb-0 text-xs tracking-wide text-muted-foreground uppercase">
 					Runner-up Gap
 				</p>
 				{#if runnerName == null}

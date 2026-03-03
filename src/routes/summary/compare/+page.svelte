@@ -1,7 +1,7 @@
 <script lang="ts">
+	import Head from "$lib/components/Head.svelte";
 	import ScoreBars from "$lib/components/output/charts/score-bars.svelte";
 	import StackedBars from "$lib/components/output/charts/stacked-bars.svelte";
-	import Head from "$lib/components/Head.svelte";
 	import Scores from "$lib/components/scores/Scores.svelte";
 	import { alternatives, criteria, rankOrder } from "$lib/state";
 	import { getGuidanceCopy, getMethodScores } from "$lib/util/analysis";

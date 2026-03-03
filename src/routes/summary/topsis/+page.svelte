@@ -1,6 +1,6 @@
 <script lang="ts">
-	import TopsisDistanceMap from "$lib/components/output/charts/topsis-distance-map.svelte";
 	import Head from "$lib/components/Head.svelte";
+	import TopsisDistanceMap from "$lib/components/output/charts/topsis-distance-map.svelte";
 	import Scores from "$lib/components/scores/Scores.svelte";
 	import { alternatives, criteria } from "$lib/state";
 	import { getGuidanceCopy } from "$lib/util/analysis";
@@ -24,7 +24,8 @@
 <section>
 	<h2 class="mb-0">TOPSIS</h2>
 	<p class="mt-1 text-sm text-muted-foreground">
-		TOPSIS stands for Technique for Order Preference by Similarity to Ideal Solution.
+		TOPSIS stands for Technique for Order Preference by Similarity to Ideal
+		Solution.
 	</p>
 	<p class="mt-1 text-muted-foreground">{guidance.summary}</p>
 	<p class="mt-3 mb-0 text-sm text-muted-foreground">{guidance.comparison}</p>

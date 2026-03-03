@@ -7,8 +7,8 @@
 <div class="rounded-lg border bg-muted/25 p-3 shadow-xs">
 	<h2 class="mb-0">Start</h2>
 	<p class="mt-1 text-sm text-muted-foreground">
-		Define what you are deciding and what success looks like. You can update this
-		anytime.
+		Define what you are deciding and what success looks like. You can update
+		this anytime.
 	</p>
 	<div class="mt-3 grid gap-3 sm:grid-cols-2">
 		<Field.Field>

@@ -21,11 +21,7 @@ export const getTopsisDiagnostics = (
 	const cols = criteria.length;
 	if (rows === 0 || cols === 0) {
 		const empty = alternatives.map(() => 0);
-		return {
-			closeness: empty,
-			distanceBest: empty,
-			distanceWorst: empty,
-		};
+		return { closeness: empty, distanceBest: empty, distanceWorst: empty };
 	}
 
 	const normalized = Array.from({ length: rows }, () =>
@@ -97,11 +93,7 @@ export const getTopsisDiagnostics = (
 		return dWorst / denominator;
 	});
 
-	return {
-		closeness,
-		distanceBest,
-		distanceWorst,
-	};
+	return { closeness, distanceBest, distanceWorst };
 };
 
 export const getTopsisCloseness = (

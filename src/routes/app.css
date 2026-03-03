@@ -1,6 +1,7 @@
 @import "tailwindcss";
 
 @import "tw-animate-css";
+@import "@fontsource-variable/geist";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -41,6 +42,26 @@
 	--sidebar-accent-foreground: var(--color-slate-900);
 	--sidebar-border: var(--color-slate-200);
 	--sidebar-ring: var(--color-slate-500);
+	--table-row-hover: color-mix(
+		in oklch,
+		var(--color-slate-500) 3%,
+		transparent
+	);
+	--table-row-selected: color-mix(
+		in oklch,
+		var(--color-slate-500) 5%,
+		transparent
+	);
+	--table-col-active: color-mix(
+		in oklch,
+		var(--color-slate-500) 4%,
+		transparent
+	);
+	--table-cell-active: color-mix(
+		in oklch,
+		var(--color-slate-500) 9%,
+		transparent
+	);
 }
 
 .dark {
@@ -79,9 +100,30 @@
 	--sidebar-accent-foreground: var(--color-slate-100);
 	--sidebar-border: var(--color-slate-700);
 	--sidebar-ring: var(--color-lime-400);
+	--table-row-hover: color-mix(
+		in oklch,
+		var(--color-slate-400) 7%,
+		transparent
+	);
+	--table-row-selected: color-mix(
+		in oklch,
+		var(--color-slate-400) 10%,
+		transparent
+	);
+	--table-col-active: color-mix(
+		in oklch,
+		var(--color-slate-400) 9%,
+		transparent
+	);
+	--table-cell-active: color-mix(
+		in oklch,
+		var(--color-slate-400) 15%,
+		transparent
+	);
 }
 
 @theme inline {
+	--font-sans: "Geist Variable", ui-sans-serif, system-ui, sans-serif;
 	--radius-sm: calc(var(--radius) - 4px);
 	--radius-md: calc(var(--radius) - 2px);
 	--radius-lg: var(--radius);
@@ -125,7 +167,7 @@
 	}
 
 	body {
-		@apply bg-background text-foreground tabular-nums antialiased;
+		@apply bg-background font-sans text-foreground tabular-nums antialiased;
 		min-inline-size: 18rem;
 		overflow-x: auto;
 	}

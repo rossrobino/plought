@@ -33,6 +33,7 @@
 		"vite": "^7.3.1"
 	},
 	"dependencies": {
+		"@fontsource-variable/geist": "^5.2.8",
 		"@vercel/analytics": "^1.6.1",
 		"bits-ui": "^2.16.2",
 		"runed": "^0.37.1"

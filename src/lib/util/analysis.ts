@@ -1,4 +1,4 @@
-import { getRankScore, normalizeRankOrder, type MethodKey } from "$lib/state";
+import { type MethodKey, getRankScore, normalizeRankOrder } from "$lib/state";
 import type { Alternative, Criteria } from "$lib/types";
 import { getTopsisCloseness } from "$lib/util/topsis";
 
@@ -30,7 +30,10 @@ const round = (value: number) => {
 	return Number(value.toFixed(2));
 };
 
-const getWeightedScores = (alternatives: Alternative[], criteria: Criteria[]) => {
+const getWeightedScores = (
+	alternatives: Alternative[],
+	criteria: Criteria[],
+) => {
 	return alternatives.map((alt) => {
 		let total = 0;
 		for (let i = 0; i < criteria.length; i++) {
@@ -203,13 +206,7 @@ export const getConsensusRank = (
 			? 0
 			: round(consensusScores[winnerIndex] - consensusScores[runnerUpIndex]);
 
-	return {
-		meanRank,
-		winnerIndex,
-		runnerUpIndex,
-		runnerUpGap,
-		order,
-	};
+	return { meanRank, winnerIndex, runnerUpIndex, runnerUpGap, order };
 };
 
 export const getAgreementLevel = (
@@ -237,11 +234,7 @@ export const getAgreementLevel = (
 };
 
 interface GuidanceOptions {
-	agreement:
-		| "none"
-		| "high"
-		| "medium"
-		| "low";
+	agreement: "none" | "high" | "medium" | "low";
 	alternatives: Alternative[];
 	consensus?: ConsensusRank;
 	includedMethods?: MethodKey[];

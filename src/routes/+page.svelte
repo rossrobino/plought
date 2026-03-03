@@ -102,18 +102,22 @@
 			<Separator class="my-3" />
 			<div class="grid gap-2 sm:grid-cols-2">
 				<div class="rounded-lg border bg-card/70 p-3 shadow-xs">
-					<p class="mb-0 text-xs tracking-wide uppercase text-muted-foreground">
+					<p class="mb-0 text-xs tracking-wide text-muted-foreground uppercase">
 						Criteria
 					</p>
-					<p class="mt-1 mb-0 text-2xl font-semibold leading-none text-foreground">
+					<p
+						class="mt-1 mb-0 text-2xl leading-none font-semibold text-foreground"
+					>
 						{criteria.current.length}
 					</p>
 				</div>
 				<div class="rounded-lg border bg-card/70 p-3 shadow-xs">
-					<p class="mb-0 text-xs tracking-wide uppercase text-muted-foreground">
+					<p class="mb-0 text-xs tracking-wide text-muted-foreground uppercase">
 						Alternatives
 					</p>
-					<p class="mt-1 mb-0 text-2xl font-semibold leading-none text-foreground">
+					<p
+						class="mt-1 mb-0 text-2xl leading-none font-semibold text-foreground"
+					>
 						{alternatives.current.length}
 					</p>
 				</div>
@@ -138,19 +142,25 @@
 			</p>
 		</div>
 		<div class="mt-5 grid gap-3 text-sm sm:grid-cols-3">
-			<div class="rounded-lg border border-accent/70 bg-background/85 p-3 shadow-xs">
+			<div
+				class="rounded-lg border border-accent/70 bg-background/85 p-3 shadow-xs"
+			>
 				<p class="mb-0 font-medium">Score independently</p>
 				<p class="mt-1 mb-0 text-muted-foreground">
 					Rate each alternative without comparing everything at once.
 				</p>
 			</div>
-			<div class="rounded-lg border border-accent/70 bg-background/85 p-3 shadow-xs">
+			<div
+				class="rounded-lg border border-accent/70 bg-background/85 p-3 shadow-xs"
+			>
 				<p class="mb-0 font-medium">Weight priorities</p>
 				<p class="mt-1 mb-0 text-muted-foreground">
 					Let important criteria contribute more to your result.
 				</p>
 			</div>
-			<div class="rounded-lg border border-accent/70 bg-background/85 p-3 shadow-xs">
+			<div
+				class="rounded-lg border border-accent/70 bg-background/85 p-3 shadow-xs"
+			>
 				<p class="mb-0 font-medium">Compare outcomes</p>
 				<p class="mt-1 mb-0 text-muted-foreground">
 					Review method outputs together before making a final choice.

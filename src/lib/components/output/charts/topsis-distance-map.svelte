@@ -1,7 +1,7 @@
 <script lang="ts">
 	import {
-		ChartContainer,
 		type ChartConfig,
+		ChartContainer,
 	} from "$lib/components/ui/chart/index.js";
 	import { chartColors } from "$lib/util/chart-colors";
 	import { Circle, LineChart, Tooltip } from "layerchart";
@@ -21,17 +21,10 @@
 		worst: number[];
 	}
 
-	let {
-		best,
-		rows,
-		worst,
-	}: Props = $props();
+	let { best, rows, worst }: Props = $props();
 
 	const config = $derived<ChartConfig>({
-		trend: {
-			color: chartColors[1],
-			label: "Trend",
-		},
+		trend: { color: chartColors[1], label: "Trend" },
 	});
 
 	const data = $derived.by(() => {
@@ -55,12 +48,7 @@
 	});
 
 	const height = 92;
-	const chartPadding = {
-		bottom: 44,
-		left: 24,
-		right: 24,
-		top: 16,
-	};
+	const chartPadding = { bottom: 44, left: 24, right: 24, top: 16 };
 	const yDomain: [number, number] = [0, 1];
 
 	const formatValue = (value: unknown) => {
@@ -74,11 +62,11 @@
 >
 	<div class="w-full" style={`height:${height}px;`}>
 		<LineChart
-			data={data}
+			{data}
 			x={(d: Row) => d.closeness}
 			y={() => 0.5}
 			xDomain={[0, 10]}
-			yDomain={yDomain}
+			{yDomain}
 			padding={chartPadding}
 			axis="x"
 			grid={false}
@@ -107,8 +95,14 @@
 		>
 			{#snippet marks({ context })}
 				{@const axisY = Number(context.yScale(0.5))}
-				{@const axisStart = Math.min(Number(context.xRange[0] ?? 0), Number(context.xRange[1] ?? 0))}
-				{@const axisEnd = Math.max(Number(context.xRange[0] ?? 0), Number(context.xRange[1] ?? 0))}
+				{@const axisStart = Math.min(
+					Number(context.xRange[0] ?? 0),
+					Number(context.xRange[1] ?? 0),
+				)}
+				{@const axisEnd = Math.max(
+					Number(context.xRange[0] ?? 0),
+					Number(context.xRange[1] ?? 0),
+				)}
 				{@const capHeight = 18}
 				<line
 					x1={axisStart}
@@ -152,19 +146,27 @@
 			{#snippet tooltip({ context })}
 				<Tooltip.Root {context} variant="none">
 					{#snippet children({ data: item })}
-						<div class="border-border/50 bg-background grid min-w-[12rem] items-start gap-1.5 rounded-lg border px-2.5 py-1.5 text-xs shadow-xl">
+						<div
+							class="grid min-w-[12rem] items-start gap-1.5 rounded-lg border border-border/50 bg-background px-2.5 py-1.5 text-xs shadow-xl"
+						>
 							<div class="font-medium text-foreground">{item.label}</div>
 							<div class="flex items-center justify-between gap-4">
 								<span class="text-muted-foreground">Closeness</span>
-								<span class="font-mono font-medium tabular-nums">{formatValue(item.closeness)}</span>
+								<span class="font-mono font-medium tabular-nums">
+									{formatValue(item.closeness)}
+								</span>
 							</div>
 							<div class="flex items-center justify-between gap-4">
 								<span class="text-muted-foreground">Distance to best</span>
-								<span class="font-mono tabular-nums">{formatValue(item.best)}</span>
+								<span class="font-mono tabular-nums">
+									{formatValue(item.best)}
+								</span>
 							</div>
 							<div class="flex items-center justify-between gap-4">
 								<span class="text-muted-foreground">Distance to worst</span>
-								<span class="font-mono tabular-nums">{formatValue(item.worst)}</span>
+								<span class="font-mono tabular-nums">
+									{formatValue(item.worst)}
+								</span>
 							</div>
 						</div>
 					{/snippet}
@@ -173,10 +175,15 @@
 		</LineChart>
 	</div>
 
-	<div class="px-2 pt-1 pb-0 flex flex-wrap items-center justify-center gap-x-4 gap-y-1 text-xs">
+	<div
+		class="flex flex-wrap items-center justify-center gap-x-4 gap-y-1 px-2 pt-1 pb-0 text-xs"
+	>
 		{#each data as item (item.key)}
 			<div class="flex items-center gap-1.5 text-muted-foreground">
-				<span class="inline-block size-2.5 rounded-none" style={`background-color:${item.color};`}></span>
+				<span
+					class="inline-block size-2.5 rounded-none"
+					style={`background-color:${item.color};`}
+				></span>
 				<span>{item.label}</span>
 			</div>
 		{/each}

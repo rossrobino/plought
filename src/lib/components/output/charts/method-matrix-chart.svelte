@@ -1,8 +1,8 @@
 <script lang="ts">
 	import {
+		type ChartConfig,
 		ChartContainer,
 		ChartTooltip,
-		type ChartConfig,
 	} from "$lib/components/ui/chart/index.js";
 	import { BarChart } from "layerchart";
 
@@ -67,21 +67,19 @@
 	const chartPadding = $derived.by(() => {
 		const bottom = Math.min(
 			84,
-			Math.max(50, rows.reduce((max, row) => Math.max(max, row.length), 0) * 2.2 + 22),
+			Math.max(
+				50,
+				rows.reduce((max, row) => Math.max(max, row.length), 0) * 2.2 + 22,
+			),
 		);
-		return {
-			bottom,
-			left: 96,
-			right: 20,
-			top: 12,
-		};
+		return { bottom, left: 96, right: 20, top: 12 };
 	});
 	const resolvedXLabel = $derived(xLabel ?? "Alternative");
 	const resolvedYLabel = $derived(yLabel ?? "Score (0-10)");
 </script>
 
 <ChartContainer
-	config={config}
+	{config}
 	class="aspect-auto flex-col items-stretch justify-start gap-2 rounded-lg border bg-muted/20 p-2 shadow-xs"
 >
 	<div class="w-full" style={`height:${height}px;`}>
@@ -98,23 +96,15 @@
 			grid={false}
 			legend={false}
 			props={{
-				bars: {
-					radius: 0,
-					rounded: "none",
-					strokeWidth: 0,
-				},
+				bars: { radius: 0, rounded: "none", strokeWidth: 0 },
 				xAxis: {
 					label: resolvedXLabel,
-					labelProps: {
-						dy: 12,
-					},
+					labelProps: { dy: 12 },
 					tickMarks: false,
 				},
 				yAxis: {
 					label: resolvedYLabel,
-					labelProps: {
-						dx: 4,
-					},
+					labelProps: { dx: 4 },
 					tickMarks: false,
 					tickSpacing: 56,
 				},
@@ -126,7 +116,7 @@
 		</BarChart>
 	</div>
 
-	<div class="px-2 pt-1 pb-0 flex flex-wrap gap-x-3 gap-y-1 text-xs">
+	<div class="flex flex-wrap gap-x-3 gap-y-1 px-2 pt-1 pb-0 text-xs">
 		{#each methods as item (item.key)}
 			<div class="flex items-center gap-1.5 text-muted-foreground">
 				<span

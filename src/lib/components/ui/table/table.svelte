@@ -39,7 +39,9 @@
 		if (table == null) {
 			return;
 		}
-		for (const cell of table.querySelectorAll("td[data-col-active], th[data-col-active]")) {
+		for (const cell of table.querySelectorAll(
+			"td[data-col-active], th[data-col-active]",
+		)) {
 			cell.removeAttribute("data-col-active");
 		}
 	};
@@ -110,7 +112,11 @@
 
 	const handleFocusOut = (event: FocusEvent) => {
 		const table = getTable();
-		if (!(event.relatedTarget instanceof Node) || table == null || !table.contains(event.relatedTarget)) {
+		if (
+			!(event.relatedTarget instanceof Node) ||
+			table == null ||
+			!table.contains(event.relatedTarget)
+		) {
 			clearHover();
 		}
 	};

@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { page } from "$app/state";
+	import SnapshotActions from "$lib/components/snapshot/SnapshotActions.svelte";
 	import * as Sidebar from "$lib/components/ui/sidebar/index.js";
 	import { apps as appRegistry, info } from "$lib/info";
 	import { type SetupStepKey, isMethodUsed, isSetupStepUsed } from "$lib/state";
@@ -192,8 +193,15 @@
 				</Sidebar.Menu>
 			</Sidebar.GroupContent>
 		</Sidebar.Group>
-	</Sidebar.Content>
-	<Sidebar.Footer>
+
+		<Sidebar.Separator />
+		<Sidebar.Group>
+			<Sidebar.GroupLabel>Data</Sidebar.GroupLabel>
+			<Sidebar.GroupContent>
+				<SnapshotActions onAction={closeSidebarOnMobile} />
+			</Sidebar.GroupContent>
+		</Sidebar.Group>
+
 		<Sidebar.Separator />
 		<Sidebar.Menu>
 			<Sidebar.MenuItem>
@@ -212,5 +220,5 @@
 				</Sidebar.MenuButton>
 			</Sidebar.MenuItem>
 		</Sidebar.Menu>
-	</Sidebar.Footer>
+	</Sidebar.Content>
 </Sidebar.Root>

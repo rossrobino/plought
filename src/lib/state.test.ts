@@ -119,4 +119,93 @@ describe("state", () => {
 			}),
 		).toBe(true);
 	});
+
+	it("exports snapshot state with all expected keys", () => {
+		const snapshot = state.exportSnapshotState();
+
+		expect(Object.keys(snapshot).sort()).toEqual([
+			"allocation",
+			"alternatives",
+			"criteria",
+			"decision",
+			"methodMeta",
+			"rankOrder",
+			"setupStepMeta",
+		]);
+		expect(Array.isArray(snapshot.criteria)).toBe(true);
+		expect(Array.isArray(snapshot.alternatives)).toBe(true);
+		expect(Array.isArray(snapshot.allocation)).toBe(true);
+		expect(Array.isArray(snapshot.rankOrder)).toBe(true);
+	});
+
+	it("imports snapshot state and defaults missing keys", () => {
+		state.markMethodUsed("pairwise");
+		state.markSetupStepUsed("criteria");
+		state.importSnapshotState({
+			decision: { title: "Imported", goal: "Imported goal" },
+		});
+
+		expect(state.decision.current).toEqual({
+			title: "Imported",
+			goal: "Imported goal",
+		});
+		expect(state.criteria.current.length).toBe(2);
+		expect(state.alternatives.current.length).toBe(2);
+		expect(state.allocation.current.length).toBe(2);
+		expect(state.rankOrder.current.length).toBe(2);
+		expect(state.isMethodUsed("pairwise")).toBe(false);
+		expect(state.isSetupStepUsed("criteria")).toBe(false);
+	});
+
+	it("imports snapshot state and normalizes dependent dimensions", () => {
+		state.importSnapshotState({
+			criteria: [
+				{ name: "C1", weight: 0.7 },
+				{ name: "C2", weight: 0.3 },
+				{ name: "C3", weight: 10 },
+			],
+			alternatives: [
+				{ name: "A", scores: [11], pairwise: [0.5, 1, 1] },
+				{ name: "", scores: [-2, Number.NaN, 3], pairwise: [0, 0.5, 1] },
+				{ name: "C", scores: [2, 2, 2], pairwise: [0, 0, 0.5] },
+			],
+			allocation: [[40, 30, 30]],
+			rankOrder: [5, 1, 1],
+			methodMeta: { weightedSum: { used: true, included: true } },
+			setupStepMeta: { start: { used: true } },
+		});
+
+		expect(state.criteria.current.length).toBe(3);
+		expect(state.criteria.current[2].weight).toBe(1);
+		expect(state.alternatives.current.length).toBe(3);
+		expect(
+			state.alternatives.current.every((item) => item.scores.length === 3),
+		).toBe(true);
+		expect(
+			state.alternatives.current.every((item) =>
+				item.scores.every((score) => {
+					return score >= 0 && score <= 10;
+				}),
+			),
+		).toBe(true);
+		expect(
+			state.alternatives.current.every((item) => item.pairwise.length === 3),
+		).toBe(true);
+		expect(state.alternatives.current[0].pairwise[1]).toBe(1);
+		expect(state.alternatives.current[1].pairwise[0]).toBe(0);
+		expect(state.allocation.current.length).toBe(3);
+		expect(state.allocation.current.every((row) => row.length === 3)).toBe(
+			true,
+		);
+		expect(
+			state.allocation.current.every((row) => {
+				return Math.abs(row.reduce((a, b) => a + b, 0) - 100) < 0.001;
+			}),
+		).toBe(true);
+		expect(state.rankOrder.current).toEqual([1, 0, 2]);
+		expect(state.isMethodUsed("weightedSum")).toBe(true);
+		expect(state.isMethodUsed("pairwise")).toBe(false);
+		expect(state.isSetupStepUsed("start")).toBe(true);
+		expect(state.isSetupStepUsed("criteria")).toBe(false);
+	});
 });

@@ -1,11 +1,38 @@
 <script lang="ts">
 	import Head from "$lib/components/Head.svelte";
+	import { Progress } from "$lib/components/ui/progress/index.js";
 	import { Separator } from "$lib/components/ui/separator/index.js";
 	import { apps, info } from "$lib/info";
-	import { alternatives, criteria } from "$lib/state";
+	import {
+		alternatives,
+		criteria,
+		isMethodUsed,
+		isSetupStepUsed,
+	} from "$lib/state";
 	import ArrowRightIcon from "@lucide/svelte/icons/arrow-right";
 	import BarChart3Icon from "@lucide/svelte/icons/bar-chart-3";
 	import SlidersHorizontalIcon from "@lucide/svelte/icons/sliders-horizontal";
+
+	const setupSteps = ["start", "alternatives", "criteria"] as const;
+
+	const setupProgress = $derived.by(() => {
+		const total = setupSteps.length;
+		const done = setupSteps.reduce((count, step) => {
+			return count + (isSetupStepUsed(step) ? 1 : 0);
+		}, 0);
+		return { done, total, percent: Math.round((done / total) * 100) };
+	});
+
+	const appProgress = $derived.by(() => {
+		const total = apps.length;
+		const done = apps.reduce((count, app) => {
+			return count + (isMethodUsed(app.method) ? 1 : 0);
+		}, 0);
+		if (total === 0) {
+			return { done, total, percent: 0 };
+		}
+		return { done, total, percent: Math.round((done / total) * 100) };
+	});
 </script>
 
 <div class="w-full space-y-4 pt-4">
@@ -83,6 +110,63 @@
 			</div>
 		</div>
 	</a>
+
+	<section class="rounded-lg border bg-card p-3 shadow-xs">
+		<div class="flex items-start justify-between gap-3">
+			<div>
+				<h2 class="mb-0">Progress</h2>
+				<p class="mt-1 text-muted-foreground">
+					Track setup and app progress as you work through your decision.
+				</p>
+			</div>
+			<div
+				class="inline-flex size-9 shrink-0 items-center justify-center rounded-md border bg-background"
+			>
+				<BarChart3Icon class="size-4" />
+			</div>
+		</div>
+		<Separator class="my-3" />
+		<div class="grid gap-2 sm:grid-cols-2">
+			<div class="rounded-lg border bg-muted/25 p-3 shadow-xs">
+				<div class="flex items-center justify-between gap-2">
+					<p class="mb-0 text-xs tracking-wide text-muted-foreground uppercase">
+						Setup
+					</p>
+					<p class="mb-0 text-sm font-medium text-foreground">
+						{setupProgress.done}/{setupProgress.total}
+					</p>
+				</div>
+				<Progress
+					class="mt-2"
+					max={100}
+					value={setupProgress.percent}
+					aria-label={`Setup progress: ${setupProgress.done} of ${setupProgress.total}`}
+				/>
+				<p class="mt-2 mb-0 text-xs text-muted-foreground">
+					{setupProgress.percent}% complete
+				</p>
+			</div>
+			<div class="rounded-lg border bg-muted/25 p-3 shadow-xs">
+				<div class="flex items-center justify-between gap-2">
+					<p class="mb-0 text-xs tracking-wide text-muted-foreground uppercase">
+						App
+					</p>
+					<p class="mb-0 text-sm font-medium text-foreground">
+						{appProgress.done}/{appProgress.total}
+					</p>
+				</div>
+				<Progress
+					class="mt-2"
+					max={100}
+					value={appProgress.percent}
+					aria-label={`App progress: ${appProgress.done} of ${appProgress.total}`}
+				/>
+				<p class="mt-2 mb-0 text-xs text-muted-foreground">
+					{appProgress.percent}% complete
+				</p>
+			</div>
+		</div>
+	</section>
 
 	<div class="mt-4 grid gap-4 sm:grid-cols-2">
 		{#each apps as app (app.path)}

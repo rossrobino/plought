@@ -101,11 +101,17 @@
 			class="flex items-center gap-2 rounded-md p-2 text-sidebar-foreground no-underline transition-colors hover:bg-transparent"
 			onclick={closeSidebarOnMobile}
 		>
-			<img
-				src="/plought-text-logo-dark.svg"
-				alt={info.name}
-				class="h-6 w-auto"
-			/>
+			<picture>
+				<source
+					media="(prefers-color-scheme: dark)"
+					srcset="/plought-text-logo-light.svg"
+				/>
+				<img
+					src="/plought-text-logo-dark.svg"
+					alt={info.name}
+					class="h-6 w-auto"
+				/>
+			</picture>
 		</a>
 	</Sidebar.Header>
 	<Sidebar.Content>

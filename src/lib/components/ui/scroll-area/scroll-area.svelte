@@ -23,7 +23,7 @@
 <ScrollAreaPrimitive.Root
 	bind:ref
 	data-slot="scroll-area"
-	class={cn("relative max-w-full min-w-0", className)}
+	class={cn("relative", className)}
 	{...restProps}
 >
 	<ScrollAreaPrimitive.Viewport

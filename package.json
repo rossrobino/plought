@@ -17,6 +17,7 @@
 		"knip": "knip"
 	},
 	"devDependencies": {
+		"@internationalized/date": "^3.12.0",
 		"@lucide/svelte": "^0.561.0",
 		"@robino/prettier": "^2.0.3",
 		"@sveltejs/adapter-vercel": "^6.3.3",

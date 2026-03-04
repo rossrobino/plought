@@ -22,6 +22,8 @@
 		manageList?: boolean;
 		/** method that should be marked as used for score edits */
 		method?: MethodKey | null;
+		/** optional callback for any alternative data changes */
+		onChange?: () => void;
 	}
 
 	let {
@@ -29,6 +31,7 @@
 		editNames = true,
 		manageList = true,
 		method = "weightedSum",
+		onChange,
 	}: Props = $props();
 	const guidance = $derived(
 		showCriteria
@@ -41,6 +44,15 @@
 			return;
 		}
 		markMethodUsed(method);
+	};
+
+	const notify = () => {
+		onChange?.();
+	};
+
+	const updateScore = () => {
+		markUsed();
+		notify();
 	};
 </script>
 
@@ -86,6 +98,7 @@
 											name={`alternative${i}`}
 											id={`alternative${i}`}
 											bind:value={alt.name}
+											oninput={notify}
 											required
 											placeholder="Alternative"
 										/>
@@ -102,7 +115,7 @@
 											name={`alternative${i}score${j}`}
 											id={`alternative${i}score${j}`}
 											bind:value={alt.scores[j]}
-											oninput={markUsed}
+											oninput={updateScore}
 											min="0"
 											max="10"
 											required
@@ -114,7 +127,7 @@
 							{/each}
 							{#if manageList}
 								<Table.Cell>
-									<RemoveAlternativeButton index={i} />
+									<RemoveAlternativeButton index={i} onChange={notify} />
 								</Table.Cell>
 							{/if}
 						</Table.Row>
@@ -134,6 +147,7 @@
 									name={`alternative${i}`}
 									id={`alternative${i}`}
 									bind:value={alt.name}
+									oninput={notify}
 									required
 									placeholder="Alternative"
 								/>
@@ -143,13 +157,13 @@
 						{/if}
 					</div>
 					{#if manageList}
-						<RemoveAlternativeButton index={i} />
+						<RemoveAlternativeButton index={i} onChange={notify} />
 					{/if}
 				</li>
 			{/each}
 		</ul>
 	{/if}
 	{#if manageList}
-		<AddAlternativeButton />
+		<AddAlternativeButton onChange={notify} />
 	{/if}
 </section>

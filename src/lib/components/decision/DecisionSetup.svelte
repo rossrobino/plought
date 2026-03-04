@@ -1,7 +1,11 @@
 <script lang="ts">
 	import * as Field from "$lib/components/ui/field/index.js";
 	import { Input } from "$lib/components/ui/input/index.js";
-	import { decision, decisionDefaults } from "$lib/state";
+	import { decision, decisionDefaults, markSetupStepUsed } from "$lib/state";
+
+	const markUsed = () => {
+		markSetupStepUsed("start");
+	};
 </script>
 
 <div class="rounded-lg border bg-muted/25 p-3 shadow-xs">
@@ -18,6 +22,7 @@
 				id="decision-title"
 				name="decision-title"
 				bind:value={decision.current.title}
+				oninput={markUsed}
 				placeholder={decisionDefaults.title}
 			/>
 			<Field.Description>
@@ -31,6 +36,7 @@
 				id="decision-goal"
 				name="decision-goal"
 				bind:value={decision.current.goal}
+				oninput={markUsed}
 				placeholder={decisionDefaults.goal}
 			/>
 			<Field.Description>

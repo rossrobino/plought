@@ -2,15 +2,22 @@ import type { Alternative, Criteria, Decision } from "$lib/types";
 import { PersistedState } from "runed";
 
 const methodKeys = ["weightedSum", "pairwise", "rankOrder", "topsis"] as const;
+const setupStepKeys = ["start", "alternatives", "criteria"] as const;
 
 export type MethodKey = (typeof methodKeys)[number];
+export type SetupStepKey = (typeof setupStepKeys)[number];
 
 interface MethodMeta {
 	included: boolean;
 	used: boolean;
 }
 
+interface SetupStepMeta {
+	used: boolean;
+}
+
 type MethodMetaState = Record<MethodKey, MethodMeta>;
+type SetupStepMetaState = Record<SetupStepKey, SetupStepMeta>;
 
 const getCriteria = (): Criteria[] => [
 	{ name: "Criterion #1", weight: 0.5 },
@@ -38,6 +45,10 @@ const getMethodMetaDefaults = (
 	};
 };
 
+const getSetupStepMetaDefaults = (used = false): SetupStepMetaState => {
+	return { start: { used }, alternatives: { used }, criteria: { used } };
+};
+
 const normalizeMethodMeta = (
 	value: Partial<MethodMetaState> | null | undefined,
 	used = false,
@@ -54,6 +65,22 @@ const normalizeMethodMeta = (
 			used: item?.used ?? defaults[key].used,
 			included: item?.included ?? defaults[key].included,
 		};
+	}
+	return next;
+};
+
+const normalizeSetupStepMeta = (
+	value: Partial<SetupStepMetaState> | null | undefined,
+	used = false,
+) => {
+	const defaults = getSetupStepMetaDefaults(used);
+	if (value == null || typeof value !== "object") {
+		return defaults;
+	}
+	const next = {} as SetupStepMetaState;
+	for (const key of setupStepKeys) {
+		const item = value[key];
+		next[key] = { used: item?.used ?? defaults[key].used };
 	}
 	return next;
 };
@@ -83,6 +110,29 @@ const getMethodMeta = (): MethodMetaState => {
 		].some((key) => storage.getItem(key) != null);
 		if (hasLegacyData) {
 			return normalizeMethodMeta(undefined, true, true);
+		}
+		return defaults;
+	} catch {
+		return defaults;
+	}
+};
+
+const getSetupStepMeta = (): SetupStepMetaState => {
+	const defaults = getSetupStepMetaDefaults();
+	if (typeof window === "undefined") {
+		return defaults;
+	}
+	try {
+		const storage = window.localStorage;
+		const current = storage.getItem("setupStepMeta");
+		if (current != null) {
+			try {
+				return normalizeSetupStepMeta(
+					JSON.parse(current) as Partial<SetupStepMetaState>,
+				);
+			} catch {
+				return defaults;
+			}
 		}
 		return defaults;
 	} catch {
@@ -128,6 +178,7 @@ export const getRankScore = (rank: number, count: number) => {
 };
 
 const methodMeta = new PersistedState("methodMeta", getMethodMeta());
+const setupStepMeta = new PersistedState("setupStepMeta", getSetupStepMeta());
 export const criteria = new PersistedState("criteria", getCriteria());
 export const alternatives = new PersistedState(
 	"alternatives",
@@ -148,6 +199,18 @@ const syncMethodMeta = () => {
 			current[key]?.included !== next[key].included
 		) {
 			methodMeta.current = next;
+			return next;
+		}
+	}
+	return current;
+};
+
+const syncSetupStepMeta = () => {
+	const current = setupStepMeta.current;
+	const next = normalizeSetupStepMeta(current);
+	for (const key of setupStepKeys) {
+		if (current[key]?.used !== next[key].used) {
+			setupStepMeta.current = next;
 			return next;
 		}
 	}
@@ -176,6 +239,14 @@ export const markMethodUsed = (method: MethodKey) => {
 	item.included = true;
 };
 
+export const markSetupStepUsed = (step: SetupStepKey) => {
+	const item = syncSetupStepMeta()[step];
+	if (item == null || item.used) {
+		return;
+	}
+	item.used = true;
+};
+
 const setMethodIncluded = (method: MethodKey, included: boolean) => {
 	const item = syncMethodMeta()[method];
 	if (item == null) {
@@ -196,10 +267,15 @@ export const isMethodIncluded = (method: MethodKey) => {
 	return syncMethodMeta()[method]?.included ?? false;
 };
 
+export const isSetupStepUsed = (step: SetupStepKey) => {
+	return syncSetupStepMeta()[step]?.used ?? false;
+};
+
 export const reset = () => {
 	criteria.current = getCriteria();
 	alternatives.current = getAlternatives();
 	decision.current = getDecision();
 	rankOrder.current = getRankOrder(getAlternatives().length);
 	methodMeta.current = getMethodMetaDefaults();
+	setupStepMeta.current = getSetupStepMetaDefaults();
 };

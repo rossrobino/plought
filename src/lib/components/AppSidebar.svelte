@@ -2,7 +2,7 @@
 	import { page } from "$app/state";
 	import * as Sidebar from "$lib/components/ui/sidebar/index.js";
 	import { apps as appRegistry, info } from "$lib/info";
-	import { isMethodUsed } from "$lib/state";
+	import { type SetupStepKey, isMethodUsed, isSetupStepUsed } from "$lib/state";
 	import BarChart3Icon from "@lucide/svelte/icons/bar-chart-3";
 	import CheckIcon from "@lucide/svelte/icons/check";
 	import GitCompareIcon from "@lucide/svelte/icons/git-compare";
@@ -14,33 +14,39 @@
 	import TargetIcon from "@lucide/svelte/icons/target";
 	import { mergeProps } from "bits-ui";
 
+	type SetupItem = {
+		icon: typeof SlidersHorizontalIcon;
+		href: string;
+		label: string;
+		step: SetupStepKey;
+	};
+
 	const setup = [
-		{ icon: SlidersHorizontalIcon, href: "/setup", label: "Start" },
+		{
+			icon: SlidersHorizontalIcon,
+			href: "/setup",
+			label: "Start",
+			step: "start",
+		},
 		{
 			icon: ListOrderedIcon,
 			href: "/setup/alternatives",
 			label: "Alternatives",
+			step: "alternatives",
 		},
-		{ icon: ScaleIcon, href: "/setup/criteria", label: "Criteria" },
-	];
+		{
+			icon: ScaleIcon,
+			href: "/setup/criteria",
+			label: "Criteria",
+			step: "criteria",
+		},
+	] satisfies SetupItem[];
 
-	const getAppIcon = (path: string) => {
-		if (path === "/weight") {
-			return ScaleIcon;
-		}
-		if (path === "/rank") {
-			return ListOrderedIcon;
-		}
-		return GitCompareIcon;
-	};
+	const completedBadgeClass =
+		"inset-e-2 top-1/2 h-4 w-4 min-w-0 -translate-y-1/2 rounded-none bg-transparent p-0 text-sidebar-foreground/70 peer-hover/menu-button:text-sidebar-foreground/80 peer-data-[active=true]/menu-button:text-sidebar-foreground peer-data-[size=default]/menu-button:top-1/2 peer-data-[size=lg]/menu-button:top-1/2 peer-data-[size=sm]/menu-button:top-1/2";
 
 	const apps = appRegistry.map((item) => {
-		return {
-			...item,
-			icon: getAppIcon(item.path),
-			href: item.path,
-			label: item.title,
-		};
+		return { ...item, href: item.path, label: item.title };
 	});
 
 	const output = [
@@ -111,6 +117,14 @@
 									</a>
 								{/snippet}
 							</Sidebar.MenuButton>
+							{#if isSetupStepUsed(item.step)}
+								<Sidebar.MenuBadge
+									class={completedBadgeClass}
+									aria-hidden="true"
+								>
+									<CheckIcon class="size-3" />
+								</Sidebar.MenuBadge>
+							{/if}
 						</Sidebar.MenuItem>
 					{/each}
 				</Sidebar.Menu>
@@ -136,7 +150,7 @@
 							</Sidebar.MenuButton>
 							{#if isMethodUsed(item.method)}
 								<Sidebar.MenuBadge
-									class="inset-e-2 top-1/2 h-4 w-4 min-w-0 -translate-y-1/2 rounded-none bg-transparent p-0 text-sidebar-foreground/70 peer-hover/menu-button:text-sidebar-foreground/80 peer-data-[active=true]/menu-button:text-sidebar-foreground peer-data-[size=default]/menu-button:top-1/2 peer-data-[size=lg]/menu-button:top-1/2 peer-data-[size=sm]/menu-button:top-1/2"
+									class={completedBadgeClass}
 									aria-hidden="true"
 								>
 									<CheckIcon class="size-3" />

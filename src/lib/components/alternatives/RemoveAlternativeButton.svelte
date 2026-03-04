@@ -6,9 +6,10 @@
 
 	interface Props {
 		index: number;
+		onChange?: () => void;
 	}
 
-	let { index }: Props = $props();
+	let { index, onChange }: Props = $props();
 	const disabled = $derived(alternatives.current.length < 2);
 
 	const removeAlternative = (index: number) => {
@@ -33,6 +34,7 @@
 					onclick={() => {
 						if (!disabled) {
 							removeAlternative(index);
+							onChange?.();
 						}
 					}}
 					aria-label={`Remove alternative ${index + 1}`}

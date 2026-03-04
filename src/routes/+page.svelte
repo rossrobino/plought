@@ -5,20 +5,7 @@
 	import { alternatives, criteria } from "$lib/state";
 	import ArrowRightIcon from "@lucide/svelte/icons/arrow-right";
 	import BarChart3Icon from "@lucide/svelte/icons/bar-chart-3";
-	import GitCompareIcon from "@lucide/svelte/icons/git-compare";
-	import ListOrderedIcon from "@lucide/svelte/icons/list-ordered";
-	import ScaleIcon from "@lucide/svelte/icons/scale";
 	import SlidersHorizontalIcon from "@lucide/svelte/icons/sliders-horizontal";
-
-	const getAppMeta = (path: string) => {
-		if (path === "/weight") {
-			return { icon: ScaleIcon, badge: "Weighted criteria" };
-		}
-		if (path === "/rank") {
-			return { icon: ListOrderedIcon, badge: "Manual ranking" };
-		}
-		return { icon: GitCompareIcon, badge: "Head-to-head" };
-	};
 </script>
 
 <div class="w-full space-y-4 pt-4">
@@ -99,7 +86,6 @@
 
 	<div class="mt-4 grid gap-4 sm:grid-cols-2">
 		{#each apps as app (app.path)}
-			{@const meta = getAppMeta(app.path)}
 			<a href={app.path} class="group block no-underline">
 				<div
 					class="h-full rounded-lg border bg-card p-3 shadow-xs transition-colors group-hover:bg-accent/35"
@@ -108,12 +94,12 @@
 						<div
 							class="inline-flex size-9 shrink-0 items-center justify-center rounded-md border bg-background"
 						>
-							<meta.icon class="size-4" />
+							<app.icon class="size-4" />
 						</div>
 						<span
 							class="rounded-full border bg-muted/50 px-2 py-0.5 text-[11px] text-muted-foreground"
 						>
-							{meta.badge}
+							{app.badge}
 						</span>
 					</div>
 					<div class="mt-3 text-xl font-semibold capitalize">{app.title}</div>
@@ -171,5 +157,4 @@
 			</div>
 		</section>
 	</a>
-
 </div>

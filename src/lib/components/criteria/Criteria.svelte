@@ -24,6 +24,7 @@
 		editNames?: boolean;
 		manageList?: boolean;
 		tableView?: boolean;
+		onChange?: () => void;
 	}
 
 	/** controls if weights column is displayed*/
@@ -33,6 +34,7 @@
 		editNames = true,
 		manageList = true,
 		tableView = true,
+		onChange,
 	}: Props = $props();
 	let keepTotal = $state(true);
 	const guidance = $derived(
@@ -42,10 +44,10 @@
 	);
 
 	const markUsed = () => {
-		if (method == null) {
-			return;
+		if (method != null) {
+			markMethodUsed(method);
 		}
-		markMethodUsed(method);
+		onChange?.();
 	};
 
 	const clampPercent = (value: number) => {

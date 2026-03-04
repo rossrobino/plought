@@ -3,6 +3,12 @@
 	import { alternatives, criteria, syncRankOrder } from "$lib/state";
 	import PlusIcon from "@lucide/svelte/icons/plus";
 
+	interface Props {
+		onChange?: () => void;
+	}
+
+	let { onChange }: Props = $props();
+
 	export const addAlternative = () => {
 		// create an array of zeros based on the number of criteria
 		const scores: number[] = new Array(criteria.current.length).fill(0);
@@ -30,7 +36,13 @@
 </script>
 
 <div class="mt-3 flex justify-end">
-	<Button size="sm" onclick={addAlternative}>
+	<Button
+		size="sm"
+		onclick={() => {
+			addAlternative();
+			onChange?.();
+		}}
+	>
 		<PlusIcon />
 		Add
 	</Button>

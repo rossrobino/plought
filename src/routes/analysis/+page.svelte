@@ -5,6 +5,7 @@
 	import { Button } from "$lib/components/ui/button/index.js";
 	import {
 		type MethodKey,
+		allocation,
 		alternatives,
 		criteria,
 		isMethodIncluded,
@@ -55,6 +56,13 @@
 		},
 		{
 			color: chartColors[3],
+			href: "/analysis/allocate",
+			key: "allocate",
+			label: "Point Allocation",
+			note: "Per-criterion point distribution across alternatives.",
+		},
+		{
+			color: chartColors[4],
 			href: "/analysis/topsis",
 			key: "topsis",
 			label: "TOPSIS",
@@ -77,6 +85,7 @@
 			alternatives.current,
 			criteria.current,
 			Array.isArray(rankOrder.current) ? rankOrder.current : [],
+			Array.isArray(allocation.current) ? allocation.current : [],
 		),
 	);
 
@@ -315,6 +324,7 @@
 		weightedSum={isMethodIncluded("weightedSum")}
 		pairwise={isMethodIncluded("pairwise")}
 		rankOrder={isMethodIncluded("rankOrder")}
+		allocate={isMethodIncluded("allocate")}
 		topsis={isMethodIncluded("topsis")}
 	/>
 {:else}

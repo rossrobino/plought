@@ -6,7 +6,10 @@
 	import BarChart3Icon from "@lucide/svelte/icons/bar-chart-3";
 	import CheckIcon from "@lucide/svelte/icons/check";
 	import GitCompareIcon from "@lucide/svelte/icons/git-compare";
+	import GitForkIcon from "@lucide/svelte/icons/git-fork";
 	import GithubIcon from "@lucide/svelte/icons/github";
+	import HandCoinsIcon from "@lucide/svelte/icons/hand-coins";
+	import ListChecksIcon from "@lucide/svelte/icons/list-checks";
 	import ListOrderedIcon from "@lucide/svelte/icons/list-ordered";
 	import ScaleIcon from "@lucide/svelte/icons/scale";
 	import ShieldCheckIcon from "@lucide/svelte/icons/shield-check";
@@ -29,13 +32,13 @@
 			step: "start",
 		},
 		{
-			icon: ListOrderedIcon,
+			icon: GitForkIcon,
 			href: "/setup/alternatives",
 			label: "Alternatives",
 			step: "alternatives",
 		},
 		{
-			icon: ScaleIcon,
+			icon: ListChecksIcon,
 			href: "/setup/criteria",
 			label: "Criteria",
 			step: "criteria",
@@ -58,6 +61,11 @@
 			label: "Pairwise Comparison",
 		},
 		{ icon: ListOrderedIcon, href: "/analysis/rank", label: "Rank Order" },
+		{
+			icon: HandCoinsIcon,
+			href: "/analysis/allocate",
+			label: "Point Allocation",
+		},
 		{ icon: TargetIcon, href: "/analysis/topsis", label: "TOPSIS" },
 		{
 			icon: ShieldCheckIcon,

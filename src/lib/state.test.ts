@@ -100,4 +100,23 @@ describe("state", () => {
 
 		expect(state.syncRankOrder(2)).toEqual([1, 0]);
 	});
+
+	it("syncs allocation matrix when criteria and alternatives change", () => {
+		state.criteria.current.push({ name: "Criterion #3", weight: 0.1 });
+		state.alternatives.current.push({
+			name: "Alternative #3",
+			scores: [0, 0, 0],
+			pairwise: [0.5, 0.5, 0.5],
+		});
+
+		const matrix = state.syncAllocation();
+
+		expect(matrix.length).toBe(3);
+		expect(matrix.every((row) => row.length === 3)).toBe(true);
+		expect(
+			matrix.every((row) => {
+				return Math.abs(row.reduce((a, b) => a + b, 0) - 100) < 0.001;
+			}),
+		).toBe(true);
+	});
 });

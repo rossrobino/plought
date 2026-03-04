@@ -1,5 +1,6 @@
 import { type MethodKey, getRankScore, normalizeRankOrder } from "$lib/state";
 import type { Alternative, Criteria } from "$lib/types";
+import { getAllocateScores, normalizeAllocation } from "$lib/util/allocate";
 import { getTopsisCloseness } from "$lib/util/topsis";
 
 type MethodScoreMap = Record<MethodKey, number[]>;
@@ -110,10 +111,15 @@ export const getMethodScores = (
 	alternatives: Alternative[],
 	criteria: Criteria[],
 	order: number[],
+	allocation?: number[][],
 ): MethodScores => {
 	const weightedRaw = getWeightedScores(alternatives, criteria);
 	const pairwiseRaw = getPairwiseScores(alternatives);
 	const rankRaw = getRankScores(alternatives, order);
+	const allocateRaw = getAllocateScores(
+		normalizeAllocation(allocation, criteria.length, alternatives.length),
+		criteria,
+	);
 	const topsisRaw = getTopsisCloseness(alternatives, criteria).map((value) =>
 		round(value * 10),
 	);
@@ -123,12 +129,14 @@ export const getMethodScores = (
 			weightedSum: weightedRaw,
 			pairwise: pairwiseRaw,
 			rankOrder: rankRaw,
+			allocate: allocateRaw,
 			topsis: topsisRaw,
 		},
 		normalized10: {
 			weightedSum: normalizeWeighted10(weightedRaw, criteria),
 			pairwise: normalizePairwise10(pairwiseRaw, alternatives.length),
 			rankOrder: rankRaw,
+			allocate: allocateRaw,
 			topsis: topsisRaw,
 		},
 	};
@@ -139,6 +147,7 @@ export const getMethodRanks = (scores: MethodScoreMap): MethodScoreMap => {
 		weightedSum: rankWithTies(scores.weightedSum),
 		pairwise: rankWithTies(scores.pairwise),
 		rankOrder: rankWithTies(scores.rankOrder),
+		allocate: rankWithTies(scores.allocate),
 		topsis: rankWithTies(scores.topsis),
 	};
 };
@@ -304,6 +313,16 @@ export const getGuidanceCopy = ({
 				"It uses the same weighted inputs as Weighted Sum but evaluates distance structure across criteria.",
 			caveat:
 				"If criteria values collapse into similar patterns, TOPSIS separation can narrow quickly.",
+		};
+	}
+	if (method === "allocate") {
+		return {
+			summary:
+				"Allocate captures tradeoffs by distributing a fixed point budget across alternatives within each criterion.",
+			comparison:
+				"It reflects relative preference strength per criterion and combines those splits with your criterion weights.",
+			caveat:
+				"Forced allocation can exaggerate small differences. Revisit splits when priorities or information change.",
 		};
 	}
 

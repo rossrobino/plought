@@ -1,6 +1,11 @@
 <script lang="ts">
 	import { Button } from "$lib/components/ui/button/index.js";
-	import { alternatives, criteria, syncRankOrder } from "$lib/state";
+	import {
+		alternatives,
+		criteria,
+		syncAllocation,
+		syncRankOrder,
+	} from "$lib/state";
 	import PlusIcon from "@lucide/svelte/icons/plus";
 
 	interface Props {
@@ -31,6 +36,7 @@
 			pairwise,
 		});
 
+		syncAllocation();
 		syncRankOrder();
 	};
 </script>

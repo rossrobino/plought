@@ -37,6 +37,9 @@
 		if (page.url.pathname.startsWith("/analysis/rank")) {
 			return "Rank Order";
 		}
+		if (page.url.pathname.startsWith("/analysis/allocate")) {
+			return "Point Allocation";
+		}
 		if (page.url.pathname.startsWith("/analysis/topsis")) {
 			return "TOPSIS";
 		}

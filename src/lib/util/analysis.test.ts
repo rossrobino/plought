@@ -20,15 +20,21 @@ describe("analysis utilities", () => {
 			{ name: "Cost", weight: 0.7 },
 			{ name: "Speed", weight: 0.3 },
 		];
+		const allocation = [
+			[70, 20, 10],
+			[20, 30, 50],
+		];
 
-		const scores = getMethodScores(alt, cri, [2, 0, 1]);
+		const scores = getMethodScores(alt, cri, [2, 0, 1], allocation);
 
 		expect(scores.raw.weightedSum).toEqual([8.5, 7.4, 5.5]);
 		expect(scores.raw.pairwise).toEqual([1.4, 0.6, 1]);
 		expect(scores.raw.rankOrder).toEqual([5, 0, 10]);
+		expect(scores.raw.allocate).toEqual([5.5, 2.3, 2.2]);
 		expect(scores.normalized10.weightedSum).toEqual([8.5, 7.4, 5.5]);
 		expect(scores.normalized10.pairwise).toEqual([7, 3, 5]);
 		expect(scores.normalized10.rankOrder).toEqual([5, 0, 10]);
+		expect(scores.normalized10.allocate).toEqual([5.5, 2.3, 2.2]);
 		expect(scores.normalized10.topsis).toEqual(scores.raw.topsis);
 		expect(scores.raw.topsis.every((value) => value >= 0 && value <= 10)).toBe(
 			true,
@@ -40,12 +46,14 @@ describe("analysis utilities", () => {
 			weightedSum: [8, 8, 4],
 			pairwise: [1, 2, 3],
 			rankOrder: [10, 5, 0],
+			allocate: [4, 4, 8],
 			topsis: [0, 0, 0],
 		});
 
 		expect(ranks.weightedSum).toEqual([1.5, 1.5, 3]);
 		expect(ranks.pairwise).toEqual([3, 2, 1]);
 		expect(ranks.rankOrder).toEqual([1, 2, 3]);
+		expect(ranks.allocate).toEqual([2.5, 2.5, 1]);
 		expect(ranks.topsis).toEqual([2, 2, 2]);
 	});
 
@@ -54,6 +62,7 @@ describe("analysis utilities", () => {
 			weightedSum: [10, 5],
 			pairwise: [0, 10],
 			rankOrder: [2, 2],
+			allocate: [6, 2],
 			topsis: [4, 6],
 		};
 
@@ -69,6 +78,7 @@ describe("analysis utilities", () => {
 				weightedSum: [1, 2, 3],
 				pairwise: [2, 1, 3],
 				rankOrder: [1, 2, 3],
+				allocate: [3, 2, 1],
 				topsis: [1, 2, 3],
 			},
 			["weightedSum", "pairwise"],
@@ -95,9 +105,10 @@ describe("analysis utilities", () => {
 				weightedSum: [1, 2],
 				pairwise: [1, 2],
 				rankOrder: [2, 1],
+				allocate: [1, 2],
 				topsis: [1, 2],
 			},
-			["weightedSum", "pairwise", "rankOrder", "topsis"],
+			["weightedSum", "pairwise", "rankOrder", "allocate"],
 		);
 		const medium = getAgreementLevel(
 			{
@@ -111,9 +122,10 @@ describe("analysis utilities", () => {
 				weightedSum: [1, 2],
 				pairwise: [1, 2],
 				rankOrder: [2, 1],
+				allocate: [2, 1],
 				topsis: [2, 1],
 			},
-			["weightedSum", "pairwise", "rankOrder", "topsis"],
+			["weightedSum", "pairwise", "rankOrder", "allocate"],
 		);
 		const low = getAgreementLevel(
 			{
@@ -127,9 +139,10 @@ describe("analysis utilities", () => {
 				weightedSum: [1, 2],
 				pairwise: [2, 1],
 				rankOrder: [2, 1],
+				allocate: [2, 1],
 				topsis: [2, 1],
 			},
-			["weightedSum", "pairwise", "rankOrder", "topsis"],
+			["weightedSum", "pairwise", "rankOrder", "allocate"],
 		);
 		const none = getAgreementLevel(
 			{
@@ -143,6 +156,7 @@ describe("analysis utilities", () => {
 				weightedSum: [1, 2],
 				pairwise: [2, 1],
 				rankOrder: [2, 1],
+				allocate: [2, 1],
 				topsis: [2, 1],
 			},
 			[],

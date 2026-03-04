@@ -3,6 +3,7 @@
 	import { ScrollArea } from "$lib/components/ui/scroll-area/index.js";
 	import * as Table from "$lib/components/ui/table/index.js";
 	import {
+		allocation,
 		alternatives,
 		criteria,
 		getRankScore,
@@ -10,11 +11,19 @@
 		rankOrder as rankOrderState,
 	} from "$lib/state";
 	import type { Alternative, Criteria } from "$lib/types";
+	import { getAllocateScores, normalizeAllocation } from "$lib/util/allocate";
 	import { getTopsisCloseness } from "$lib/util/topsis";
 
-	type SortBy = "" | "weightedSum" | "pairwise" | "rankOrder" | "topsis";
+	type SortBy =
+		| ""
+		| "weightedSum"
+		| "pairwise"
+		| "rankOrder"
+		| "allocate"
+		| "topsis";
 
 	interface Props {
+		allocate?: boolean;
 		pairwise?: boolean;
 		rankOrder?: boolean;
 		sortBy?: SortBy;
@@ -26,6 +35,7 @@
 		weightedSum = false,
 		pairwise = false,
 		rankOrder = false,
+		allocate = false,
 		topsis = false,
 		sortBy = "",
 	}: Props = $props();
@@ -50,6 +60,16 @@
 			Number((value * 10).toFixed(2)),
 		),
 	);
+	const allocationMatrix = $derived(
+		normalizeAllocation(
+			Array.isArray(allocation.current) ? allocation.current : [],
+			criteria.current.length,
+			alternatives.current.length,
+		),
+	);
+	const allocateScoreByAlternativeIndex = $derived(
+		getAllocateScores(allocationMatrix, criteria.current),
+	);
 
 	const sortedAlternatives = $derived(
 		alternatives.current
@@ -64,6 +84,8 @@
 					return getPairwiseScore(b.i) - getPairwiseScore(a.i);
 				} else if (sortBy === "rankOrder") {
 					return getRankOrderScore(b.i) - getRankOrderScore(a.i);
+				} else if (sortBy === "allocate") {
+					return getAllocateScore(b.i) - getAllocateScore(a.i);
 				} else if (sortBy === "topsis") {
 					return getTopsisScore(b.i) - getTopsisScore(a.i);
 				} else {
@@ -130,6 +152,10 @@
 	const getTopsisScore = (altIndex: number) => {
 		return topsisScoreByAlternativeIndex[altIndex] ?? 0;
 	};
+
+	const getAllocateScore = (altIndex: number) => {
+		return allocateScoreByAlternativeIndex[altIndex] ?? 0;
+	};
 </script>
 
 <section>
@@ -137,22 +163,27 @@
 		<h2 class="mb-0">Scores</h2>
 		<Info label="About scores">
 			<div class="space-y-2">
-				{#if weightedSum && !pairwise && !rankOrder && !topsis}
+				{#if weightedSum && !pairwise && !rankOrder && !allocate && !topsis}
 					<p>
 						Each alternative score is multiplied by its criterion weight, then
 						those values are summed.
 					</p>
-				{:else if pairwise && !weightedSum && !rankOrder && !topsis}
+				{:else if pairwise && !weightedSum && !rankOrder && !allocate && !topsis}
 					<p>
 						Each row is scored from head-to-head comparisons: Preferred = +1,
 						Tie = +0.5, Unfavored = 0.
 					</p>
-				{:else if rankOrder && !weightedSum && !pairwise && !topsis}
+				{:else if rankOrder && !weightedSum && !pairwise && !allocate && !topsis}
 					<p>
 						Order alternatives from most to least preferred. Scores are
 						normalized from 0 to 10 based on rank position.
 					</p>
-				{:else if topsis && !weightedSum && !pairwise && !rankOrder}
+				{:else if allocate && !weightedSum && !pairwise && !rankOrder && !topsis}
+					<p>
+						Allocate scores come from per-criterion point splits across
+						alternatives, combined with criterion weights.
+					</p>
+				{:else if topsis && !weightedSum && !pairwise && !rankOrder && !allocate}
 					<p>
 						TOPSIS ranks alternatives by closeness to the ideal option and
 						distance from the worst option using weighted normalized scores.
@@ -167,6 +198,10 @@
 						{/if}
 						{#if rankOrder}
 							Rank converts list position into a 0-10 score.
+						{/if}
+						{#if allocate}
+							Allocate converts criterion point splits into weighted 0-10
+							scores.
 						{/if}
 						{#if topsis}
 							TOPSIS uses distance to ideal and anti-ideal profiles.
@@ -198,6 +233,9 @@
 					{#if rankOrder}
 						<Table.Head>Rank</Table.Head>
 					{/if}
+					{#if allocate}
+						<Table.Head>Allocate</Table.Head>
+					{/if}
 					{#if topsis}
 						<Table.Head>TOPSIS</Table.Head>
 					{/if}
@@ -222,6 +260,11 @@
 						{#if rankOrder}
 							<Table.Cell class="font-semibold">
 								{getRankOrderScore(item.i)}
+							</Table.Cell>
+						{/if}
+						{#if allocate}
+							<Table.Cell class="font-semibold">
+								{getAllocateScore(item.i)}
 							</Table.Cell>
 						{/if}
 						{#if topsis}

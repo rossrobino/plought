@@ -13,6 +13,7 @@
 		alternatives,
 		criteria,
 		markMethodUsed,
+		syncAllocation,
 	} from "$lib/state";
 	import XMark from "$lib/svg/XMark.svelte";
 	import type { Criteria } from "$lib/types";
@@ -116,6 +117,7 @@
 		alternatives.current.forEach((alt) => {
 			alt.scores.push(0);
 		});
+		syncAllocation();
 		if (keepTotal) {
 			normalizeCurrentWeights();
 		}
@@ -127,6 +129,7 @@
 		alternatives.current.forEach((alt) => {
 			alt.scores.splice(index, 1);
 		});
+		syncAllocation();
 		if (keepTotal && criteria.current.length > 0) {
 			normalizeCurrentWeights();
 		}

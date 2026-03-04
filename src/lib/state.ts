@@ -1,7 +1,14 @@
 import type { Alternative, Criteria, Decision } from "$lib/types";
+import { normalizeAllocation } from "$lib/util/allocate";
 import { PersistedState } from "runed";
 
-const methodKeys = ["weightedSum", "pairwise", "rankOrder", "topsis"] as const;
+const methodKeys = [
+	"weightedSum",
+	"pairwise",
+	"rankOrder",
+	"topsis",
+	"allocate",
+] as const;
 const setupStepKeys = ["start", "alternatives", "criteria"] as const;
 
 export type MethodKey = (typeof methodKeys)[number];
@@ -33,6 +40,10 @@ const getRankOrder = (count: number) => {
 	return Array.from({ length: count }, (_, i) => i);
 };
 
+const getAllocation = (criteriaCount: number, alternativeCount: number) => {
+	return normalizeAllocation(undefined, criteriaCount, alternativeCount);
+};
+
 const getMethodMetaDefaults = (
 	used = false,
 	included = false,
@@ -42,6 +53,7 @@ const getMethodMetaDefaults = (
 		pairwise: { used, included },
 		rankOrder: { used, included },
 		topsis: { used, included },
+		allocate: { used, included },
 	};
 };
 
@@ -109,7 +121,10 @@ const getMethodMeta = (): MethodMetaState => {
 			"rankOrder",
 		].some((key) => storage.getItem(key) != null);
 		if (hasLegacyData) {
-			return normalizeMethodMeta(undefined, true, true);
+			return {
+				...normalizeMethodMeta(undefined, true, true),
+				allocate: { used: false, included: false },
+			};
 		}
 		return defaults;
 	} catch {
@@ -129,6 +144,36 @@ const getSetupStepMeta = (): SetupStepMetaState => {
 			try {
 				return normalizeSetupStepMeta(
 					JSON.parse(current) as Partial<SetupStepMetaState>,
+				);
+			} catch {
+				return defaults;
+			}
+		}
+		return defaults;
+	} catch {
+		return defaults;
+	}
+};
+
+const getAllocationState = () => {
+	const criteriaDefaults = getCriteria();
+	const alternativesDefaults = getAlternatives();
+	const defaults = getAllocation(
+		criteriaDefaults.length,
+		alternativesDefaults.length,
+	);
+	if (typeof window === "undefined") {
+		return defaults;
+	}
+	try {
+		const storage = window.localStorage;
+		const current = storage.getItem("allocation");
+		if (current != null) {
+			try {
+				return normalizeAllocation(
+					JSON.parse(current) as number[][],
+					criteriaDefaults.length,
+					alternativesDefaults.length,
 				);
 			} catch {
 				return defaults;
@@ -184,6 +229,10 @@ export const alternatives = new PersistedState(
 	"alternatives",
 	getAlternatives(),
 );
+export const allocation = new PersistedState(
+	"allocation",
+	getAllocationState(),
+);
 export const decision = new PersistedState("decision", getDecision());
 export const rankOrder = new PersistedState(
 	"rankOrder",
@@ -213,6 +262,31 @@ const syncSetupStepMeta = () => {
 			setupStepMeta.current = next;
 			return next;
 		}
+	}
+	return current;
+};
+
+export const syncAllocation = (
+	criteriaCount = criteria.current.length,
+	alternativeCount = alternatives.current.length,
+) => {
+	const current = Array.isArray(allocation.current) ? allocation.current : [];
+	const next = normalizeAllocation(current, criteriaCount, alternativeCount);
+	const equal = (a: number, b: number) => {
+		return Math.abs(a - b) < 0.000001;
+	};
+	const changed =
+		current.length !== next.length ||
+		next.some((row, i) => {
+			const currentRow = current[i] ?? [];
+			return (
+				currentRow.length !== row.length ||
+				row.some((value, j) => !equal(currentRow[j] ?? 0, value))
+			);
+		});
+	if (changed) {
+		allocation.current = next;
+		return next;
 	}
 	return current;
 };
@@ -274,6 +348,10 @@ export const isSetupStepUsed = (step: SetupStepKey) => {
 export const reset = () => {
 	criteria.current = getCriteria();
 	alternatives.current = getAlternatives();
+	allocation.current = getAllocation(
+		criteria.current.length,
+		alternatives.current.length,
+	);
 	decision.current = getDecision();
 	rankOrder.current = getRankOrder(getAlternatives().length);
 	methodMeta.current = getMethodMetaDefaults();

@@ -1,6 +1,7 @@
 import type { MethodKey } from "$lib/state";
 import { capitalize } from "$lib/util/capitalize";
 import GitCompareIcon from "@lucide/svelte/icons/git-compare";
+import HandCoinsIcon from "@lucide/svelte/icons/hand-coins";
 import ListOrderedIcon from "@lucide/svelte/icons/list-ordered";
 import ScaleIcon from "@lucide/svelte/icons/scale";
 import { type Component } from "svelte";
@@ -8,7 +9,7 @@ import { type Component } from "svelte";
 export const info = {
 	author: { name: "Ross Robino", url: "https://robino.dev" },
 	name: "Plought",
-	tagline: "Reduce Noise in Decision Making",
+	tagline: "Reduce noise in decision making.",
 	github: "https://github.com/rossrobino/plought",
 };
 
@@ -69,5 +70,13 @@ export const apps = [
 		"Rank",
 		ListOrderedIcon,
 		"Manual ranking",
+	),
+	new App(
+		"/allocate",
+		"Distribute points across alternatives for each criterion.",
+		"allocate",
+		"Allocate",
+		HandCoinsIcon,
+		"Point allocation",
 	),
 ];

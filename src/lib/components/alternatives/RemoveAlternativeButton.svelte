@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { Button } from "$lib/components/ui/button/index.js";
 	import * as Tooltip from "$lib/components/ui/tooltip/index.js";
-	import { alternatives, syncRankOrder } from "$lib/state";
+	import { alternatives, syncAllocation, syncRankOrder } from "$lib/state";
 	import XMark from "$lib/svg/XMark.svelte";
 
 	interface Props {
@@ -17,6 +17,7 @@
 		alternatives.current.forEach((alt) => {
 			alt.pairwise.splice(index, 1);
 		});
+		syncAllocation();
 		syncRankOrder();
 	};
 </script>

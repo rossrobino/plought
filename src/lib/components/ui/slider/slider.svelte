@@ -18,8 +18,18 @@
 		onValueChange,
 	}: Props = $props();
 
+	const equal = (a: number, b: number) => {
+		return Math.abs(a - b) < 0.000001;
+	};
+
 	const handleValueChange = (next: number) => {
-		value = next;
+		if (equal(next, value)) {
+			return;
+		}
+		if (onValueChange == null) {
+			value = next;
+			return;
+		}
 		onValueChange?.(next);
 	};
 </script>

@@ -9,7 +9,12 @@
 		criteria,
 		markMethodUsed,
 	} from "$lib/state";
-	import { allocationTotal, splitEven } from "$lib/util/allocate";
+	import {
+		allocationTotal,
+		normalizeAllocationRow,
+		rebalanceAllocationRow,
+		splitEven,
+	} from "$lib/util/allocate";
 	import MinusIcon from "@lucide/svelte/icons/minus";
 	import PlusIcon from "@lucide/svelte/icons/plus";
 
@@ -32,36 +37,16 @@
 	const hasInputs = $derived(
 		criteria.current.length > 0 && alternatives.current.length > 0,
 	);
-	const clampPoints = (value: number) => {
-		return Math.max(0, Math.min(allocationTotal, value));
-	};
-
-	const normalizePoints = (values: number[], target = allocationTotal) => {
-		const count = values.length;
-		if (count === 0) {
-			return [];
-		}
-		if (target <= 0) {
-			return new Array(count).fill(0);
-		}
-		const positive = values.map((value) => Math.max(0, value));
-		const sum = positive.reduce((a, b) => a + b, 0);
-		if (sum <= 0) {
-			return splitEven(count, target);
-		}
-		return positive.map((value) => (value / sum) * target);
-	};
 
 	const getCurrentRow = () => {
 		const count = alternatives.current.length;
 		if (count <= 0) {
 			return [];
 		}
-		const row = allocation.current[criterionIndex] ?? [];
-		return normalizePoints(
-			Array.from({ length: count }, (_, i) => {
-				return row[i] ?? 0;
-			}),
+		return normalizeAllocationRow(
+			allocation.current[criterionIndex],
+			count,
+			allocationTotal,
 		);
 	};
 
@@ -85,33 +70,17 @@
 			return;
 		}
 		const current = getCurrentRow();
-		const nextValue = clampPoints(value);
-		if (Math.abs((current[altIndex] ?? 0) - nextValue) < 0.000001) {
+		const next = rebalanceAllocationRow(
+			current,
+			altIndex,
+			value,
+			allocationTotal,
+		);
+		if (
+			current.length === next.length &&
+			next.every((item, i) => Math.abs(item - (current[i] ?? 0)) < 0.000001)
+		) {
 			return;
-		}
-		if (current.length <= 1) {
-			allocation.current[criterionIndex] = [allocationTotal];
-			markMethodUsed("allocate");
-			return;
-		}
-
-		const otherIndices = current.map((_, i) => i).filter((i) => i !== altIndex);
-		const targetOthers = allocationTotal - nextValue;
-		const next = [...current];
-		next[altIndex] = nextValue;
-
-		if (targetOthers <= 0) {
-			otherIndices.forEach((i) => {
-				next[i] = 0;
-			});
-		} else {
-			const redistributed = normalizePoints(
-				otherIndices.map((i) => current[i]),
-				targetOthers,
-			);
-			otherIndices.forEach((item, i) => {
-				next[item] = redistributed[i];
-			});
 		}
 
 		allocation.current[criterionIndex] = next;

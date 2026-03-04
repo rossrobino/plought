@@ -38,8 +38,9 @@
 		<Button href="/setup/alternatives" size="sm" variant="outline">
 			Edit alternatives
 		</Button>
-		<Button href="/weight" size="sm" variant="outline">
-			Edit weighted scores
+		<Button href="/weigh" size="sm" variant="outline">Weigh criteria</Button>
+		<Button href="/score" size="sm" variant="outline">
+			Score alternatives
 		</Button>
 	</div>
 </section>

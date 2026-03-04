@@ -11,7 +11,7 @@
 	} from "$lib/state";
 	import ArrowRightIcon from "@lucide/svelte/icons/arrow-right";
 	import BarChart3Icon from "@lucide/svelte/icons/bar-chart-3";
-	import SlidersHorizontalIcon from "@lucide/svelte/icons/sliders-horizontal";
+	import FlagIcon from "@lucide/svelte/icons/flag";
 
 	const setupSteps = ["start", "alternatives", "criteria"] as const;
 
@@ -100,7 +100,7 @@
 				<div
 					class="inline-flex size-9 shrink-0 items-center justify-center rounded-md border bg-background"
 				>
-					<SlidersHorizontalIcon class="size-4" />
+					<FlagIcon class="size-4" />
 				</div>
 			</div>
 			<div class="mt-3 inline-flex items-center gap-1 text-sm font-medium">

@@ -22,7 +22,7 @@
 	{...restProps}
 >
 	<ScrollArea class="h-full min-h-0 flex-1" orientation="vertical">
-		<div class="flex flex-col gap-2">
+		<div class="flex flex-col gap-2 pe-2.5">
 			{@render children?.()}
 		</div>
 	</ScrollArea>

@@ -3,7 +3,6 @@
 	import { Button } from "$lib/components/ui/button/index.js";
 	import {
 		alternatives,
-		getRankScore,
 		markMethodUsed,
 		normalizeRankOrder,
 		rankOrder,
@@ -25,7 +24,6 @@
 				id,
 				i,
 				name: alternatives.current[id]?.name ?? `Alternative #${id + 1}`,
-				score: getRankScore(i, count),
 			};
 		});
 	});
@@ -70,10 +68,7 @@
 		<Info label="About rank">
 			<div class="space-y-2">
 				<p>Order alternatives from most to least preferred.</p>
-				<p>
-					Scores are normalized from 0 to 10 based on rank position, with the
-					top option scoring 10.
-				</p>
+				<p>Focus only on relative order here, not numeric values.</p>
 			</div>
 		</Info>
 	</div>
@@ -90,7 +85,6 @@
 				<div class="flex items-center gap-2">
 					<div class="min-w-0 flex-1">
 						<p class="truncate font-medium">{item.name}</p>
-						<p class="text-xs text-muted-foreground">{item.score} / 10</p>
 					</div>
 					<div class="flex items-center gap-1">
 						<Button

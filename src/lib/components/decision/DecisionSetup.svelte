@@ -1,6 +1,7 @@
 <script lang="ts">
 	import * as Field from "$lib/components/ui/field/index.js";
 	import { Input } from "$lib/components/ui/input/index.js";
+	import { Textarea } from "$lib/components/ui/textarea/index.js";
 	import { decision, decisionDefaults, markSetupStepUsed } from "$lib/state";
 
 	const markUsed = () => {
@@ -14,8 +15,8 @@
 		Define what you are deciding and what success looks like. You can update
 		this anytime.
 	</p>
-	<div class="mt-3 grid gap-3 sm:grid-cols-2">
-		<Field.Field>
+	<div class="mt-3 grid gap-4">
+		<Field.Field class="gap-2.5">
 			<Field.Label for="decision-title">Title</Field.Label>
 			<Input
 				type="text"
@@ -29,14 +30,14 @@
 				A short name for this decision, like “Choose a car” or “Pick a city”.
 			</Field.Description>
 		</Field.Field>
-		<Field.Field>
+		<Field.Field class="gap-2.5">
 			<Field.Label for="decision-goal">Goal</Field.Label>
-			<Input
-				type="text"
+			<Textarea
 				id="decision-goal"
 				name="decision-goal"
 				bind:value={decision.current.goal}
 				oninput={markUsed}
+				rows={4}
 				placeholder={decisionDefaults.goal}
 			/>
 			<Field.Description>

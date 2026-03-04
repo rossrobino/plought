@@ -6,6 +6,7 @@
 	import { type SetupStepKey, isMethodUsed, isSetupStepUsed } from "$lib/state";
 	import BarChart3Icon from "@lucide/svelte/icons/bar-chart-3";
 	import CheckIcon from "@lucide/svelte/icons/check";
+	import FlagIcon from "@lucide/svelte/icons/flag";
 	import GitCompareIcon from "@lucide/svelte/icons/git-compare";
 	import GitForkIcon from "@lucide/svelte/icons/git-fork";
 	import GithubIcon from "@lucide/svelte/icons/github";
@@ -14,24 +15,18 @@
 	import ListOrderedIcon from "@lucide/svelte/icons/list-ordered";
 	import ScaleIcon from "@lucide/svelte/icons/scale";
 	import ShieldCheckIcon from "@lucide/svelte/icons/shield-check";
-	import SlidersHorizontalIcon from "@lucide/svelte/icons/sliders-horizontal";
 	import TargetIcon from "@lucide/svelte/icons/target";
 	import { mergeProps } from "bits-ui";
 
 	type SetupItem = {
-		icon: typeof SlidersHorizontalIcon;
+		icon: typeof FlagIcon;
 		href: string;
 		label: string;
 		step: SetupStepKey;
 	};
 
 	const setup = [
-		{
-			icon: SlidersHorizontalIcon,
-			href: "/setup",
-			label: "Start",
-			step: "start",
-		},
+		{ icon: FlagIcon, href: "/setup", label: "Start", step: "start" },
 		{
 			icon: GitForkIcon,
 			href: "/setup/alternatives",

@@ -4,6 +4,7 @@ import GitCompareIcon from "@lucide/svelte/icons/git-compare";
 import HandCoinsIcon from "@lucide/svelte/icons/hand-coins";
 import ListOrderedIcon from "@lucide/svelte/icons/list-ordered";
 import ScaleIcon from "@lucide/svelte/icons/scale";
+import SlidersHorizontalIcon from "@lucide/svelte/icons/sliders-horizontal";
 import { type Component } from "svelte";
 
 export const info = {
@@ -48,12 +49,20 @@ class App {
 
 export const apps = [
 	new App(
-		"/weight",
-		"Evaluate alternatives based on weighted criteria.",
+		"/weigh",
+		"Set how important each criterion is.",
 		"weightedSum",
-		"Weight",
+		"Weigh",
 		ScaleIcon,
 		"Weighted criteria",
+	),
+	new App(
+		"/score",
+		"Score each alternative against each criterion.",
+		"weightedSum",
+		"Score",
+		SlidersHorizontalIcon,
+		"Alternative scoring",
 	),
 	new App(
 		"/compare",

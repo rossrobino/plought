@@ -10,7 +10,7 @@ import { type Component } from "svelte";
 export const info = {
 	author: { name: "Ross Robino", url: "https://robino.dev" },
 	name: "Plought",
-	tagline: "Reduce noise in decision making.",
+	tagline: "Reduce noise in decision making",
 	github: "https://github.com/rossrobino/plought",
 };
 

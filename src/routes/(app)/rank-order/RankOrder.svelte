@@ -68,12 +68,17 @@
 		<Info label="About rank">
 			<div class="space-y-2">
 				<p>Order alternatives from most to least preferred.</p>
-				<p>Focus only on relative order here, not numeric values.</p>
+				<p>
+					The first item is your top choice and the last item is your lowest.
+				</p>
 			</div>
 		</Info>
 	</div>
 	<p class="mt-1 text-sm text-muted-foreground">
 		Use controls to move alternatives one step or send them to the top/bottom.
+	</p>
+	<p class="mt-1 text-sm text-muted-foreground">
+		Order meaning: top = most preferred, bottom = least preferred.
 	</p>
 
 	<ul class="mt-3 flex flex-col gap-2">

@@ -248,15 +248,14 @@
 				{#if winnerRobustness != null && sensitivityLabel != null}
 					<p class="mt-2 mb-0 text-xs text-muted-foreground">
 						Weight sensitivity:
-						<span class="font-medium text-foreground">{sensitivityLabel}</span>
+						<a
+							href="/analysis/robustness"
+							class="font-medium text-foreground underline-offset-2 hover:underline"
+						>
+							{sensitivityLabel}
+						</a>
 						({winnerRobustness.winRatePct.toFixed(2)}% hold rate)
 					</p>
-					<a
-						href="/analysis/robustness"
-						class="mt-1 inline-flex text-xs text-foreground underline-offset-2 hover:underline"
-					>
-						View robustness details
-					</a>
 				{/if}
 			</div>
 			<div class="rounded-lg border bg-muted/25 p-3 shadow-xs">

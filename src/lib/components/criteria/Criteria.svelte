@@ -5,7 +5,6 @@
 	import { Input } from "$lib/components/ui/input/index.js";
 	import { ScrollArea } from "$lib/components/ui/scroll-area/index.js";
 	import { Slider } from "$lib/components/ui/slider/index.js";
-	import { Switch } from "$lib/components/ui/switch/index.js";
 	import * as Table from "$lib/components/ui/table/index.js";
 	import * as Tooltip from "$lib/components/ui/tooltip/index.js";
 	import {
@@ -37,10 +36,9 @@
 		tableView = true,
 		onChange,
 	}: Props = $props();
-	let keepTotal = $state(true);
 	const guidance = $derived(
 		weights
-			? "Set how important each criterion is. With 'Keep total at 100%' enabled, adjusting one redistributes the others."
+			? "Set each criterion as a percentage of importance so weighted analyses reflect your priorities across all alternatives."
 			: "List the factors you will use to evaluate alternatives.",
 	);
 
@@ -118,9 +116,7 @@
 			alt.scores.push(0);
 		});
 		syncAllocation();
-		if (keepTotal) {
-			normalizeCurrentWeights();
-		}
+		normalizeCurrentWeights();
 		markUsed();
 	};
 
@@ -130,7 +126,7 @@
 			alt.scores.splice(index, 1);
 		});
 		syncAllocation();
-		if (keepTotal && criteria.current.length > 0) {
+		if (criteria.current.length > 0) {
 			normalizeCurrentWeights();
 		}
 		markUsed();
@@ -138,12 +134,6 @@
 
 	const setWeightPercent = (index: number, value: number) => {
 		const nextValue = clampPercent(value);
-		if (!keepTotal) {
-			criteria.current[index].weight = nextValue / 100;
-			markUsed();
-			return;
-		}
-
 		const current = criteria.current.map((item) =>
 			toWeightPercent(item.weight),
 		);
@@ -178,13 +168,6 @@
 
 		setWeightsFromPercent(next);
 		markUsed();
-	};
-
-	const setKeepTotal = (next: boolean) => {
-		keepTotal = next;
-		if (next) {
-			normalizeCurrentWeights();
-		}
 	};
 
 	const getWeights = (criteria: Criteria[]) => {
@@ -405,20 +388,6 @@
 		{/if}
 	</Tooltip.Provider>
 	<div class="mt-3 flex flex-wrap items-center justify-end gap-4">
-		{#if weights}
-			<label
-				for="keep-total"
-				class="flex cursor-default items-center gap-2 text-sm font-medium select-none"
-			>
-				<span id="keep-total-label">Keep total at 100%</span>
-				<Switch
-					id="keep-total"
-					checked={keepTotal}
-					onCheckedChange={setKeepTotal}
-					aria-labelledby="keep-total-label"
-				/>
-			</label>
-		{/if}
 		{#if manageList}
 			<Button onclick={addCriteria} size="sm">
 				<PlusIcon />

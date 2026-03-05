@@ -27,7 +27,7 @@
 			size="sm"
 			variant="outline"
 			href={prev.href}
-			class="h-8 w-8 px-0 md:h-9 md:w-[126px] md:justify-between md:px-3"
+			class="h-8 w-8 px-0 md:h-9 md:w-31.5 md:justify-between md:px-3"
 			aria-label={`Previous: ${prev.label}`}
 		>
 			<ChevronLeftIcon />
@@ -39,7 +39,7 @@
 			size="sm"
 			variant="outline"
 			href={next.href}
-			class="h-8 w-8 px-0 md:h-9 md:w-[126px] md:justify-between md:px-3"
+			class="h-8 w-8 px-0 md:h-9 md:w-31.5 md:justify-between md:px-3"
 			aria-label={`Next: ${next.label}`}
 		>
 			<span class="hidden md:inline">{next.label}</span>

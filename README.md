@@ -15,10 +15,13 @@ Open to contributions.
 Built with these open-source projects:
 
 - [Svelte](https://svelte.dev/) and [SvelteKit](https://svelte.dev/docs/kit/introduction)
-- [Bits UI](https://bits-ui.com/) and [runed](https://runed.dev/)
-- [Tailwind CSS](https://tailwindcss.com/) and [tailwind-variants](https://www.tailwind-variants.org/)
-- [Lucide](https://lucide.dev/) ([`@lucide/svelte`](https://www.npmjs.com/package/@lucide/svelte))
 - [Vite](https://vite.dev/)
+- [Tailwind CSS](https://tailwindcss.com/)
+- [Bits UI](https://bits-ui.com/)
+- [runed](https://runed.dev/)
+- [layerchart](https://github.com/techniq/layerchart)
+
+And more, which can be found in [package.json](./package.json).
 
 ## License
 

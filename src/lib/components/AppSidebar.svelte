@@ -1,5 +1,7 @@
 <script lang="ts">
 	import { page } from "$app/state";
+	import textLogoDark from "$lib/assets/plought-text-logo-dark.svg";
+	import textLogoLight from "$lib/assets/plought-text-logo-light.svg";
 	import SnapshotActions from "$lib/components/snapshot/SnapshotActions.svelte";
 	import * as Sidebar from "$lib/components/ui/sidebar/index.js";
 	import { apps as appRegistry, info } from "$lib/info";
@@ -99,15 +101,8 @@
 			onclick={closeSidebarOnMobile}
 		>
 			<picture>
-				<source
-					media="(prefers-color-scheme: dark)"
-					srcset="/plought-text-logo-light.svg"
-				/>
-				<img
-					src="/plought-text-logo-dark.svg"
-					alt={info.name}
-					class="h-6 w-auto"
-				/>
+				<source media="(prefers-color-scheme: dark)" srcset={textLogoLight} />
+				<img src={textLogoDark} alt={info.name} class="h-6 w-auto" />
 			</picture>
 		</a>
 	</Sidebar.Header>

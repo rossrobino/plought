@@ -1,6 +1,8 @@
 <script lang="ts">
 	import { dev } from "$app/environment";
 	import { page } from "$app/state";
+	import faviconDark from "$lib/assets/favicon-dark.png";
+	import faviconLight from "$lib/assets/favicon-light.png";
 	import AppSidebar from "$lib/components/AppSidebar.svelte";
 	import HeaderFlowNav from "$lib/components/HeaderFlowNav.svelte";
 	import * as Sidebar from "$lib/components/ui/sidebar/index.js";
@@ -82,6 +84,11 @@
 		};
 	});
 </script>
+
+<svelte:head>
+	<link href={faviconLight} rel="icon" media="(prefers-color-scheme: dark)" />
+	<link href={faviconDark} rel="icon" media="(prefers-color-scheme: light)" />
+</svelte:head>
 
 <Sidebar.Provider bind:open class="min-w-[18rem]">
 	<AppSidebar />

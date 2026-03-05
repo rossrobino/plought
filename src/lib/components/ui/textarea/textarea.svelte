@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { type WithElementRef, type WithoutChildren, cn } from "$lib/utils.js";
+	import { TextareaAutosize } from "runed";
 	import type { HTMLTextareaAttributes } from "svelte/elements";
 
 	let {
@@ -9,6 +10,11 @@
 		"data-slot": dataSlot = "textarea",
 		...restProps
 	}: WithoutChildren<WithElementRef<HTMLTextareaAttributes>> = $props();
+
+	new TextareaAutosize({
+		element: () => ref as HTMLTextAreaElement,
+		input: () => String(value ?? ""),
+	});
 </script>
 
 <textarea

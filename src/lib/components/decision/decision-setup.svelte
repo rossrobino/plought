@@ -1,7 +1,7 @@
 <script lang="ts">
 	import * as Field from "$lib/components/ui/field";
 	import { Input } from "$lib/components/ui/input";
-	import { AutosizeTextarea } from "$lib/components/ui/textarea";
+	import { Textarea } from "$lib/components/ui/textarea";
 	import { decision, decisionDefaults, markSetupStepUsed } from "$lib/state";
 
 	const markUsed = () => {
@@ -32,7 +32,7 @@
 		</Field.Field>
 		<Field.Field class="gap-2.5">
 			<Field.Label for="decision-goal">Goal</Field.Label>
-			<AutosizeTextarea
+			<Textarea
 				id="decision-goal"
 				name="decision-goal"
 				bind:value={decision.current.goal}

@@ -83,11 +83,12 @@
 		Order meaning: top = most preferred, bottom = least preferred.
 	</p>
 
-	<ul class="mt-3 flex flex-col gap-2">
+	<ol class="mt-3 flex flex-col gap-2">
 		{#each ranked as item (item.id)}
 			<li
 				animate:flip={{ duration: 180 }}
 				class="list-none rounded-lg border bg-card p-2 shadow-xs"
+				aria-label={`Rank ${item.i + 1}: ${item.name}`}
 			>
 				<div class="flex items-center gap-2">
 					<div class="min-w-0 flex-1">
@@ -134,5 +135,5 @@
 				</div>
 			</li>
 		{/each}
-	</ul>
+	</ol>
 </section>

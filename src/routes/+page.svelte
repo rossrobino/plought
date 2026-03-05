@@ -86,7 +86,7 @@
 		</p>
 	</section>
 
-	<a href="/setup" class="group block no-underline">
+	<a href="/setup" class="group block no-underline" data-card-link>
 		<div
 			class="rounded-lg border bg-card p-3 shadow-xs transition-colors group-hover:bg-accent/35"
 		>
@@ -171,7 +171,7 @@
 
 	<div class="mt-4 grid gap-4 sm:grid-cols-2">
 		{#each apps as app (app.path)}
-			<a href={app.path} class="group block no-underline">
+			<a href={app.path} class="group block no-underline" data-card-link>
 				<div
 					class="h-full rounded-lg border bg-card p-3 shadow-xs transition-colors group-hover:bg-accent/35"
 				>
@@ -200,7 +200,7 @@
 		{/each}
 	</div>
 
-	<a href="/analysis" class="group block no-underline">
+	<a href="/analysis" class="group block no-underline" data-card-link>
 		<section
 			class="border-primary/35 bg-primary/10 transition-colors group-hover:bg-primary/15"
 		>

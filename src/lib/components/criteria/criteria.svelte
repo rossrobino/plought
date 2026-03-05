@@ -14,9 +14,9 @@
 		markMethodUsed,
 		syncAllocation,
 	} from "$lib/state";
-	import XMark from "$lib/svg/x-mark.svelte";
 	import type { Criteria } from "$lib/types";
 	import PlusIcon from "@lucide/svelte/icons/plus";
+	import XIcon from "@lucide/svelte/icons/x";
 
 	interface Props {
 		weights?: boolean;
@@ -218,6 +218,7 @@
 				orientation="horizontal"
 			>
 				<Table.Root class="min-w-full">
+					<caption class="sr-only">Criteria and their current weights.</caption>
 					<Table.Header>
 						<Table.Row
 							class="hover:[&,&>svelte-css-wrapper]:[&>th,td]:bg-transparent"
@@ -265,6 +266,8 @@
 												min={0}
 												max={100}
 												step={1}
+												label={`Weight for ${item.name}`}
+												text={`${toPercent(item.weight)}%`}
 												value={toPercent(item.weight)}
 												onValueChange={(value) => setWeightPercent(i, value)}
 											/>
@@ -296,7 +299,7 @@
 														}}
 														aria-label={`Remove criteria ${i + 1}`}
 													>
-														<XMark class="size-4" />
+														<XIcon class="size-4" />
 													</Button>
 												{/snippet}
 											</Tooltip.Trigger>
@@ -371,7 +374,7 @@
 											}}
 											aria-label={`Remove criteria ${i + 1}`}
 										>
-											<XMark class="size-4" />
+											<XIcon class="size-4" />
 										</Button>
 									{/snippet}
 								</Tooltip.Trigger>

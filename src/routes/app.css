@@ -38,7 +38,7 @@
 	--destructive: light-dark(var(--color-red-700), var(--color-red-500));
 	--border: light-dark(var(--color-slate-200), var(--color-slate-700));
 	--input: light-dark(var(--color-slate-200), var(--color-slate-700));
-	--ring: light-dark(var(--color-slate-500), var(--color-lime-400));
+	--ring: light-dark(var(--color-sky-700), var(--color-lime-300));
 	--chart-1: var(--color-lime-400);
 	--chart-2: light-dark(var(--color-slate-600), var(--color-sky-400));
 	--chart-3: light-dark(var(--color-sky-300), var(--color-sky-200));
@@ -163,12 +163,33 @@
 		overflow-x: auto;
 	}
 
+	.skip-link {
+		@apply fixed start-3 top-3 z-50 rounded-md border bg-background px-3 py-2 text-sm font-medium text-foreground no-underline shadow-sm;
+		transform: translateY(calc(-100% - 1rem));
+		transition:
+			transform 0.15s ease,
+			box-shadow 0.15s ease;
+	}
+
+	.skip-link:focus-visible {
+		@apply outline-2 outline-offset-2 outline-primary;
+		transform: translateY(0);
+	}
+
 	a {
 		@apply font-medium underline decoration-2 underline-offset-2 hover:decoration-dotted;
 	}
 
 	a[data-sidebar="menu-button"] {
 		@apply no-underline;
+	}
+
+	a[data-card-link] {
+		@apply rounded-lg;
+	}
+
+	a[data-card-link]:focus-visible {
+		@apply outline-2 outline-offset-2 outline-primary;
 	}
 
 	section {

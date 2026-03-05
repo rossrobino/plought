@@ -7,13 +7,13 @@
 	import { type VariantProps, tv } from "tailwind-variants";
 
 	export const buttonVariants = tv({
-		base: "inline-flex shrink-0 items-center justify-center gap-2 rounded-lg text-sm font-medium whitespace-nowrap no-underline transition-all select-none outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50 active:scale-[0.98] active:brightness-95 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+		base: "inline-flex shrink-0 items-center justify-center gap-2 rounded-md text-sm font-medium whitespace-nowrap no-underline transition-all select-none outline-none focus-visible:relative focus-visible:z-10 focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50 active:scale-[0.98] active:brightness-95 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
 		variants: {
 			variant: {
 				default:
 					"border border-primary/45 bg-primary/45 text-foreground shadow-sm hover:bg-primary/55",
 				destructive:
-					"focus-visible:outline-destructive border border-border/80 bg-destructive text-white shadow-sm hover:opacity-90",
+					"border border-border/80 bg-destructive text-white shadow-sm hover:opacity-90",
 				outline:
 					"border border-border/80 bg-background text-foreground shadow-sm hover:bg-accent hover:text-accent-foreground",
 				secondary:

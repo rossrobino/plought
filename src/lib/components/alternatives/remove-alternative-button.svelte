@@ -2,7 +2,7 @@
 	import { Button } from "$lib/components/ui/button";
 	import * as Tooltip from "$lib/components/ui/tooltip";
 	import { alternatives, syncAllocation, syncRankOrder } from "$lib/state";
-	import XMark from "$lib/svg/x-mark.svelte";
+	import XIcon from "@lucide/svelte/icons/x";
 
 	interface Props {
 		index: number;
@@ -40,7 +40,7 @@
 					}}
 					aria-label={`Remove alternative ${index + 1}`}
 				>
-					<XMark class="size-4" />
+					<XIcon class="size-4" />
 				</Button>
 			{/snippet}
 		</Tooltip.Trigger>

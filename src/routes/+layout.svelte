@@ -90,6 +90,8 @@
 	<link href={faviconDark} rel="icon" media="(prefers-color-scheme: light)" />
 </svelte:head>
 
+<a href="#main-content" class="skip-link">Skip to main content</a>
+
 <Sidebar.Provider bind:open class="min-w-[18rem]">
 	<AppSidebar />
 	<Sidebar.Inset class="selection:bg-foreground selection:text-background">
@@ -102,8 +104,12 @@
 				<HeaderFlowNav prev={flowNav.prev} next={flowNav.next} />
 			{/if}
 		</header>
-		<div class="flex w-full min-w-0 flex-1 flex-col px-4 pt-0 pb-4">
+		<main
+			id="main-content"
+			tabindex="-1"
+			class="flex w-full min-w-0 flex-1 flex-col px-4 pt-0 pb-4"
+		>
 			{@render children()}
-		</div>
+		</main>
 	</Sidebar.Inset>
 </Sidebar.Provider>

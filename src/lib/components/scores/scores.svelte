@@ -189,6 +189,7 @@
 		orientation="horizontal"
 	>
 		<Table.Root class="min-w-full">
+			<caption class="sr-only">Method scores for each alternative.</caption>
 			<Table.Header>
 				<Table.Row
 					class="hover:[&,&>svelte-css-wrapper]:[&>th,td]:bg-transparent"

@@ -70,6 +70,7 @@
 			orientation="horizontal"
 		>
 			<Table.Root class="min-w-full">
+				<caption class="sr-only">Alternative scores by criterion.</caption>
 				<Table.Header>
 					<Table.Row
 						class="hover:[&,&>svelte-css-wrapper]:[&>th,td]:bg-transparent"

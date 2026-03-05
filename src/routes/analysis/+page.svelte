@@ -296,6 +296,7 @@
 				<a
 					href={item.href}
 					class="block rounded-lg border p-3 no-underline shadow-xs hover:bg-accent/35"
+					data-card-link
 				>
 					<p class="mb-0 text-sm font-semibold">{item.label}</p>
 					<p class="mt-1 mb-0 text-xs text-muted-foreground">{item.note}</p>
@@ -304,6 +305,7 @@
 			<a
 				href="/analysis/robustness"
 				class="block rounded-lg border p-3 no-underline shadow-xs hover:bg-accent/35"
+				data-card-link
 			>
 				<p class="mb-0 text-sm font-semibold">Robustness</p>
 				<p class="mt-1 mb-0 text-xs text-muted-foreground">

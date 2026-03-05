@@ -230,6 +230,9 @@
 			orientation="horizontal"
 		>
 			<Table.Root class="min-w-full">
+				<caption class="sr-only">
+					Robustness simulation results by alternative.
+				</caption>
 				<Table.Header>
 					<Table.Row
 						class="hover:[&,&>svelte-css-wrapper]:[&>th,td]:bg-transparent"

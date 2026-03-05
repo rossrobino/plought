@@ -186,7 +186,11 @@
 					Answered {answered} / {totalPairs}
 				</p>
 			</div>
-			<Progress class="mt-2" value={progressValue} />
+			<Progress
+				class="mt-2"
+				value={progressValue}
+				aria-label={`Comparison progress: ${answered} of ${totalPairs} pairs answered`}
+			/>
 		</div>
 
 		{#if activePair != null}

@@ -159,7 +159,10 @@
 						value={`${criterionIndex}`}
 						onValueChange={updateCriterion}
 					>
-						<Select.Trigger class="h-8 w-full justify-between">
+						<Select.Trigger
+							class="h-8 w-full justify-between"
+							aria-label="Criterion"
+						>
 							{currentCriterion?.name ?? "Criterion"}
 						</Select.Trigger>
 						<Select.Content>
@@ -219,6 +222,8 @@
 							min={0}
 							max={allocationTotal}
 							step={0.01}
+							label={`Points for ${alt.name}`}
+							text={`${formatPoints(criterionRow[i] ?? 0)} points for ${currentCriterion?.name ?? "criterion"}`}
 							value={criterionRow[i] ?? 0}
 							onValueChange={(value) => setPoints(i, value)}
 						/>

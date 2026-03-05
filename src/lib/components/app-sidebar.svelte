@@ -118,7 +118,11 @@
 								tooltipContent={item.label}
 							>
 								{#snippet child({ props })}
-									<a {...withMobileClose(props)} href={item.href}>
+									<a
+										{...withMobileClose(props)}
+										href={item.href}
+										aria-current={active(item.href) ? "page" : undefined}
+									>
 										<item.icon />
 										<span>{item.label}</span>
 									</a>
@@ -149,7 +153,11 @@
 								tooltipContent={item.label}
 							>
 								{#snippet child({ props })}
-									<a {...withMobileClose(props)} href={item.href}>
+									<a
+										{...withMobileClose(props)}
+										href={item.href}
+										aria-current={active(item.href) ? "page" : undefined}
+									>
 										<item.icon />
 										<span>{item.label}</span>
 									</a>
@@ -180,7 +188,11 @@
 								tooltipContent={item.label}
 							>
 								{#snippet child({ props })}
-									<a {...withMobileClose(props)} href={item.href}>
+									<a
+										{...withMobileClose(props)}
+										href={item.href}
+										aria-current={active(item.href) ? "page" : undefined}
+									>
 										<item.icon />
 										<span>{item.label}</span>
 									</a>

@@ -5,7 +5,12 @@
 	type Props = Omit<
 		SliderPrimitive.RootProps,
 		"type" | "value" | "onValueChange"
-	> & { onValueChange?: (value: number) => void; value?: number };
+	> & {
+		label?: string;
+		onValueChange?: (value: number) => void;
+		text?: string;
+		value?: number;
+	};
 
 	let {
 		ref = $bindable(null),
@@ -14,6 +19,8 @@
 		max = 100,
 		step = 1,
 		disabled = false,
+		label,
+		text,
 		value = $bindable(0),
 		onValueChange,
 	}: Props = $props();
@@ -62,6 +69,8 @@
 	<SliderPrimitive.Thumb
 		data-slot="slider-thumb"
 		index={0}
+		aria-label={label}
+		aria-valuetext={text}
 		class={cn(
 			"block size-4 rounded-[2px] border border-primary/50 bg-background shadow-sm transition-[color,box-shadow] outline-none",
 			"focus-visible:ring-2 focus-visible:ring-ring/50 focus-visible:outline-1 focus-visible:outline-ring",

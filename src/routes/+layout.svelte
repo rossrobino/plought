@@ -97,7 +97,7 @@
 			class="sticky top-0 z-20 flex h-14 items-center gap-2 border-b border-border/50 bg-background/95 px-4 backdrop-blur supports-backdrop-filter:bg-background/80"
 		>
 			<Sidebar.Trigger />
-			<div class="min-w-0 truncate text-base font-semibold">{title}</div>
+			<h1 class="m-0 min-w-0 truncate text-base font-semibold">{title}</h1>
 			{#if flowNav != null}
 				<HeaderFlowNav prev={flowNav.prev} next={flowNav.next} />
 			{/if}

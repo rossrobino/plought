@@ -1,7 +1,6 @@
+import { info } from "$lib/info";
 import { seoByPath, seoPaths } from "$lib/seo";
 import type { RequestHandler } from "./$types";
-
-export const prerender = false;
 
 const normalizeBase = (value: string) => {
 	const trimmed = value.trim();
@@ -21,6 +20,9 @@ const escapeXml = (value: string) => {
 };
 
 const getBaseUrl = (origin: string) => {
+	if (info.url.trim().length > 0) {
+		return normalizeBase(info.url);
+	}
 	return normalizeBase(origin);
 };
 

@@ -2,7 +2,7 @@
 	import { info } from "$lib/info";
 
 	let { title = "", desc = "" } = $props();
-	const headTitle = $derived(title ? `${info.name} - ${title}` : info.name);
+	const headTitle = $derived(title ? `${title} | ${info.name}` : info.name);
 </script>
 
 <svelte:head>

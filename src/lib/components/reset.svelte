@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { goto } from "$app/navigation";
 	import * as AlertDialog from "$lib/components/ui/alert-dialog";
 	import { Button } from "$lib/components/ui/button";
 	import { reset } from "$lib/state";
@@ -21,9 +22,10 @@
 	let { className = "", onAction, variant = "secondary" }: Props = $props();
 	let open = $state(false);
 
-	const handleReset = () => {
+	const handleReset = async () => {
 		reset();
 		open = false;
+		await goto("/setup");
 	};
 
 	const openDialog = () => {

@@ -24,6 +24,49 @@ interface GuidanceCopy {
 	caveat: string;
 }
 
+const guidanceByMethod: Record<MethodKey, GuidanceCopy> = {
+	weightedSum: {
+		summary:
+			"Weighted Sum combines each criterion score with its weight, then adds them into one total.",
+		comparison:
+			"This method is strongest when your criteria weights reflect real priorities and score scales are consistent.",
+		caveat:
+			"If scores are close, small weight changes can flip the order. Use Summary to confirm agreement with other methods.",
+	},
+	pairwise: {
+		summary:
+			"Pairwise compares alternatives head-to-head, which can surface preference clarity when absolute scoring is difficult.",
+		comparison:
+			"It emphasizes direct wins and ties instead of weighted totals, so ranking can differ from Weighted Sum or TOPSIS.",
+		caveat:
+			"Many ties reduce separation between options. Revisit close matchups if the output feels flat.",
+	},
+	rankOrder: {
+		summary:
+			"Rank converts your top-to-bottom ordering into a 0-10 score scale, keeping focus on ordinal preference.",
+		comparison:
+			"It ignores absolute performance size, so it is useful as a gut-check against weight-driven methods.",
+		caveat:
+			"When options are near-equal, forced ordering can overstate differences.",
+	},
+	topsis: {
+		summary:
+			"TOPSIS favors alternatives closest to the ideal profile and farthest from the worst profile.",
+		comparison:
+			"It uses the same weighted inputs as Weighted Sum but evaluates distance structure across criteria.",
+		caveat:
+			"If criteria values collapse into similar patterns, TOPSIS separation can narrow quickly.",
+	},
+	allocate: {
+		summary:
+			"Allocate captures tradeoffs by distributing a fixed point budget across alternatives within each criterion.",
+		comparison:
+			"It reflects relative preference strength per criterion and combines those splits with your criterion weights.",
+		caveat:
+			"Forced allocation can exaggerate small differences. Revisit splits when priorities or information change.",
+	},
+};
+
 const round = (value: number) => {
 	if (!Number.isFinite(value)) {
 		return 0;
@@ -275,55 +318,8 @@ export const getGuidanceCopy = ({
 			? null
 			: alternatives[safeConsensus.runnerUpIndex]?.name;
 
-	if (method === "weightedSum") {
-		return {
-			summary:
-				"Weighted Sum combines each criterion score with its weight, then adds them into one total.",
-			comparison:
-				"This method is strongest when your criteria weights reflect real priorities and score scales are consistent.",
-			caveat:
-				"If scores are close, small weight changes can flip the order. Use Summary to confirm agreement with other methods.",
-		};
-	}
-	if (method === "pairwise") {
-		return {
-			summary:
-				"Pairwise compares alternatives head-to-head, which can surface preference clarity when absolute scoring is difficult.",
-			comparison:
-				"It emphasizes direct wins and ties instead of weighted totals, so ranking can differ from Weighted Sum or TOPSIS.",
-			caveat:
-				"Many ties reduce separation between options. Revisit close matchups if the output feels flat.",
-		};
-	}
-	if (method === "rankOrder") {
-		return {
-			summary:
-				"Rank converts your top-to-bottom ordering into a 0-10 score scale, keeping focus on ordinal preference.",
-			comparison:
-				"It ignores absolute performance size, so it is useful as a gut-check against weight-driven methods.",
-			caveat:
-				"When options are near-equal, forced ordering can overstate differences.",
-		};
-	}
-	if (method === "topsis") {
-		return {
-			summary:
-				"TOPSIS favors alternatives closest to the ideal profile and farthest from the worst profile.",
-			comparison:
-				"It uses the same weighted inputs as Weighted Sum but evaluates distance structure across criteria.",
-			caveat:
-				"If criteria values collapse into similar patterns, TOPSIS separation can narrow quickly.",
-		};
-	}
-	if (method === "allocate") {
-		return {
-			summary:
-				"Allocate captures tradeoffs by distributing a fixed point budget across alternatives within each criterion.",
-			comparison:
-				"It reflects relative preference strength per criterion and combines those splits with your criterion weights.",
-			caveat:
-				"Forced allocation can exaggerate small differences. Revisit splits when priorities or information change.",
-		};
+	if (method != null) {
+		return guidanceByMethod[method];
 	}
 
 	if (safeIncludedMethods.length === 0 || winner == null) {

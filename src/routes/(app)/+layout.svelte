@@ -5,7 +5,11 @@
 
 	let { children } = $props();
 
-	const path = $derived(`/${page.url.pathname.split("/").slice(1, 2)}`);
+	const path = $derived.by(() => {
+		const pathname = page.url.pathname;
+		const next = pathname.indexOf("/", 1);
+		return next === -1 ? pathname : pathname.slice(0, next);
+	});
 	const app = $derived(apps.find((item) => item.path === path));
 </script>
 

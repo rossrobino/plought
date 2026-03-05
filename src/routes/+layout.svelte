@@ -9,9 +9,7 @@
 	import "./app.css";
 	import { injectAnalytics } from "@vercel/analytics/sveltekit";
 
-	if (!dev) {
-		injectAnalytics({ mode: "production" });
-	}
+	if (!dev) injectAnalytics({ mode: "production" });
 
 	let open = $state(true);
 	let { children } = $props();
@@ -26,42 +24,37 @@
 		{ href: "/rank", label: "Rank" },
 		{ href: "/allocate", label: "Allocate" },
 	];
+	const flowIndex = new Map(
+		flow.map((item, index) => [item.href, index] as const),
+	);
+	const pageTitleMap = {
+		"/setup/alternatives": "Alternatives",
+		"/setup/criteria": "Criteria",
+		"/analysis/weight": "Weighted Sum",
+		"/analysis/compare": "Pairwise Comparison",
+		"/analysis/rank": "Rank Order",
+		"/analysis/allocate": "Point Allocation",
+		"/analysis/topsis": "TOPSIS",
+		"/analysis/robustness": "Robustness",
+		"/analysis": "Summary",
+		"/setup": "Start",
+		"/": "Home",
+	};
 
 	const pageTitle = $derived.by(() => {
-		if (page.url.pathname === "/") {
-			return "Home";
+		const path = page.url.pathname;
+		for (const [route, title] of Object.entries(pageTitleMap)) {
+			if (route === "/") {
+				if (path === "/") {
+					return title;
+				}
+				continue;
+			}
+			if (path.startsWith(route)) {
+				return title;
+			}
 		}
-		if (page.url.pathname === "/setup") {
-			return "Start";
-		}
-		if (page.url.pathname.startsWith("/setup/alternatives")) {
-			return "Alternatives";
-		}
-		if (page.url.pathname.startsWith("/setup/criteria")) {
-			return "Criteria";
-		}
-		if (page.url.pathname.startsWith("/analysis/weight")) {
-			return "Weighted Sum";
-		}
-		if (page.url.pathname.startsWith("/analysis/compare")) {
-			return "Pairwise Comparison";
-		}
-		if (page.url.pathname.startsWith("/analysis/rank")) {
-			return "Rank Order";
-		}
-		if (page.url.pathname.startsWith("/analysis/allocate")) {
-			return "Point Allocation";
-		}
-		if (page.url.pathname.startsWith("/analysis/topsis")) {
-			return "TOPSIS";
-		}
-		if (page.url.pathname.startsWith("/analysis/robustness")) {
-			return "Robustness";
-		}
-		if (page.url.pathname.startsWith("/analysis")) {
-			return "Summary";
-		}
-		const app = apps.find((item) => page.url.pathname.startsWith(item.path));
+		const app = apps.find((item) => path.startsWith(item.path));
 		return app ? app.title : info.name;
 	});
 
@@ -75,8 +68,8 @@
 	});
 
 	const flowNav = $derived.by(() => {
-		const i = flow.findIndex((item) => item.href === page.url.pathname);
-		if (i === -1) {
+		const i = flowIndex.get(page.url.pathname);
+		if (i == null) {
 			return null;
 		}
 		return {

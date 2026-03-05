@@ -143,16 +143,10 @@
 	});
 
 	const agreementLabel = $derived.by(() => {
-		if (agreement === "high") {
-			return "High";
-		}
-		if (agreement === "medium") {
-			return "Medium";
-		}
-		if (agreement === "low") {
-			return "Low";
-		}
-		return "None";
+		return (
+			{ high: "High", medium: "Medium", low: "Low", none: "None" }[agreement] ??
+			"None"
+		);
 	});
 
 	const hasRobustnessInputs = $derived(

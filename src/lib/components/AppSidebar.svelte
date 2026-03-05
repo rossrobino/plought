@@ -70,12 +70,14 @@
 		},
 	];
 	const sidebar = Sidebar.useSidebar();
+	const exactActive = new Set(["/setup", "/analysis"]);
+	const path = $derived(page.url.pathname);
 
 	const active = (href: string) => {
-		if (href === "/setup" || href === "/analysis") {
-			return page.url.pathname === href;
+		if (exactActive.has(href)) {
+			return path === href;
 		}
-		return page.url.pathname.startsWith(href);
+		return path.startsWith(href);
 	};
 
 	const closeSidebarOnMobile = () => {

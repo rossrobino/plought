@@ -10,7 +10,6 @@
 		normalizeRankOrder,
 		rankOrder as rankOrderState,
 	} from "$lib/state";
-	import type { Alternative, Criteria } from "$lib/types";
 	import { getAllocateScores, normalizeAllocation } from "$lib/util/allocate";
 	import { getTopsisCloseness } from "$lib/util/topsis";
 
@@ -71,91 +70,62 @@
 		getAllocateScores(allocationMatrix, criteria.current),
 	);
 
+	const weightedSumScoreByAlternativeIndex = $derived(
+		alternatives.current.map((alt) => {
+			let total = 0;
+			for (let i = 0; i < criteria.current.length; i++) {
+				total += (criteria.current[i]?.weight ?? 0) * (alt.scores[i] ?? 0);
+			}
+			return Number(total.toFixed(2));
+		}),
+	);
+	const pairwiseScoreByAlternativeIndex = $derived(
+		alternatives.current.map((alt, skipIndex) => {
+			let total = 0;
+			for (let i = 0; i < alt.pairwise.length; i++) {
+				if (i !== skipIndex) {
+					total += alt.pairwise[i] ?? 0;
+				}
+			}
+			return total;
+		}),
+	);
+	const rankOrderScoreByAlternativeIndex = $derived.by(() => {
+		const count = alternatives.current.length;
+		return alternatives.current.map((_, altIndex) => {
+			const rank = rankByAlternativeIndex.get(altIndex);
+			return getRankScore(rank == null ? count - 1 : rank, count);
+		});
+	});
+	const sortByScoreByIndex = $derived.by(() => {
+		if (sortBy === "weightedSum") {
+			return weightedSumScoreByAlternativeIndex;
+		}
+		if (sortBy === "pairwise") {
+			return pairwiseScoreByAlternativeIndex;
+		}
+		if (sortBy === "rankOrder") {
+			return rankOrderScoreByAlternativeIndex;
+		}
+		if (sortBy === "allocate") {
+			return allocateScoreByAlternativeIndex;
+		}
+		if (sortBy === "topsis") {
+			return topsisScoreByAlternativeIndex;
+		}
+		return null;
+	});
+
 	const sortedAlternatives = $derived(
 		alternatives.current
 			.map((alt, i) => ({ alt, i }))
 			.sort((a, b) => {
-				if (sortBy === "weightedSum") {
-					return (
-						getWeightedSum(b.alt, criteria.current) -
-						getWeightedSum(a.alt, criteria.current)
-					);
-				} else if (sortBy === "pairwise") {
-					return getPairwiseScore(b.i) - getPairwiseScore(a.i);
-				} else if (sortBy === "rankOrder") {
-					return getRankOrderScore(b.i) - getRankOrderScore(a.i);
-				} else if (sortBy === "allocate") {
-					return getAllocateScore(b.i) - getAllocateScore(a.i);
-				} else if (sortBy === "topsis") {
-					return getTopsisScore(b.i) - getTopsisScore(a.i);
-				} else {
+				if (sortByScoreByIndex == null) {
 					return a.i - b.i;
 				}
+				return (sortByScoreByIndex[b.i] ?? 0) - (sortByScoreByIndex[a.i] ?? 0);
 			}),
 	);
-
-	/**
-	 * Calculates the weighted sum score of an alternative
-	 *
-	 * @param alt - alternative
-	 * @param criteria - array of criteria
-	 */
-	const getWeightedSum = (alt: Alternative, criteria: Criteria[]): number => {
-		// get the current weights of each criteria
-		const weights = criteria.map(({ weight }) => {
-			return weight;
-		});
-
-		// multiply each score by its corresponding weight
-		const weighted = [];
-		for (let i = 0; i < weights.length; i++) {
-			weighted.push(weights[i] * alt.scores[i]);
-		}
-
-		// sum the list to create the total score
-		const total = weighted.reduce(
-			(accumulator, currentValue) => accumulator + currentValue,
-			0,
-		);
-		return Number(total.toFixed(2));
-	};
-
-	/**
-	 * Calculates the pairwise score of an alternative
-	 *
-	 * @param alt - alternative
-	 * @returns pairwise score
-	 */
-	const getPairwiseScore = (skipIndex: number) => {
-		const alt = alternatives.current[skipIndex];
-		if (alt == null) {
-			return 0;
-		}
-
-		// sum all pairwise scores besides the index
-		let total = 0;
-		alt.pairwise.forEach((score, i) => {
-			if (i !== skipIndex) {
-				total += score;
-			}
-		});
-
-		return total;
-	};
-
-	const getRankOrderScore = (altIndex: number) => {
-		const count = alternatives.current.length;
-		const rank = rankByAlternativeIndex.get(altIndex);
-		return getRankScore(rank == null ? count - 1 : rank, count);
-	};
-
-	const getTopsisScore = (altIndex: number) => {
-		return topsisScoreByAlternativeIndex[altIndex] ?? 0;
-	};
-
-	const getAllocateScore = (altIndex: number) => {
-		return allocateScoreByAlternativeIndex[altIndex] ?? 0;
-	};
 </script>
 
 <section>
@@ -249,27 +219,27 @@
 						</Table.Head>
 						{#if weightedSum}
 							<Table.Cell class="font-semibold">
-								{getWeightedSum(item.alt, criteria.current)}
+								{weightedSumScoreByAlternativeIndex[item.i] ?? 0}
 							</Table.Cell>
 						{/if}
 						{#if pairwise}
 							<Table.Cell class="font-semibold">
-								{getPairwiseScore(item.i)}
+								{pairwiseScoreByAlternativeIndex[item.i] ?? 0}
 							</Table.Cell>
 						{/if}
 						{#if rankOrder}
 							<Table.Cell class="font-semibold">
-								{getRankOrderScore(item.i)}
+								{rankOrderScoreByAlternativeIndex[item.i] ?? 0}
 							</Table.Cell>
 						{/if}
 						{#if allocate}
 							<Table.Cell class="font-semibold">
-								{getAllocateScore(item.i)}
+								{allocateScoreByAlternativeIndex[item.i] ?? 0}
 							</Table.Cell>
 						{/if}
 						{#if topsis}
 							<Table.Cell class="font-semibold">
-								{getTopsisScore(item.i)}
+								{topsisScoreByAlternativeIndex[item.i] ?? 0}
 							</Table.Cell>
 						{/if}
 					</Table.Row>

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import * as Sheet from "$lib/components/ui/sheet/index.js";
+	import * as Sheet from "$lib/components/ui/sheet";
 	import { type WithElementRef, cn } from "$lib/utils.js";
 	import { SIDEBAR_WIDTH_MOBILE } from "./constants.js";
 	import { useSidebar } from "./context.svelte.js";

@@ -28,6 +28,9 @@ const assertKnownKeyTypes = (value: Record<string, unknown>) => {
 	if ("rankOrder" in value && !Array.isArray(value.rankOrder)) {
 		throw new Error("Snapshot format is not supported.");
 	}
+	if ("appMeta" in value && !isRecord(value.appMeta)) {
+		throw new Error("Snapshot format is not supported.");
+	}
 	if ("methodMeta" in value && !isRecord(value.methodMeta)) {
 		throw new Error("Snapshot format is not supported.");
 	}

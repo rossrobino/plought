@@ -1,8 +1,8 @@
 <script lang="ts">
-	import Info from "$lib/components/Info.svelte";
-	import { Button } from "$lib/components/ui/button/index.js";
-	import { Progress } from "$lib/components/ui/progress/index.js";
-	import { alternatives, markMethodUsed } from "$lib/state";
+	import Info from "$lib/components/info.svelte";
+	import { Button } from "$lib/components/ui/button";
+	import { Progress } from "$lib/components/ui/progress";
+	import { alternatives, markAppUsed, markMethodUsed } from "$lib/state";
 	import ArrowLeftIcon from "@lucide/svelte/icons/arrow-left";
 	import ArrowRightIcon from "@lucide/svelte/icons/arrow-right";
 	import ShuffleIcon from "@lucide/svelte/icons/shuffle";
@@ -130,6 +130,7 @@
 		alternatives.current[j].pairwise[i] =
 			value === 1 ? 0 : value === 0 ? 1 : 0.5;
 		touched = { ...touched, [pairId(pair)]: true };
+		markAppUsed("compare");
 		markMethodUsed("pairwise");
 		if (current < totalPairs - 1) {
 			current += 1;

@@ -3,9 +3,9 @@
 	import { page } from "$app/state";
 	import faviconDark from "$lib/assets/favicon-dark.png";
 	import faviconLight from "$lib/assets/favicon-light.png";
-	import AppSidebar from "$lib/components/AppSidebar.svelte";
-	import HeaderFlowNav from "$lib/components/HeaderFlowNav.svelte";
-	import * as Sidebar from "$lib/components/ui/sidebar/index.js";
+	import AppSidebar from "$lib/components/app-sidebar.svelte";
+	import HeaderFlowNav from "$lib/components/header-flow-nav.svelte";
+	import * as Sidebar from "$lib/components/ui/sidebar";
 	import { apps, info } from "$lib/info";
 	import { decision, decisionDefaults } from "$lib/state";
 	import "./app.css";

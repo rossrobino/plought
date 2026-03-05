@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { Button } from "$lib/components/ui/button/index.js";
-	import * as Popover from "$lib/components/ui/popover/index.js";
+	import { Button } from "$lib/components/ui/button";
+	import * as Popover from "$lib/components/ui/popover";
 	import CircleHelpIcon from "@lucide/svelte/icons/circle-help";
 	import type { Snippet } from "svelte";
 

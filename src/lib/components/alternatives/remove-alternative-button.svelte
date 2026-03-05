@@ -1,8 +1,8 @@
 <script lang="ts">
-	import { Button } from "$lib/components/ui/button/index.js";
-	import * as Tooltip from "$lib/components/ui/tooltip/index.js";
+	import { Button } from "$lib/components/ui/button";
+	import * as Tooltip from "$lib/components/ui/tooltip";
 	import { alternatives, syncAllocation, syncRankOrder } from "$lib/state";
-	import XMark from "$lib/svg/XMark.svelte";
+	import XMark from "$lib/svg/x-mark.svelte";
 
 	interface Props {
 		index: number;

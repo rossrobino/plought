@@ -76,6 +76,16 @@ describe("state", () => {
 		expect(state.isMethodIncluded("pairwise")).toBe(false);
 	});
 
+	it("marks app usage independently", () => {
+		expect(state.isAppUsed("weigh")).toBe(false);
+		expect(state.isAppUsed("score")).toBe(false);
+		state.markAppUsed("weigh");
+		expect(state.isAppUsed("weigh")).toBe(true);
+		expect(state.isAppUsed("score")).toBe(false);
+		state.markMethodUsed("weightedSum");
+		expect(state.isAppUsed("score")).toBe(false);
+	});
+
 	it("marks setup steps as used and keeps repeat marks idempotent", () => {
 		expect(state.isSetupStepUsed("criteria")).toBe(false);
 		state.markSetupStepUsed("criteria");
@@ -126,6 +136,7 @@ describe("state", () => {
 		expect(Object.keys(snapshot).sort()).toEqual([
 			"allocation",
 			"alternatives",
+			"appMeta",
 			"criteria",
 			"decision",
 			"methodMeta",
@@ -153,6 +164,7 @@ describe("state", () => {
 		expect(state.alternatives.current.length).toBe(2);
 		expect(state.allocation.current.length).toBe(2);
 		expect(state.rankOrder.current.length).toBe(2);
+		expect(state.isAppUsed("weigh")).toBe(false);
 		expect(state.isMethodUsed("pairwise")).toBe(false);
 		expect(state.isSetupStepUsed("criteria")).toBe(false);
 	});
@@ -203,6 +215,7 @@ describe("state", () => {
 			}),
 		).toBe(true);
 		expect(state.rankOrder.current).toEqual([1, 0, 2]);
+		expect(state.isAppUsed("weigh")).toBe(false);
 		expect(state.isMethodUsed("weightedSum")).toBe(true);
 		expect(state.isMethodUsed("pairwise")).toBe(false);
 		expect(state.isSetupStepUsed("start")).toBe(true);

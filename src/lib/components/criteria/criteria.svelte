@@ -1,12 +1,12 @@
 <script lang="ts">
-	import Info from "$lib/components/Info.svelte";
-	import { Button } from "$lib/components/ui/button/index.js";
-	import * as Field from "$lib/components/ui/field/index.js";
-	import { Input } from "$lib/components/ui/input/index.js";
-	import { ScrollArea } from "$lib/components/ui/scroll-area/index.js";
-	import { Slider } from "$lib/components/ui/slider/index.js";
-	import * as Table from "$lib/components/ui/table/index.js";
-	import * as Tooltip from "$lib/components/ui/tooltip/index.js";
+	import Info from "$lib/components/info.svelte";
+	import { Button } from "$lib/components/ui/button";
+	import * as Field from "$lib/components/ui/field";
+	import { Input } from "$lib/components/ui/input";
+	import { ScrollArea } from "$lib/components/ui/scroll-area";
+	import { Slider } from "$lib/components/ui/slider";
+	import * as Table from "$lib/components/ui/table";
+	import * as Tooltip from "$lib/components/ui/tooltip";
 	import {
 		type MethodKey,
 		alternatives,
@@ -14,7 +14,7 @@
 		markMethodUsed,
 		syncAllocation,
 	} from "$lib/state";
-	import XMark from "$lib/svg/XMark.svelte";
+	import XMark from "$lib/svg/x-mark.svelte";
 	import type { Criteria } from "$lib/types";
 	import PlusIcon from "@lucide/svelte/icons/plus";
 

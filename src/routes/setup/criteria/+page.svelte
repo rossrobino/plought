@@ -1,6 +1,6 @@
 <script lang="ts">
-	import Head from "$lib/components/Head.svelte";
-	import Criteria from "$lib/components/criteria/Criteria.svelte";
+	import Criteria from "$lib/components/criteria/criteria.svelte";
+	import Head from "$lib/components/head.svelte";
 	import { markSetupStepUsed } from "$lib/state";
 </script>
 

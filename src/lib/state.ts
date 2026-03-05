@@ -9,9 +9,11 @@ const methodKeys = [
 	"topsis",
 	"allocate",
 ] as const;
+const appKeys = ["weigh", "score", "compare", "rank", "allocate"] as const;
 const setupStepKeys = ["start", "alternatives", "criteria"] as const;
 
 export type MethodKey = (typeof methodKeys)[number];
+export type AppKey = (typeof appKeys)[number];
 export type SetupStepKey = (typeof setupStepKeys)[number];
 
 interface MethodMeta {
@@ -23,9 +25,15 @@ interface SetupStepMeta {
 	used: boolean;
 }
 
+interface AppMeta {
+	used: boolean;
+}
+
 type MethodMetaState = Record<MethodKey, MethodMeta>;
+type AppMetaState = Record<AppKey, AppMeta>;
 type SetupStepMetaState = Record<SetupStepKey, SetupStepMeta>;
 type MethodMetaInput = Partial<Record<MethodKey, Partial<MethodMeta>>>;
+type AppMetaInput = Partial<Record<AppKey, Partial<AppMeta>>>;
 type SetupStepMetaInput = Partial<Record<SetupStepKey, Partial<SetupStepMeta>>>;
 
 export interface SnapshotState {
@@ -34,6 +42,7 @@ export interface SnapshotState {
 	alternatives: Alternative[];
 	allocation: number[][];
 	rankOrder: number[];
+	appMeta: Record<AppKey, AppMeta>;
 	methodMeta: Record<MethodKey, MethodMeta>;
 	setupStepMeta: Record<SetupStepKey, SetupStepMeta>;
 }
@@ -44,6 +53,7 @@ export interface SnapshotImportState {
 	alternatives?: Alternative[];
 	allocation?: number[][];
 	rankOrder?: number[];
+	appMeta?: AppMetaInput;
 	methodMeta?: MethodMetaInput;
 	setupStepMeta?: SetupStepMetaInput;
 }
@@ -79,6 +89,16 @@ const getMethodMetaDefaults = (
 	};
 };
 
+const getAppMetaDefaults = (used = false): AppMetaState => {
+	return {
+		weigh: { used },
+		score: { used },
+		compare: { used },
+		rank: { used },
+		allocate: { used },
+	};
+};
+
 const getSetupStepMetaDefaults = (used = false): SetupStepMetaState => {
 	return { start: { used }, alternatives: { used }, criteria: { used } };
 };
@@ -99,6 +119,22 @@ const normalizeMethodMeta = (
 			used: item?.used ?? defaults[key].used,
 			included: item?.included ?? defaults[key].included,
 		};
+	}
+	return next;
+};
+
+const normalizeAppMeta = (
+	value: AppMetaInput | null | undefined,
+	used = false,
+) => {
+	const defaults = getAppMetaDefaults(used);
+	if (value == null || typeof value !== "object") {
+		return defaults;
+	}
+	const next = {} as AppMetaState;
+	for (const key of appKeys) {
+		const item = value[key];
+		next[key] = { used: item?.used ?? defaults[key].used };
 	}
 	return next;
 };
@@ -147,6 +183,43 @@ const getMethodMeta = (): MethodMetaState => {
 			};
 		}
 		return defaults;
+	} catch {
+		return defaults;
+	}
+};
+
+const getAppMeta = (): AppMetaState => {
+	const defaults = getAppMetaDefaults();
+	if (typeof window === "undefined") {
+		return defaults;
+	}
+	try {
+		const storage = window.localStorage;
+		const current = storage.getItem("appMeta");
+		if (current != null) {
+			try {
+				return normalizeAppMeta(JSON.parse(current) as AppMetaInput);
+			} catch {
+				return defaults;
+			}
+		}
+		const legacyMethodMeta = storage.getItem("methodMeta");
+		if (legacyMethodMeta == null) {
+			return defaults;
+		}
+		try {
+			const methodMeta = normalizeMethodMeta(
+				JSON.parse(legacyMethodMeta) as MethodMetaInput,
+			);
+			return {
+				...defaults,
+				compare: { used: methodMeta.pairwise.used },
+				rank: { used: methodMeta.rankOrder.used },
+				allocate: { used: methodMeta.allocate.used },
+			};
+		} catch {
+			return defaults;
+		}
 	} catch {
 		return defaults;
 	}
@@ -239,6 +312,13 @@ const cloneMethodMeta = (value: MethodMetaState) => {
 		next[key] = { used: value[key].used, included: value[key].included };
 		return next;
 	}, {} as MethodMetaState);
+};
+
+const cloneAppMeta = (value: AppMetaState) => {
+	return appKeys.reduce((next, key) => {
+		next[key] = { used: value[key].used };
+		return next;
+	}, {} as AppMetaState);
 };
 
 const cloneSetupStepMeta = (value: SetupStepMetaState) => {
@@ -390,6 +470,18 @@ const applyMethodMeta = (next: MethodMetaState) => {
 	}
 };
 
+const applyAppMeta = (next: AppMetaState) => {
+	const current = appMeta.current as AppMetaInput;
+	for (const key of appKeys) {
+		const item = current[key];
+		if (item == null || typeof item !== "object") {
+			current[key] = { used: next[key].used };
+			continue;
+		}
+		item.used = next[key].used;
+	}
+};
+
 const applySetupStepMeta = (next: SetupStepMetaState) => {
 	const current = setupStepMeta.current as SetupStepMetaInput;
 	for (const key of setupStepKeys) {
@@ -431,6 +523,7 @@ export const getRankScore = (rank: number, count: number) => {
 };
 
 const methodMeta = new PersistedState("methodMeta", getMethodMeta());
+const appMeta = new PersistedState("appMeta", getAppMeta());
 const setupStepMeta = new PersistedState("setupStepMeta", getSetupStepMeta());
 export const criteria = new PersistedState("criteria", getCriteria());
 export const alternatives = new PersistedState(
@@ -457,6 +550,18 @@ const syncMethodMeta = () => {
 		) {
 			applyMethodMeta(next);
 			return methodMeta.current;
+		}
+	}
+	return current;
+};
+
+const syncAppMeta = () => {
+	const current = appMeta.current;
+	const next = normalizeAppMeta(current);
+	for (const key of appKeys) {
+		if (current[key]?.used !== next[key].used) {
+			applyAppMeta(next);
+			return appMeta.current;
 		}
 	}
 	return current;
@@ -529,6 +634,7 @@ export const exportSnapshotState = (): SnapshotState => {
 		currentAlternatives.length,
 	);
 	const currentMethodMeta = normalizeMethodMeta(methodMeta.current);
+	const currentAppMeta = normalizeAppMeta(appMeta.current);
 	const currentSetupStepMeta = normalizeSetupStepMeta(setupStepMeta.current);
 
 	return {
@@ -537,6 +643,7 @@ export const exportSnapshotState = (): SnapshotState => {
 		alternatives: currentAlternatives,
 		allocation: cloneAllocation(currentAllocation),
 		rankOrder: [...currentRankOrder],
+		appMeta: cloneAppMeta(currentAppMeta),
 		methodMeta: cloneMethodMeta(currentMethodMeta),
 		setupStepMeta: cloneSetupStepMeta(currentSetupStepMeta),
 	};
@@ -546,6 +653,7 @@ export const importSnapshotState = (value: SnapshotImportState) => {
 	const decisionDefaultsValue = getDecision();
 	const criteriaDefaultsValue = getCriteria();
 	const setupDefaults = getSetupStepMetaDefaults();
+	const appDefaults = getAppMetaDefaults();
 	const methodDefaults = getMethodMetaDefaults();
 	const normalizedDecision = normalizeDecisionState(
 		value.decision,
@@ -574,6 +682,10 @@ export const importSnapshotState = (value: SnapshotImportState) => {
 		methodDefaults.weightedSum.used,
 		methodDefaults.weightedSum.included,
 	);
+	const normalizedAppMeta = normalizeAppMeta(
+		value.appMeta,
+		appDefaults.weigh.used,
+	);
 	const normalizedSetupMeta = normalizeSetupStepMeta(
 		value.setupStepMeta,
 		setupDefaults.start.used,
@@ -585,6 +697,7 @@ export const importSnapshotState = (value: SnapshotImportState) => {
 	applyArray(allocation.current, normalizedAllocation);
 	applyArray(rankOrder.current, normalizedRankOrder);
 	applyMethodMeta(normalizedMethodMeta);
+	applyAppMeta(normalizedAppMeta);
 	applySetupStepMeta(normalizedSetupMeta);
 };
 
@@ -595,6 +708,14 @@ export const markMethodUsed = (method: MethodKey) => {
 	}
 	item.used = true;
 	item.included = true;
+};
+
+export const markAppUsed = (app: AppKey) => {
+	const item = syncAppMeta()[app];
+	if (item == null || item.used) {
+		return;
+	}
+	item.used = true;
 };
 
 export const markSetupStepUsed = (step: SetupStepKey) => {
@@ -621,6 +742,10 @@ export const isMethodUsed = (method: MethodKey) => {
 	return syncMethodMeta()[method]?.used ?? false;
 };
 
+export const isAppUsed = (app: AppKey) => {
+	return syncAppMeta()[app]?.used ?? false;
+};
+
 export const isMethodIncluded = (method: MethodKey) => {
 	return syncMethodMeta()[method]?.included ?? false;
 };
@@ -641,5 +766,6 @@ export const reset = () => {
 	applyDecision(getDecision());
 	applyArray(rankOrder.current, getRankOrder(nextAlternatives.length));
 	applyMethodMeta(getMethodMetaDefaults());
+	applyAppMeta(getAppMetaDefaults());
 	applySetupStepMeta(getSetupStepMetaDefaults());
 };

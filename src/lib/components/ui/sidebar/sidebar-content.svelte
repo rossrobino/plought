@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { ScrollArea } from "$lib/components/ui/scroll-area/index.js";
+	import { ScrollArea } from "$lib/components/ui/scroll-area";
 	import { type WithElementRef, cn } from "$lib/utils.js";
 	import type { HTMLAttributes } from "svelte/elements";
 

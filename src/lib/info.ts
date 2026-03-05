@@ -1,4 +1,4 @@
-import type { MethodKey } from "$lib/state";
+import type { AppKey, MethodKey } from "$lib/state";
 import { capitalize } from "$lib/util/capitalize";
 import GitCompareIcon from "@lucide/svelte/icons/git-compare";
 import HandCoinsIcon from "@lucide/svelte/icons/hand-coins";
@@ -15,6 +15,7 @@ export const info = {
 };
 
 class App {
+	key: AppKey;
 	path: string;
 	desc: string;
 	method: MethodKey;
@@ -23,6 +24,7 @@ class App {
 	badge: string;
 
 	constructor(
+		key: AppKey,
 		path: string,
 		desc: string,
 		method: MethodKey,
@@ -30,6 +32,7 @@ class App {
 		icon: Component,
 		badge: string,
 	) {
+		this.key = key;
 		this.path = path;
 		this.desc = desc;
 		this.method = method;
@@ -49,6 +52,7 @@ class App {
 
 export const apps = [
 	new App(
+		"weigh",
 		"/weigh",
 		"Set how important each criterion is.",
 		"weightedSum",
@@ -57,6 +61,7 @@ export const apps = [
 		"Weighted criteria",
 	),
 	new App(
+		"score",
 		"/score",
 		"Score each alternative against each criterion.",
 		"weightedSum",
@@ -65,6 +70,7 @@ export const apps = [
 		"Alternative scoring",
 	),
 	new App(
+		"compare",
 		"/compare",
 		"Compare alternatives against each possible option.",
 		"pairwise",
@@ -73,6 +79,7 @@ export const apps = [
 		"Head-to-head",
 	),
 	new App(
+		"rank",
 		"/rank",
 		"Order alternatives from most to least preferred.",
 		"rankOrder",
@@ -81,6 +88,7 @@ export const apps = [
 		"Manual ranking",
 	),
 	new App(
+		"allocate",
 		"/allocate",
 		"Distribute points across alternatives for each criterion.",
 		"allocate",

@@ -2,10 +2,10 @@
 	import { page } from "$app/state";
 	import textLogoDark from "$lib/assets/plought-text-logo-dark.svg";
 	import textLogoLight from "$lib/assets/plought-text-logo-light.svg";
-	import SnapshotActions from "$lib/components/snapshot/SnapshotActions.svelte";
-	import * as Sidebar from "$lib/components/ui/sidebar/index.js";
+	import SnapshotActions from "$lib/components/snapshot/snapshot-actions.svelte";
+	import * as Sidebar from "$lib/components/ui/sidebar";
 	import { apps as appRegistry, info } from "$lib/info";
-	import { type SetupStepKey, isMethodUsed, isSetupStepUsed } from "$lib/state";
+	import { type SetupStepKey, isAppUsed, isSetupStepUsed } from "$lib/state";
 	import BarChart3Icon from "@lucide/svelte/icons/bar-chart-3";
 	import CheckIcon from "@lucide/svelte/icons/check";
 	import FlagIcon from "@lucide/svelte/icons/flag";
@@ -155,7 +155,7 @@
 									</a>
 								{/snippet}
 							</Sidebar.MenuButton>
-							{#if isMethodUsed(item.method)}
+							{#if isAppUsed(item.key)}
 								<Sidebar.MenuBadge
 									class={completedBadgeClass}
 									aria-hidden="true"

@@ -1,5 +1,10 @@
 <script lang="ts">
-	import Criteria from "$lib/components/criteria/Criteria.svelte";
+	import Criteria from "$lib/components/criteria/criteria.svelte";
+	import { markAppUsed } from "$lib/state";
 </script>
 
-<Criteria editNames={false} manageList={false} />
+<Criteria
+	editNames={false}
+	manageList={false}
+	onChange={() => markAppUsed("weigh")}
+/>

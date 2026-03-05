@@ -1,12 +1,13 @@
 <script lang="ts">
-	import Info from "$lib/components/Info.svelte";
-	import { Button } from "$lib/components/ui/button/index.js";
-	import * as Select from "$lib/components/ui/select/index.js";
-	import { Slider } from "$lib/components/ui/slider/index.js";
+	import Info from "$lib/components/info.svelte";
+	import { Button } from "$lib/components/ui/button";
+	import * as Select from "$lib/components/ui/select";
+	import { Slider } from "$lib/components/ui/slider";
 	import {
 		allocation,
 		alternatives,
 		criteria,
+		markAppUsed,
 		markMethodUsed,
 	} from "$lib/state";
 	import {
@@ -84,6 +85,7 @@
 		}
 
 		allocation.current[criterionIndex] = next;
+		markAppUsed("allocate");
 		markMethodUsed("allocate");
 	};
 
@@ -104,6 +106,7 @@
 			return;
 		}
 		allocation.current[criterionIndex] = splitEven(alternatives.current.length);
+		markAppUsed("allocate");
 		markMethodUsed("allocate");
 	};
 </script>

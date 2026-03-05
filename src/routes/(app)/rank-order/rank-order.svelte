@@ -1,8 +1,9 @@
 <script lang="ts">
-	import Info from "$lib/components/Info.svelte";
-	import { Button } from "$lib/components/ui/button/index.js";
+	import Info from "$lib/components/info.svelte";
+	import { Button } from "$lib/components/ui/button";
 	import {
 		alternatives,
+		markAppUsed,
 		markMethodUsed,
 		normalizeRankOrder,
 		rankOrder,
@@ -47,6 +48,7 @@
 		if (to < 0 || to >= order.length || i === to) {
 			return;
 		}
+		markAppUsed("rank");
 		markMethodUsed("rankOrder");
 		rankOrder.current = move(order, i, to);
 	};

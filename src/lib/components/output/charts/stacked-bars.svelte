@@ -3,7 +3,7 @@
 		type ChartConfig,
 		ChartContainer,
 		ChartTooltip,
-	} from "$lib/components/ui/chart/index.js";
+	} from "$lib/components/ui/chart";
 	import { BarChart } from "layerchart";
 
 	interface Series {

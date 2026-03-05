@@ -1,11 +1,11 @@
 <script lang="ts">
-	import Info from "$lib/components/Info.svelte";
-	import AddAlternativeButton from "$lib/components/alternatives/AddAlternativeButton.svelte";
-	import RemoveAlternativeButton from "$lib/components/alternatives/RemoveAlternativeButton.svelte";
-	import * as Field from "$lib/components/ui/field/index.js";
-	import { Input } from "$lib/components/ui/input/index.js";
-	import { ScrollArea } from "$lib/components/ui/scroll-area/index.js";
-	import * as Table from "$lib/components/ui/table/index.js";
+	import AddAlternativeButton from "$lib/components/alternatives/add-alternative-button.svelte";
+	import RemoveAlternativeButton from "$lib/components/alternatives/remove-alternative-button.svelte";
+	import Info from "$lib/components/info.svelte";
+	import * as Field from "$lib/components/ui/field";
+	import { Input } from "$lib/components/ui/input";
+	import { ScrollArea } from "$lib/components/ui/scroll-area";
+	import * as Table from "$lib/components/ui/table";
 	import {
 		type MethodKey,
 		alternatives,

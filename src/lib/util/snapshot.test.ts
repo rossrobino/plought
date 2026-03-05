@@ -17,6 +17,13 @@ const snapshotState: SnapshotState = {
 	],
 	allocation: [[50, 50]],
 	rankOrder: [0, 1],
+	appMeta: {
+		weigh: { used: true },
+		score: { used: false },
+		compare: { used: true },
+		rank: { used: false },
+		allocate: { used: false },
+	},
 	methodMeta: {
 		weightedSum: { used: true, included: true },
 		pairwise: { used: true, included: true },

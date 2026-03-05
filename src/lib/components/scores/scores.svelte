@@ -1,7 +1,7 @@
 <script lang="ts">
-	import Info from "$lib/components/Info.svelte";
-	import { ScrollArea } from "$lib/components/ui/scroll-area/index.js";
-	import * as Table from "$lib/components/ui/table/index.js";
+	import Info from "$lib/components/info.svelte";
+	import { ScrollArea } from "$lib/components/ui/scroll-area";
+	import * as Table from "$lib/components/ui/table";
 	import {
 		allocation,
 		alternatives,

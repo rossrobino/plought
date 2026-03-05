@@ -1,5 +1,5 @@
 <script lang="ts">
-	import Compare from "./Compare.svelte";
+	import Compare from "./compare.svelte";
 </script>
 
 <Compare />

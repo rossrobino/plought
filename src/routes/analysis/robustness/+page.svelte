@@ -1,11 +1,11 @@
 <script lang="ts">
-	import Head from "$lib/components/Head.svelte";
+	import Head from "$lib/components/head.svelte";
 	import ScoreBars from "$lib/components/output/charts/score-bars.svelte";
-	import { Button } from "$lib/components/ui/button/index.js";
-	import * as Field from "$lib/components/ui/field/index.js";
-	import { Input } from "$lib/components/ui/input/index.js";
-	import { ScrollArea } from "$lib/components/ui/scroll-area/index.js";
-	import * as Table from "$lib/components/ui/table/index.js";
+	import { Button } from "$lib/components/ui/button";
+	import * as Field from "$lib/components/ui/field";
+	import { Input } from "$lib/components/ui/input";
+	import { ScrollArea } from "$lib/components/ui/scroll-area";
+	import * as Table from "$lib/components/ui/table";
 	import { alternatives, criteria } from "$lib/state";
 	import { chartColors } from "$lib/util/chart-colors";
 	import {

@@ -1,12 +1,12 @@
 <script lang="ts">
-	import Head from "$lib/components/Head.svelte";
-	import { Progress } from "$lib/components/ui/progress/index.js";
-	import { Separator } from "$lib/components/ui/separator/index.js";
+	import Head from "$lib/components/head.svelte";
+	import { Progress } from "$lib/components/ui/progress";
+	import { Separator } from "$lib/components/ui/separator";
 	import { apps, info } from "$lib/info";
 	import {
 		alternatives,
 		criteria,
-		isMethodUsed,
+		isAppUsed,
 		isSetupStepUsed,
 	} from "$lib/state";
 	import ArrowRightIcon from "@lucide/svelte/icons/arrow-right";
@@ -26,7 +26,7 @@
 	const appProgress = $derived.by(() => {
 		const total = apps.length;
 		const done = apps.reduce((count, app) => {
-			return count + (isMethodUsed(app.method) ? 1 : 0);
+			return count + (isAppUsed(app.key) ? 1 : 0);
 		}, 0);
 		if (total === 0) {
 			return { done, total, percent: 0 };

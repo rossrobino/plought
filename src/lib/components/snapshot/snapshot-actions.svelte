@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { goto } from "$app/navigation";
-	import Reset from "$lib/components/Reset.svelte";
-	import * as AlertDialog from "$lib/components/ui/alert-dialog/index.js";
-	import { Button } from "$lib/components/ui/button/index.js";
+	import Reset from "$lib/components/reset.svelte";
+	import * as AlertDialog from "$lib/components/ui/alert-dialog";
+	import { Button } from "$lib/components/ui/button";
 	import {
 		type MethodKey,
 		type SetupStepKey,

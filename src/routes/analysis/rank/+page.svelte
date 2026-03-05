@@ -1,8 +1,8 @@
 <script lang="ts">
-	import Head from "$lib/components/Head.svelte";
+	import Head from "$lib/components/head.svelte";
 	import ScoreBars from "$lib/components/output/charts/score-bars.svelte";
-	import Scores from "$lib/components/scores/Scores.svelte";
-	import { Button } from "$lib/components/ui/button/index.js";
+	import Scores from "$lib/components/scores/scores.svelte";
+	import { Button } from "$lib/components/ui/button";
 	import {
 		alternatives,
 		getRankScore,

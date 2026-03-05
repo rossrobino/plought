@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { type WithoutChild, cn } from "$lib/utils.js";
-	import { Scrollbar } from "./index.js";
+	import { Scrollbar } from ".";
 	import { ScrollArea as ScrollAreaPrimitive } from "bits-ui";
 
 	let {

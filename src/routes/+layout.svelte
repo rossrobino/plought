@@ -44,6 +44,14 @@
 	};
 
 	const pageTitle = $derived.by(() => {
+		if (page.status === 404) {
+			return "Not found";
+		}
+
+		if (page.status >= 400) {
+			return page.error?.message ?? "Error";
+		}
+
 		const path = page.url.pathname;
 		for (const [route, title] of Object.entries(pageTitleMap)) {
 			if (route === "/") {
@@ -66,6 +74,10 @@
 	});
 
 	const title = $derived.by(() => {
+		if (page.status >= 400) {
+			return pageTitle;
+		}
+
 		return `${decisionTitle} · ${pageTitle}`;
 	});
 

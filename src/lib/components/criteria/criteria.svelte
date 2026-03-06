@@ -4,6 +4,7 @@
 	import * as Field from "$lib/components/ui/field";
 	import { Input } from "$lib/components/ui/input";
 	import { ScrollArea } from "$lib/components/ui/scroll-area";
+	import SectionHeader from "$lib/components/ui/section-header.svelte";
 	import { Slider } from "$lib/components/ui/slider";
 	import * as Table from "$lib/components/ui/table";
 	import * as Tooltip from "$lib/components/ui/tooltip";
@@ -185,7 +186,9 @@
 
 <section>
 	<div class="flex items-center justify-between gap-2">
-		<h2 class="mb-0">Criteria</h2>
+		<div class="min-w-0 flex-1">
+			<SectionHeader title="Criteria" desc={guidance} descClass="text-sm" />
+		</div>
 		<Info label="About criteria">
 			{#if weights}
 				<div class="space-y-2">
@@ -210,7 +213,6 @@
 			{/if}
 		</Info>
 	</div>
-	<p class="mt-2 text-sm text-muted-foreground">{guidance}</p>
 	<Tooltip.Provider>
 		{#if tableView}
 			<ScrollArea

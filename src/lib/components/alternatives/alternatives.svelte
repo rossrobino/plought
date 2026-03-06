@@ -5,6 +5,7 @@
 	import * as Field from "$lib/components/ui/field";
 	import { Input } from "$lib/components/ui/input";
 	import { ScrollArea } from "$lib/components/ui/scroll-area";
+	import SectionHeader from "$lib/components/ui/section-header.svelte";
 	import * as Table from "$lib/components/ui/table";
 	import {
 		type MethodKey,
@@ -58,12 +59,13 @@
 
 <section>
 	<div class="flex items-center justify-between gap-2">
-		<h2 class="mb-0">Alternatives</h2>
+		<div class="min-w-0 flex-1">
+			<SectionHeader title="Alternatives" desc={guidance} descClass="text-sm" />
+		</div>
 		<Info label="About alternatives">
 			<p>Examples: Ford F-150, Aston Martin DB9, Volvo XC60.</p>
 		</Info>
 	</div>
-	<p class="mt-2 text-sm text-muted-foreground">{guidance}</p>
 	{#if showCriteria}
 		<ScrollArea
 			class="mt-3 w-full rounded-md border whitespace-nowrap"
@@ -78,7 +80,7 @@
 						<Table.Head class="min-w-56">
 							<span class="sr-only">Alternative name</span>
 						</Table.Head>
-						{#each criteria.current as item}
+						{#each criteria.current as item (item)}
 							<Table.Head class="min-w-32">{item.name}</Table.Head>
 						{/each}
 						{#if manageList}
@@ -89,7 +91,7 @@
 					</Table.Row>
 				</Table.Header>
 				<Table.Body>
-					{#each alternatives.current as alt, i}
+					{#each alternatives.current as alt, i (alt)}
 						<Table.Row>
 							<Table.Head scope="row" class="font-semibold">
 								{#if editNames}
@@ -108,7 +110,7 @@
 									<span class="block truncate font-semibold">{alt.name}</span>
 								{/if}
 							</Table.Head>
-							{#each alt.scores as _, j}
+							{#each alt.scores as _, j (`score-${j}`)}
 								<Table.Cell>
 									<Field.Field>
 										<Input
@@ -138,7 +140,7 @@
 		</ScrollArea>
 	{:else}
 		<ul class="mt-3 grid gap-2">
-			{#each alternatives.current as alt, i}
+			{#each alternatives.current as alt, i (alt)}
 				<li class="flex items-center gap-2">
 					<div class="min-w-0 flex-1">
 						{#if editNames}

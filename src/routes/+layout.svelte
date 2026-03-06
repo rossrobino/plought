@@ -15,8 +15,6 @@
 	<link href={faviconDark} rel="icon" media="(prefers-color-scheme: light)" />
 </svelte:head>
 
-<a href="#main-content" class="skip-link">Skip to main content</a>
-
 <div class="selection:bg-foreground selection:text-background">
 	{@render children()}
 </div>

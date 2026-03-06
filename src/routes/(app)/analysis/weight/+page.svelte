@@ -4,6 +4,7 @@
 	import StackedBars from "$lib/components/output/charts/stacked-bars.svelte";
 	import Scores from "$lib/components/scores/scores.svelte";
 	import { Button } from "$lib/components/ui/button";
+	import SectionHeader from "$lib/components/ui/section-header.svelte";
 	import { alternatives, criteria, rankOrder } from "$lib/state";
 	import { getGuidanceCopy, getMethodScores } from "$lib/util/analysis";
 	import { chartColors } from "$lib/util/chart-colors";
@@ -41,8 +42,7 @@
 <Head title="Weighted Sum" />
 
 <section>
-	<h2 class="mb-0">Weighted Sum</h2>
-	<p class="mt-1 text-muted-foreground">{guidance.summary}</p>
+	<SectionHeader title="Weighted Sum" desc={guidance.summary} />
 	<p class="mt-3 mb-0 text-sm text-muted-foreground">{guidance.comparison}</p>
 	<p class="mt-2 mb-0 text-sm text-muted-foreground">{guidance.caveat}</p>
 	<div class="mt-3 flex flex-wrap gap-2 border-t border-border/60 pt-3">
@@ -60,10 +60,10 @@
 </section>
 
 <section>
-	<h2 class="mb-0">Weighted Totals</h2>
-	<p class="mt-1 text-muted-foreground">
-		Normalized 0-10 totals after applying current criterion weights.
-	</p>
+	<SectionHeader
+		title="Weighted Totals"
+		desc="Normalized 0-10 totals after applying current criterion weights."
+	/>
 	<div class="mt-3">
 		<ScoreBars
 			rows={alternatives.current.map((item) => item.name)}
@@ -82,11 +82,10 @@
 </section>
 
 <section>
-	<h2 class="mb-0">Criterion Contribution Breakdown</h2>
-	<p class="mt-1 text-muted-foreground">
-		Each stacked bar shows how criterion-weighted contributions compose the
-		total.
-	</p>
+	<SectionHeader
+		title="Criterion Contribution Breakdown"
+		desc="Each stacked bar shows how criterion-weighted contributions compose the total."
+	/>
 	<div class="mt-3">
 		<StackedBars
 			rows={alternatives.current.map((item) => item.name)}

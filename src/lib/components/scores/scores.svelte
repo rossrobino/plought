@@ -1,6 +1,7 @@
 <script lang="ts">
 	import Info from "$lib/components/info.svelte";
 	import { ScrollArea } from "$lib/components/ui/scroll-area";
+	import SectionHeader from "$lib/components/ui/section-header.svelte";
 	import * as Table from "$lib/components/ui/table";
 	import {
 		allocation,
@@ -130,7 +131,7 @@
 
 <section>
 	<div class="flex items-center justify-between gap-2">
-		<h2 class="mb-0">Scores</h2>
+		<SectionHeader title="Scores" class="min-w-0 flex-1" />
 		<Info label="About scores">
 			<div class="space-y-2">
 				{#if weightedSum && !pairwise && !rankOrder && !allocate && !topsis}

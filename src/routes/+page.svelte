@@ -1,8 +1,9 @@
 <script lang="ts">
 	import Head from "$lib/components/head.svelte";
 	import { Button } from "$lib/components/ui/button";
-	import Eyebrow from "$lib/components/ui/eyebrow.svelte";
 	import { Progress } from "$lib/components/ui/progress";
+	import SectionHeader from "$lib/components/ui/section-header.svelte";
+	import StatCard from "$lib/components/ui/stat-card.svelte";
 	import { apps, info } from "$lib/info";
 	import {
 		type MethodKey,
@@ -153,17 +154,15 @@
 		>
 			<div class="grid gap-6 lg:grid-cols-[1.1fr_0.9fr] lg:items-start">
 				<div>
-					<Eyebrow class="mb-3">{info.name}</Eyebrow>
-					<h1
-						class="max-w-[12ch] text-4xl leading-none font-semibold tracking-tight text-balance sm:text-5xl"
-					>
-						Make better decisions before you commit.
-					</h1>
-					<p class="mt-4 max-w-xl text-base leading-7 text-muted-foreground">
-						{info.name} separates setup from evaluation so you can weigh priorities,
-						work through the tools, and review the tradeoffs before you choose an
-						option.
-					</p>
+					<SectionHeader
+						as="h1"
+						eyebrow={info.name}
+						eyebrowClass="mb-3"
+						title="Make better decisions before you commit."
+						titleClass="max-w-[12ch] text-4xl leading-none font-semibold tracking-tight text-balance sm:text-5xl"
+						desc={`${info.name} separates setup from evaluation so you can weigh priorities, work through the tools, and review the tradeoffs before you choose an option.`}
+						descClass="mt-4 max-w-xl text-base leading-7"
+					/>
 					<div class="mt-5 flex flex-wrap gap-3">
 						<Button href={nextStep.href} class="group h-11 px-5 text-sm">
 							{nextStep.label}
@@ -196,9 +195,12 @@
 						</p>
 
 						<div class="mt-4 grid gap-3 sm:grid-cols-2">
-							<div class="rounded-lg border bg-muted/25 p-3 shadow-xs">
+							<StatCard
+								label="Setup"
+								eyebrowVariant="compact"
+								class="bg-muted/25"
+							>
 								<div class="flex items-center justify-between gap-2">
-									<Eyebrow variant="compact" class="mb-0">Setup</Eyebrow>
 									<p class="mb-0 text-sm font-medium">
 										{preview.setupProgress.done}/{preview.setupProgress.total}
 									</p>
@@ -209,10 +211,13 @@
 									value={preview.setupProgress.percent}
 									aria-label={`Setup progress: ${preview.setupProgress.done} of ${preview.setupProgress.total}`}
 								/>
-							</div>
-							<div class="rounded-lg border bg-muted/25 p-3 shadow-xs">
+							</StatCard>
+							<StatCard
+								label="Tools"
+								eyebrowVariant="compact"
+								class="bg-muted/25"
+							>
 								<div class="flex items-center justify-between gap-2">
-									<Eyebrow variant="compact" class="mb-0">Tools</Eyebrow>
 									<p class="mb-0 text-sm font-medium">
 										{preview.appProgress.done}/{preview.appProgress.total}
 									</p>
@@ -223,35 +228,45 @@
 									value={preview.appProgress.percent}
 									aria-label={`Tool progress: ${preview.appProgress.done} of ${preview.appProgress.total}`}
 								/>
-							</div>
+							</StatCard>
 						</div>
 
 						<div class="mt-4 grid gap-2 sm:grid-cols-3">
-							<div class="rounded-lg border bg-card p-3 shadow-xs">
-								<Eyebrow variant="compact" class="mb-0">Criteria</Eyebrow>
+							<StatCard
+								label="Criteria"
+								eyebrowVariant="compact"
+								class="bg-card"
+							>
 								<p class="mt-1 mb-0 text-2xl leading-none font-semibold">
 									{preview.criteriaCount}
 								</p>
-							</div>
-							<div class="rounded-lg border bg-card p-3 shadow-xs">
-								<Eyebrow variant="compact" class="mb-0">Alternatives</Eyebrow>
+							</StatCard>
+							<StatCard
+								label="Alternatives"
+								eyebrowVariant="compact"
+								class="bg-card"
+							>
 								<p class="mt-1 mb-0 text-2xl leading-none font-semibold">
 									{preview.alternativesCount}
 								</p>
-							</div>
-							<div class="rounded-lg border bg-card p-3 shadow-xs">
-								<Eyebrow variant="compact" class="mb-0">Methods</Eyebrow>
+							</StatCard>
+							<StatCard
+								label="Methods"
+								eyebrowVariant="compact"
+								class="bg-card"
+							>
 								<p class="mt-1 mb-0 text-2xl leading-none font-semibold">
 									{preview.includedMethodsCount}
 								</p>
-							</div>
+							</StatCard>
 						</div>
 
 						{#if preview.leaderName != null}
-							<div
-								class="mt-4 rounded-lg border border-sky-400/30 bg-sky-400/10 p-3"
+							<StatCard
+								label="Leading option"
+								eyebrowVariant="compact"
+								class="mt-4 border-sky-400/30 bg-sky-400/10"
 							>
-								<Eyebrow variant="compact" class="mb-0">Leading option</Eyebrow>
 								<div class="mt-2 flex items-start justify-between gap-3">
 									<div class="min-w-0">
 										<p class="mb-0 truncate text-lg font-semibold">
@@ -269,7 +284,7 @@
 										</p>
 									{/if}
 								</div>
-							</div>
+							</StatCard>
 						{/if}
 					{:else}
 						<h3 class="text-2xl font-semibold tracking-tight">
@@ -345,18 +360,13 @@
 
 		<section id="homepage-flow" class="p-5 md:p-6">
 			<div class="flex flex-wrap items-end justify-between gap-3">
-				<div>
-					<Eyebrow class="mb-2">Guide</Eyebrow>
-					<h2 class="mb-0 text-2xl tracking-tight">
-						Move from setup through evaluation
-					</h2>
-					<p
-						class="mt-2 mb-0 max-w-2xl text-sm leading-6 text-muted-foreground"
-					>
-						Keep the overall flow simple: define the choice, work through the
-						tools, then compare outputs before deciding.
-					</p>
-				</div>
+				<SectionHeader
+					eyebrow="Guide"
+					title="Move from setup through evaluation"
+					titleClass="text-2xl tracking-tight"
+					desc="Keep the overall flow simple: define the choice, work through the tools, then compare outputs before deciding."
+					descClass="max-w-2xl text-sm leading-6"
+				/>
 				<div
 					class="rounded-full border bg-muted/25 px-3 py-1.5 text-xs text-muted-foreground"
 				>
@@ -370,12 +380,11 @@
 					class="rounded-lg border bg-card/85 p-4 shadow-xs"
 				>
 					<div class="flex items-start justify-between gap-3">
-						<div>
-							<Eyebrow class="mb-2">Setup</Eyebrow>
-							<h3 class="mb-0 text-xl font-semibold tracking-tight">
-								Build the decision before you score it
-							</h3>
-						</div>
+						<SectionHeader
+							eyebrow="Setup"
+							title="Build the decision before you score it"
+							titleClass="text-xl font-semibold tracking-tight"
+						/>
 						<div
 							class="inline-flex size-9 shrink-0 items-center justify-center rounded-md border bg-background"
 						>
@@ -441,12 +450,11 @@
 					class="rounded-lg border bg-card/85 p-4 shadow-xs"
 				>
 					<div class="flex items-start justify-between gap-3">
-						<div>
-							<Eyebrow class="mb-2">Evaluate</Eyebrow>
-							<h3 class="mb-0 text-xl font-semibold tracking-tight">
-								Use the tools to work through tradeoffs
-							</h3>
-						</div>
+						<SectionHeader
+							eyebrow="Evaluate"
+							title="Use the tools to work through tradeoffs"
+							titleClass="text-xl font-semibold tracking-tight"
+						/>
 						<div
 							class="rounded-full border bg-muted/25 px-3 py-1.5 text-xs text-muted-foreground"
 						>
@@ -509,39 +517,50 @@
 		>
 			<div class="grid gap-5 lg:grid-cols-[0.82fr_1.18fr] lg:items-start">
 				<div>
-					<Eyebrow class="mb-2">Decide</Eyebrow>
-					<h2 class="mb-0 text-2xl tracking-tight">
-						Bring the outputs together before you choose.
-					</h2>
-					<p class="mt-3 mb-0 text-sm leading-6 text-muted-foreground">
-						Summary helps you compare the models side by side. Robustness checks
-						whether the recommendation still holds if your weights move around.
-					</p>
+					<SectionHeader
+						eyebrow="Decide"
+						title="Bring the outputs together before you choose."
+						titleClass="text-2xl tracking-tight"
+						desc="Summary helps you compare the models side by side. Robustness checks whether the recommendation still holds if your weights move around."
+						descClass="text-sm leading-6"
+					/>
 
 					<div class="mt-4 grid gap-2 sm:grid-cols-3">
-						<div class="rounded-lg border bg-background/85 p-3 shadow-xs">
-							<Eyebrow variant="compact" class="mb-0">Criteria</Eyebrow>
+						<StatCard
+							label="Criteria"
+							eyebrowVariant="compact"
+							class="bg-background/85"
+						>
 							<p class="mt-1 mb-0 text-2xl leading-none font-semibold">
 								{preview.criteriaCount}
 							</p>
-						</div>
-						<div class="rounded-lg border bg-background/85 p-3 shadow-xs">
-							<Eyebrow variant="compact" class="mb-0">Alternatives</Eyebrow>
+						</StatCard>
+						<StatCard
+							label="Alternatives"
+							eyebrowVariant="compact"
+							class="bg-background/85"
+						>
 							<p class="mt-1 mb-0 text-2xl leading-none font-semibold">
 								{preview.alternativesCount}
 							</p>
-						</div>
-						<div class="rounded-lg border bg-background/85 p-3 shadow-xs">
-							<Eyebrow variant="compact" class="mb-0">Methods</Eyebrow>
+						</StatCard>
+						<StatCard
+							label="Methods"
+							eyebrowVariant="compact"
+							class="bg-background/85"
+						>
 							<p class="mt-1 mb-0 text-2xl leading-none font-semibold">
 								{preview.includedMethodsCount}
 							</p>
-						</div>
+						</StatCard>
 					</div>
 
 					{#if preview.leaderName != null}
-						<div class="mt-4 rounded-lg border bg-background/85 p-3 shadow-xs">
-							<Eyebrow variant="compact" class="mb-0">Leading option</Eyebrow>
+						<StatCard
+							label="Leading option"
+							eyebrowVariant="compact"
+							class="mt-4 bg-background/85"
+						>
 							<p class="mt-2 mb-0 text-lg font-semibold">
 								{preview.leaderName}
 							</p>
@@ -551,7 +570,7 @@
 									· {leaderMeta}
 								{/if}
 							</p>
-						</div>
+						</StatCard>
 					{/if}
 				</div>
 
@@ -561,12 +580,11 @@
 							class="h-full rounded-lg border bg-background/90 p-4 shadow-xs transition-colors duration-200 group-hover:bg-accent/35"
 						>
 							<div class="flex items-start justify-between gap-3">
-								<div>
-									<Eyebrow class="mb-2">Summary</Eyebrow>
-									<p class="mb-0 text-xl font-semibold tracking-tight">
-										Compare results side by side
-									</p>
-								</div>
+								<SectionHeader
+									eyebrow="Summary"
+									title="Compare results side by side"
+									titleClass="text-xl font-semibold tracking-tight"
+								/>
 								<div
 									class="inline-flex size-9 shrink-0 items-center justify-center rounded-md border bg-card"
 								>
@@ -597,12 +615,11 @@
 							class="h-full rounded-lg border bg-background/90 p-4 shadow-xs transition-colors duration-200 group-hover:bg-accent/35"
 						>
 							<div class="flex items-start justify-between gap-3">
-								<div>
-									<Eyebrow class="mb-2">Robustness</Eyebrow>
-									<p class="mb-0 text-xl font-semibold tracking-tight">
-										Test whether the result holds up
-									</p>
-								</div>
+								<SectionHeader
+									eyebrow="Robustness"
+									title="Test whether the result holds up"
+									titleClass="text-xl font-semibold tracking-tight"
+								/>
 								<div
 									class="inline-flex size-9 shrink-0 items-center justify-center rounded-md border bg-card"
 								>

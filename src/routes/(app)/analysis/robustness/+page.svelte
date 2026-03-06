@@ -2,10 +2,11 @@
 	import Head from "$lib/components/head.svelte";
 	import ScoreBars from "$lib/components/output/charts/score-bars.svelte";
 	import { Button } from "$lib/components/ui/button";
-	import Eyebrow from "$lib/components/ui/eyebrow.svelte";
 	import * as Field from "$lib/components/ui/field";
 	import { Input } from "$lib/components/ui/input";
 	import { ScrollArea } from "$lib/components/ui/scroll-area";
+	import SectionHeader from "$lib/components/ui/section-header.svelte";
+	import StatCard from "$lib/components/ui/stat-card.svelte";
 	import * as Table from "$lib/components/ui/table";
 	import { alternatives, criteria } from "$lib/state";
 	import { chartColors } from "$lib/util/chart-colors";
@@ -107,11 +108,10 @@
 <Head title="Robustness" />
 
 <section>
-	<h2 class="mb-0">Robustness</h2>
-	<p class="mt-1 text-muted-foreground">
-		Robustness shows how often each alternative still wins when criterion
-		weights shift a little.
-	</p>
+	<SectionHeader
+		title="Robustness"
+		desc="Robustness shows how often each alternative still wins when criterion weights shift a little."
+	/>
 	<p class="mt-2 mb-0 text-sm text-muted-foreground">
 		This view runs {robustnessRuns} random simulations and changes each weight by
 		up to {Math.round(perturbationStrength * 100)}% on each run.
@@ -157,53 +157,50 @@
 
 {#if !hasInputs || robustness == null}
 	<section>
-		<h2 class="mb-0">Not Enough Data</h2>
-		<p class="mt-1 text-muted-foreground">
-			Add at least 2 alternatives and 1 criterion to run robustness analysis.
-		</p>
+		<SectionHeader
+			title="Not Enough Data"
+			desc="Add at least 2 alternatives and 1 criterion to run robustness analysis."
+		/>
 	</section>
 {:else}
 	<section>
-		<h2 class="mb-0">Most Robust by Method</h2>
-		<p class="mt-1 text-muted-foreground">
-			The option with the highest win rate after many weight changes.
-		</p>
+		<SectionHeader
+			title="Most Robust by Method"
+			desc="The option with the highest win rate after many weight changes."
+		/>
 		<div class="mt-3 grid gap-3 sm:grid-cols-3">
-			<div class="rounded-lg border bg-muted/25 p-3 shadow-xs">
-				<Eyebrow variant="subtle" class="mb-0">Weighted Sum</Eyebrow>
+			<StatCard label="Weighted Sum" class="bg-muted/25">
 				<p class="mt-1 mb-0 truncate text-base font-semibold">
 					{weightedWinner?.name ?? "-"}
 				</p>
 				<p class="mt-1 mb-0 text-xs text-muted-foreground">
 					Win rate {weightedWinner?.winRatePct.toFixed(2) ?? "0.00"}%
 				</p>
-			</div>
-			<div class="rounded-lg border bg-muted/25 p-3 shadow-xs">
-				<Eyebrow variant="subtle" class="mb-0">TOPSIS</Eyebrow>
+			</StatCard>
+			<StatCard label="TOPSIS" class="bg-muted/25">
 				<p class="mt-1 mb-0 truncate text-base font-semibold">
 					{topsisWinner?.name ?? "-"}
 				</p>
 				<p class="mt-1 mb-0 text-xs text-muted-foreground">
 					Win rate {topsisWinner?.winRatePct.toFixed(2) ?? "0.00"}%
 				</p>
-			</div>
-			<div class="rounded-lg border bg-muted/25 p-3 shadow-xs">
-				<Eyebrow variant="subtle" class="mb-0">Combined</Eyebrow>
+			</StatCard>
+			<StatCard label="Combined" class="bg-muted/25">
 				<p class="mt-1 mb-0 truncate text-base font-semibold">
 					{combinedWinner?.name ?? "-"}
 				</p>
 				<p class="mt-1 mb-0 text-xs text-muted-foreground">
 					Win rate {combinedWinner?.winRatePct.toFixed(2) ?? "0.00"}%
 				</p>
-			</div>
+			</StatCard>
 		</div>
 	</section>
 
 	<section>
-		<h2 class="mb-0">Win Rate by Method</h2>
-		<p class="mt-1 text-muted-foreground">
-			Percent of runs where each alternative finishes first.
-		</p>
+		<SectionHeader
+			title="Win Rate by Method"
+			desc="Percent of runs where each alternative finishes first."
+		/>
 		<div class="mt-3">
 			<ScoreBars
 				{rows}
@@ -216,10 +213,10 @@
 	</section>
 
 	<section>
-		<h2 class="mb-0">Stability Details</h2>
-		<p class="mt-1 text-muted-foreground">
-			Lower average rank is better. Combined worst rank shows downside.
-		</p>
+		<SectionHeader
+			title="Stability Details"
+			desc="Lower average rank is better. Combined worst rank shows downside."
+		/>
 		<ScrollArea
 			class="mt-3 w-full rounded-md border whitespace-nowrap"
 			orientation="horizontal"

@@ -3,7 +3,8 @@
 	import MethodMatrixChart from "$lib/components/output/charts/method-matrix-chart.svelte";
 	import Scores from "$lib/components/scores/scores.svelte";
 	import { Button } from "$lib/components/ui/button";
-	import Eyebrow from "$lib/components/ui/eyebrow.svelte";
+	import SectionHeader from "$lib/components/ui/section-header.svelte";
+	import StatCard from "$lib/components/ui/stat-card.svelte";
 	import {
 		type MethodKey,
 		allocation,
@@ -197,10 +198,10 @@
 <Head title="Summary" />
 
 <section>
-	<h2 class="mb-0">Included Methods</h2>
-	<p class="mt-1 text-muted-foreground">
-		Toggle which methods appear in summary guidance and score tables.
-	</p>
+	<SectionHeader
+		title="Included Methods"
+		desc="Toggle which methods appear in summary guidance and score tables."
+	/>
 	<div class="mt-3 flex flex-wrap gap-2">
 		{#each methods as item (item.key)}
 			{@const included = isMethodIncluded(item.key)}
@@ -218,20 +219,17 @@
 
 {#if hasIncluded}
 	<section>
-		<h2 class="mb-0">Recommendation</h2>
-		<p class="mt-1 text-muted-foreground">{guidance.summary}</p>
+		<SectionHeader title="Recommendation" desc={guidance.summary} />
 		<div class="mt-3 grid gap-3 sm:grid-cols-3">
-			<div class="rounded-lg border bg-muted/25 p-3 shadow-xs">
-				<Eyebrow variant="subtle" class="mb-0">Recommended Option</Eyebrow>
+			<StatCard label="Recommended Option" class="bg-muted/25">
 				<p class="mt-1 mb-0 truncate text-base font-semibold">{winnerName}</p>
 				{#if winnerScore != null}
 					<p class="mt-1 mb-0 text-xs text-muted-foreground">
 						Consensus score {winnerScore.toFixed(2)} / 10
 					</p>
 				{/if}
-			</div>
-			<div class="rounded-lg border bg-muted/25 p-3 shadow-xs">
-				<Eyebrow variant="subtle" class="mb-0">Agreement Level</Eyebrow>
+			</StatCard>
+			<StatCard label="Agreement Level" class="bg-muted/25">
 				<p class="mt-1 mb-0 text-base font-semibold">{agreementLabel}</p>
 				<p class="mt-1 mb-0 text-xs text-muted-foreground">
 					{guidance.comparison}
@@ -248,9 +246,8 @@
 						({winnerRobustness.winRatePct.toFixed(2)}% hold rate)
 					</p>
 				{/if}
-			</div>
-			<div class="rounded-lg border bg-muted/25 p-3 shadow-xs">
-				<Eyebrow variant="subtle" class="mb-0">Runner-up Gap</Eyebrow>
+			</StatCard>
+			<StatCard label="Runner-up Gap" class="bg-muted/25">
 				{#if runnerName == null}
 					<p class="mt-1 mb-0 text-base font-semibold">-</p>
 				{:else}
@@ -261,16 +258,16 @@
 						vs {runnerName}
 					</p>
 				{/if}
-			</div>
+			</StatCard>
 		</div>
 		<p class="mt-3 mb-0 text-sm text-muted-foreground">{guidance.caveat}</p>
 	</section>
 
 	<section>
-		<h2 class="mb-0">Cross-Method Analysis</h2>
-		<p class="mt-1 text-muted-foreground">
-			Each row shows normalized 0-10 scores for included methods.
-		</p>
+		<SectionHeader
+			title="Cross-Method Analysis"
+			desc="Each row shows normalized 0-10 scores for included methods."
+		/>
 		<div class="mt-3">
 			<MethodMatrixChart
 				rows={alternatives.current.map((item) => item.name)}
@@ -282,10 +279,10 @@
 	</section>
 
 	<section>
-		<h2 class="mb-0">Method Details</h2>
-		<p class="mt-1 text-muted-foreground">
-			Open any method for detailed charts and plain-language explanations.
-		</p>
+		<SectionHeader
+			title="Method Details"
+			desc="Open any method for detailed charts and plain-language explanations."
+		/>
 		<div class="mt-3 grid gap-3 sm:grid-cols-2">
 			{#each methods as item (item.key)}
 				<a
@@ -319,9 +316,9 @@
 	/>
 {:else}
 	<section>
-		<h2 class="mb-0">No Methods Included</h2>
-		<p class="mt-1 text-muted-foreground">
-			Enable one or more methods above to view guidance and scores.
-		</p>
+		<SectionHeader
+			title="No Methods Included"
+			desc="Enable one or more methods above to view guidance and scores."
+		/>
 	</section>
 {/if}

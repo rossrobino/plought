@@ -2,6 +2,7 @@
 	import Info from "$lib/components/info.svelte";
 	import { Button } from "$lib/components/ui/button";
 	import Eyebrow from "$lib/components/ui/eyebrow.svelte";
+	import SectionHeader from "$lib/components/ui/section-header.svelte";
 	import * as Select from "$lib/components/ui/select";
 	import { Slider } from "$lib/components/ui/slider";
 	import {
@@ -114,7 +115,13 @@
 
 <section>
 	<div class="flex items-center justify-between gap-2">
-		<h2 class="mb-0">Allocate</h2>
+		<div class="min-w-0 flex-1">
+			<SectionHeader
+				title="Allocate"
+				desc="Allocate points by criterion to express relative tradeoffs between alternatives."
+				descClass="text-sm"
+			/>
+		</div>
 		<Info label="About allocation">
 			<div class="space-y-2">
 				<p>
@@ -128,10 +135,6 @@
 			</div>
 		</Info>
 	</div>
-	<p class="mt-2 text-sm text-muted-foreground">
-		Allocate points by criterion to express relative tradeoffs between
-		alternatives.
-	</p>
 
 	{#if !hasInputs}
 		<div class="mt-3 rounded-lg border bg-muted/25 p-3 shadow-xs">

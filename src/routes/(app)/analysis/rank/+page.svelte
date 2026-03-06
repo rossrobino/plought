@@ -3,6 +3,7 @@
 	import ScoreBars from "$lib/components/output/charts/score-bars.svelte";
 	import Scores from "$lib/components/scores/scores.svelte";
 	import { Button } from "$lib/components/ui/button";
+	import SectionHeader from "$lib/components/ui/section-header.svelte";
 	import {
 		alternatives,
 		getRankScore,
@@ -39,8 +40,7 @@
 <Head title="Rank Order" />
 
 <section>
-	<h2 class="mb-0">Rank Order</h2>
-	<p class="mt-1 text-muted-foreground">{guidance.summary}</p>
+	<SectionHeader title="Rank Order" desc={guidance.summary} />
 	<p class="mt-3 mb-0 text-sm text-muted-foreground">{guidance.comparison}</p>
 	<p class="mt-2 mb-0 text-sm text-muted-foreground">{guidance.caveat}</p>
 	<div class="mt-3 flex flex-wrap gap-2 border-t border-border/60 pt-3">
@@ -52,10 +52,10 @@
 </section>
 
 <section>
-	<h2 class="mb-0">Rank Position</h2>
-	<p class="mt-1 text-muted-foreground">
-		Top-to-bottom positions map directly to normalized 0-10 scores.
-	</p>
+	<SectionHeader
+		title="Rank Position"
+		desc="Top-to-bottom positions map directly to normalized 0-10 scores."
+	/>
 	<div class="mt-3">
 		<ScoreBars
 			rows={rankedRows.map((item) => item.label)}

@@ -94,6 +94,8 @@
 	<Head title={app.title} desc={app.desc} />
 {/if}
 
+<a href="#main-content" class="skip-link">Skip to main content</a>
+
 <Sidebar.Provider bind:open class="min-w-[18rem]">
 	<AppSidebar />
 	<Sidebar.Inset class="selection:bg-foreground selection:text-background">

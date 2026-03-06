@@ -1,6 +1,7 @@
 <script lang="ts">
 	import Info from "$lib/components/info.svelte";
 	import { Button } from "$lib/components/ui/button";
+	import SectionHeader from "$lib/components/ui/section-header.svelte";
 	import {
 		alternatives,
 		markAppUsed,
@@ -66,7 +67,13 @@
 
 <section>
 	<div class="flex items-center justify-between gap-2">
-		<h2 class="mb-0">Rank</h2>
+		<div class="min-w-0 flex-1">
+			<SectionHeader
+				title="Rank"
+				desc="Use controls to move alternatives one step or send them to the top or bottom."
+				descClass="text-sm"
+			/>
+		</div>
 		<Info label="About rank">
 			<div class="space-y-2">
 				<p>Order alternatives from most to least preferred.</p>
@@ -76,9 +83,6 @@
 			</div>
 		</Info>
 	</div>
-	<p class="mt-1 text-sm text-muted-foreground">
-		Use controls to move alternatives one step or send them to the top/bottom.
-	</p>
 	<p class="mt-1 text-sm text-muted-foreground">
 		Order meaning: top = most preferred, bottom = least preferred.
 	</p>

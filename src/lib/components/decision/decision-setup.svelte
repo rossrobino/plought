@@ -1,6 +1,7 @@
 <script lang="ts">
 	import * as Field from "$lib/components/ui/field";
 	import { Input } from "$lib/components/ui/input";
+	import SectionHeader from "$lib/components/ui/section-header.svelte";
 	import { Textarea } from "$lib/components/ui/textarea";
 	import { decision, decisionDefaults, markSetupStepUsed } from "$lib/state";
 
@@ -10,11 +11,11 @@
 </script>
 
 <div class="rounded-lg border bg-muted/25 p-3 shadow-xs">
-	<h2 class="mb-0">Start</h2>
-	<p class="mt-1 text-sm text-muted-foreground">
-		Define what you are deciding and what success looks like. You can update
-		this anytime.
-	</p>
+	<SectionHeader
+		title="Start"
+		desc="Define what you are deciding and what success looks like. You can update this anytime."
+		descClass="text-sm"
+	/>
 	<div class="mt-3 grid gap-4">
 		<Field.Field class="gap-2.5">
 			<Field.Label for="decision-title">Title</Field.Label>

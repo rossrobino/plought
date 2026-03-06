@@ -2,6 +2,7 @@
 	import Info from "$lib/components/info.svelte";
 	import { Button } from "$lib/components/ui/button";
 	import { Progress } from "$lib/components/ui/progress";
+	import SectionHeader from "$lib/components/ui/section-header.svelte";
 	import { alternatives, markAppUsed, markMethodUsed } from "$lib/state";
 	import ArrowLeftIcon from "@lucide/svelte/icons/arrow-left";
 	import ArrowRightIcon from "@lucide/svelte/icons/arrow-right";
@@ -150,7 +151,13 @@
 
 <section>
 	<div class="flex items-center justify-between gap-2">
-		<h2 class="mb-0">Comparisons</h2>
+		<div class="min-w-0 flex-1">
+			<SectionHeader
+				title="Comparisons"
+				desc="Review one pair at a time. Order is shuffled each session."
+				descClass="text-sm"
+			/>
+		</div>
 		<Info label="About comparisons">
 			<div class="space-y-2">
 				<p>Compare each alternative against every other alternative.</p>
@@ -161,9 +168,6 @@
 			</div>
 		</Info>
 	</div>
-	<p class="mt-2 text-sm text-muted-foreground">
-		Review one pair at a time. Order is shuffled each session.
-	</p>
 
 	{#if alternatives.current.length < 2}
 		<div class="mt-3 rounded-lg border bg-muted/25 p-3 shadow-xs">

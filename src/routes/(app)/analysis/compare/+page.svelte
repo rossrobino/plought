@@ -4,6 +4,7 @@
 	import StackedBars from "$lib/components/output/charts/stacked-bars.svelte";
 	import Scores from "$lib/components/scores/scores.svelte";
 	import { Button } from "$lib/components/ui/button";
+	import SectionHeader from "$lib/components/ui/section-header.svelte";
 	import { alternatives, criteria, rankOrder } from "$lib/state";
 	import { getGuidanceCopy, getMethodScores } from "$lib/util/analysis";
 	import { chartColors } from "$lib/util/chart-colors";
@@ -53,8 +54,7 @@
 <Head title="Pairwise Comparison" />
 
 <section>
-	<h2 class="mb-0">Pairwise Comparison</h2>
-	<p class="mt-1 text-muted-foreground">{guidance.summary}</p>
+	<SectionHeader title="Pairwise Comparison" desc={guidance.summary} />
 	<p class="mt-3 mb-0 text-sm text-muted-foreground">{guidance.comparison}</p>
 	<p class="mt-2 mb-0 text-sm text-muted-foreground">{guidance.caveat}</p>
 	<div class="mt-3 flex flex-wrap gap-2 border-t border-border/60 pt-3">
@@ -68,10 +68,10 @@
 </section>
 
 <section>
-	<h2 class="mb-0">Pairwise Totals</h2>
-	<p class="mt-1 text-muted-foreground">
-		Normalized 0-10 totals based on head-to-head selections.
-	</p>
+	<SectionHeader
+		title="Pairwise Totals"
+		desc="Normalized 0-10 totals based on head-to-head selections."
+	/>
 	<div class="mt-3">
 		<ScoreBars
 			rows={alternatives.current.map((item) => item.name)}
@@ -90,10 +90,10 @@
 </section>
 
 <section>
-	<h2 class="mb-0">Win/Tie/Loss Profile</h2>
-	<p class="mt-1 text-muted-foreground">
-		Each row shows the share of direct wins, ties, and losses.
-	</p>
+	<SectionHeader
+		title="Win/Tie/Loss Profile"
+		desc="Each row shows the share of direct wins, ties, and losses."
+	/>
 	<div class="mt-3">
 		<StackedBars
 			rows={alternatives.current.map((item) => item.name)}

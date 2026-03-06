@@ -4,6 +4,7 @@
 	import StackedBars from "$lib/components/output/charts/stacked-bars.svelte";
 	import Scores from "$lib/components/scores/scores.svelte";
 	import { Button } from "$lib/components/ui/button";
+	import SectionHeader from "$lib/components/ui/section-header.svelte";
 	import { allocation, alternatives, criteria } from "$lib/state";
 	import {
 		allocationTotal,
@@ -50,8 +51,7 @@
 <Head title="Point Allocation" />
 
 <section>
-	<h2 class="mb-0">Point Allocation</h2>
-	<p class="mt-1 text-muted-foreground">{guidance.summary}</p>
+	<SectionHeader title="Point Allocation" desc={guidance.summary} />
 	<p class="mt-3 mb-0 text-sm text-muted-foreground">{guidance.comparison}</p>
 	<p class="mt-2 mb-0 text-sm text-muted-foreground">{guidance.caveat}</p>
 	<div
@@ -84,10 +84,10 @@
 </section>
 
 <section>
-	<h2 class="mb-0">Allocation Totals</h2>
-	<p class="mt-1 text-muted-foreground">
-		Weighted 0-10 totals from per-criterion point splits.
-	</p>
+	<SectionHeader
+		title="Allocation Totals"
+		desc="Weighted 0-10 totals from per-criterion point splits."
+	/>
 	<div class="mt-3">
 		<ScoreBars
 			rows={alternatives.current.map((item) => item.name)}
@@ -106,11 +106,10 @@
 </section>
 
 <section>
-	<h2 class="mb-0">Weighted Contribution Breakdown</h2>
-	<p class="mt-1 text-muted-foreground">
-		Each stacked bar shows how criterion-level point allocations contribute to
-		the final score.
-	</p>
+	<SectionHeader
+		title="Weighted Contribution Breakdown"
+		desc="Each stacked bar shows how criterion-level point allocations contribute to the final score."
+	/>
 	<div class="mt-3">
 		<StackedBars
 			rows={alternatives.current.map((item) => item.name)}

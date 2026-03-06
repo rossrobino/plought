@@ -14,7 +14,9 @@
 		"check:format": "prettier --check .",
 		"check": "npm run check:svelte && npm run knip && npm run check:format",
 		"format": "prettier --write .",
-		"knip": "knip"
+		"knip": "knip",
+		"lint": "oxlint",
+		"lint:fix": "oxlint --fix"
 	},
 	"devDependencies": {
 		"@robino/prettier": "^2.0.3",

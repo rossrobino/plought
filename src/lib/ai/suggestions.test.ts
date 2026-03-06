@@ -35,6 +35,7 @@ describe("AI suggestion helpers", () => {
 		expect(prompt).not.toContain("Criterion #1");
 		expect(prompt).toContain("Seattle");
 		expect(prompt).toContain("Schools");
+		expect(prompt).toContain("Make each suggestion as independent as possible");
 	});
 
 	it("treats defaults and placeholders as empty when checking if a request is useful", () => {

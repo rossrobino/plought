@@ -1,15 +1,17 @@
 <script lang="ts">
-	import type {
-		AlternativeSuggestionRequest,
-		CriteriaSuggestionRequest,
-	} from "$lib/ai/types";
 	import {
 		generateAlternativeSuggestions,
 		generateCriteriaSuggestions,
 	} from "$lib/ai/suggestions.remote";
+	import type {
+		AlternativeSuggestionRequest,
+		CriteriaSuggestionRequest,
+	} from "$lib/ai/types";
 	import SetupSuggestionResults from "$lib/components/ai/setup-suggestion-results.svelte";
 	import { Button } from "$lib/components/ui/button";
+	import Eyebrow from "$lib/components/ui/eyebrow.svelte";
 	import * as Field from "$lib/components/ui/field";
+	import { Skeleton } from "$lib/components/ui/skeleton";
 	import { Textarea } from "$lib/components/ui/textarea";
 	import {
 		alternatives,
@@ -201,9 +203,32 @@
 				{#snippet pending()}
 					<div
 						aria-live="polite"
-						class="mt-3 rounded-lg border bg-background p-3 text-sm text-muted-foreground shadow-xs"
+						role="status"
+						class="mt-3 rounded-lg border bg-background p-3 shadow-xs"
 					>
-						Generating suggestions...
+						<div class="flex flex-wrap items-start justify-between gap-3">
+							<div class="min-w-0 flex-1">
+								<Eyebrow class="mb-2">Summary</Eyebrow>
+								<p class="text-sm text-muted-foreground">
+									Generating suggestions you can review and add.
+								</p>
+							</div>
+							<div
+								class="mt-0.5 size-4 shrink-0 rounded-full border-2 border-muted border-t-foreground/70 motion-safe:animate-spin"
+							></div>
+						</div>
+
+						<div class="mt-4 grid gap-2">
+							{#each [1, 2, 3, 4] as item (item)}
+								<div class="rounded-lg border bg-muted/10 p-3">
+									<Skeleton class="h-4 w-36" />
+									<div class="mt-2 space-y-2">
+										<Skeleton class="h-3 w-full bg-muted/45" />
+										<Skeleton class="h-3 w-4/5 bg-muted/45" />
+									</div>
+								</div>
+							{/each}
+						</div>
 					</div>
 				{/snippet}
 				{#snippet failed(error, reset)}

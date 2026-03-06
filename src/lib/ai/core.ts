@@ -1,14 +1,14 @@
-import { toJsonSchema } from "@valibot/to-json-schema";
 import { decisionDefaults } from "$lib/state";
-import { error } from "@sveltejs/kit";
-import { OpenAI } from "openai";
-import * as v from "valibot";
 import type {
 	AlternativeSuggestionRequest,
 	CriteriaSuggestionRequest,
 	SuggestionItem,
 	SuggestionResult,
 } from "./types";
+import { error } from "@sveltejs/kit";
+import { toJsonSchema } from "@valibot/to-json-schema";
+import { OpenAI } from "openai";
+import * as v from "valibot";
 
 type Kind = "alternatives" | "criteria";
 type Request = AlternativeSuggestionRequest | CriteriaSuggestionRequest;
@@ -31,10 +31,7 @@ export class AI {
 	#item = v.strictObject({ name: this.#name, reason: this.#text });
 
 	#result = v.message(
-		v.strictObject({
-			summary: this.#text,
-			items: v.array(this.#item),
-		}),
+		v.strictObject({ summary: this.#text, items: v.array(this.#item) }),
 		"AI returned an invalid suggestion response.",
 	);
 
@@ -44,7 +41,7 @@ export class AI {
 		return json;
 	})();
 
-	#alternative = v.strictObject({
+	readonly alternativeSchema = v.strictObject({
 		title: this.#text,
 		goal: this.#text,
 		context: this.#text,
@@ -52,7 +49,7 @@ export class AI {
 		requestId: v.pipe(v.string(), v.nonEmpty(), v.maxLength(200)),
 	});
 
-	#criteria = v.strictObject({
+	readonly criteriaSchema = v.strictObject({
 		title: this.#text,
 		goal: this.#text,
 		context: this.#text,
@@ -73,14 +70,6 @@ export class AI {
 
 	constructor(apiKey: string) {
 		this.#client = new OpenAI({ apiKey });
-	}
-
-	get alternativeSchema() {
-		return this.#alternative;
-	}
-
-	get criteriaSchema() {
-		return this.#criteria;
 	}
 
 	hasInput(input: Request, kind: Kind) {
@@ -118,6 +107,8 @@ export class AI {
 			"Keep each criterion title concise, usually 1 to 4 words.",
 			"Prefer short noun phrases instead of full sentences.",
 			"Keep each criterion specific and measurable where possible.",
+			"Make each suggestion as independent as possible from the others.",
+			"Avoid near-duplicates, narrower versions, or alternate phrasings of the same factor.",
 			"Avoid duplicates, overly broad labels, and combined criteria.",
 			"Do not repeat existing criteria or use placeholders.",
 			"Give one short reason per suggestion tied to the decision context.",
@@ -133,30 +124,6 @@ export class AI {
 		return v.parse(this.#result, value);
 	}
 
-	normalizeResult(result: SuggestionResult, existingNames: string[]) {
-		const seen = new Set(
-			this.#dedupe(existingNames).map((value) => this.#key(value)),
-		);
-		const items: SuggestionItem[] = [];
-
-		for (const item of result.items) {
-			const name = this.#collapse(item.name);
-			const key = this.#key(name);
-			if (!name || seen.has(key)) {
-				continue;
-			}
-
-			seen.add(key);
-			items.push({ name, reason: this.#collapse(item.reason) || this.#reason });
-
-			if (items.length >= this.#max) {
-				break;
-			}
-		}
-
-		return { summary: this.#collapse(result.summary) || this.#summary, items };
-	}
-
 	async createSuggestions(options: {
 		existingNames: string[];
 		input: string;
@@ -164,7 +131,7 @@ export class AI {
 		previous_response_id?: string;
 	}) {
 		const response = await this.#client.responses.create({
-			model: "gpt-5-nano",
+			model: "gpt-5-mini",
 			tools: [{ type: "web_search" }],
 			reasoning: { effort: "low" },
 			text: {
@@ -277,5 +244,29 @@ export class AI {
 			`Extra context: ${input.context || "none"}`,
 			this.#formatSection("Existing alternatives", input.existingAlternatives),
 		].join("\n\n");
+	}
+
+	normalizeResult(result: SuggestionResult, existingNames: string[]) {
+		const seen = new Set(
+			this.#dedupe(existingNames).map((value) => this.#key(value)),
+		);
+		const items: SuggestionItem[] = [];
+
+		for (const item of result.items) {
+			const name = this.#collapse(item.name);
+			const key = this.#key(name);
+			if (!name || seen.has(key)) {
+				continue;
+			}
+
+			seen.add(key);
+			items.push({ name, reason: this.#collapse(item.reason) || this.#reason });
+
+			if (items.length >= this.#max) {
+				break;
+			}
+		}
+
+		return { summary: this.#collapse(result.summary) || this.#summary, items };
 	}
 }

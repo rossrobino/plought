@@ -2,6 +2,7 @@
 	import Head from "$lib/components/head.svelte";
 	import ScoreBars from "$lib/components/output/charts/score-bars.svelte";
 	import { Button } from "$lib/components/ui/button";
+	import Eyebrow from "$lib/components/ui/eyebrow.svelte";
 	import * as Field from "$lib/components/ui/field";
 	import { Input } from "$lib/components/ui/input";
 	import { ScrollArea } from "$lib/components/ui/scroll-area";
@@ -169,9 +170,7 @@
 		</p>
 		<div class="mt-3 grid gap-3 sm:grid-cols-3">
 			<div class="rounded-lg border bg-muted/25 p-3 shadow-xs">
-				<p class="mb-0 text-xs tracking-wide text-muted-foreground uppercase">
-					Weighted Sum
-				</p>
+				<Eyebrow variant="subtle" class="mb-0">Weighted Sum</Eyebrow>
 				<p class="mt-1 mb-0 truncate text-base font-semibold">
 					{weightedWinner?.name ?? "-"}
 				</p>
@@ -180,9 +179,7 @@
 				</p>
 			</div>
 			<div class="rounded-lg border bg-muted/25 p-3 shadow-xs">
-				<p class="mb-0 text-xs tracking-wide text-muted-foreground uppercase">
-					TOPSIS
-				</p>
+				<Eyebrow variant="subtle" class="mb-0">TOPSIS</Eyebrow>
 				<p class="mt-1 mb-0 truncate text-base font-semibold">
 					{topsisWinner?.name ?? "-"}
 				</p>
@@ -191,9 +188,7 @@
 				</p>
 			</div>
 			<div class="rounded-lg border bg-muted/25 p-3 shadow-xs">
-				<p class="mb-0 text-xs tracking-wide text-muted-foreground uppercase">
-					Combined
-				</p>
+				<Eyebrow variant="subtle" class="mb-0">Combined</Eyebrow>
 				<p class="mt-1 mb-0 truncate text-base font-semibold">
 					{combinedWinner?.name ?? "-"}
 				</p>
@@ -248,7 +243,7 @@
 					</Table.Row>
 				</Table.Header>
 				<Table.Body>
-					{#each rows as _, i}
+					{#each rows as row, i (`robustness-${i}-${row}`)}
 						{@const weighted = robustness.methods.weightedSum.alternatives[i]}
 						{@const topsis = robustness.methods.topsis.alternatives[i]}
 						{@const combined = robustness.methods.combined.alternatives[i]}

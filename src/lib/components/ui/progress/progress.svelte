@@ -34,7 +34,9 @@
 >
 	<div
 		data-slot="progress-indicator"
-		class={complete ? "h-full w-full flex-1 bg-primary transition-all" : "h-full w-full flex-1 bg-amber-400 transition-all dark:bg-amber-300"}
+		class={complete
+			? "h-full w-full flex-1 bg-primary transition-all"
+			: "h-full w-full flex-1 bg-amber-400 transition-all dark:bg-amber-300"}
 		style="transform: translateX(-{100 - percent}%)"
 	></div>
 </ProgressPrimitive.Root>

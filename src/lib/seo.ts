@@ -25,7 +25,7 @@ const appSeo = Object.fromEntries(
 
 export const seoByPath: Record<string, SeoMeta> = {
 	"/": {
-		title: "Home",
+		title: "",
 		desc: "Reduce noise in decision making by structuring setup, scoring, and comparison in one workflow.",
 		changefreq: "weekly",
 		priority: 1,

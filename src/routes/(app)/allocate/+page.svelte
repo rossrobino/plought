@@ -1,6 +1,7 @@
 <script lang="ts">
 	import Info from "$lib/components/info.svelte";
 	import { Button } from "$lib/components/ui/button";
+	import Eyebrow from "$lib/components/ui/eyebrow.svelte";
 	import * as Select from "$lib/components/ui/select";
 	import { Slider } from "$lib/components/ui/slider";
 	import {
@@ -151,9 +152,7 @@
 		<div class="mt-3 rounded-lg border bg-muted/25 p-3 shadow-xs">
 			<div class="grid gap-2 sm:grid-cols-2 lg:grid-cols-[1fr_auto]">
 				<div class="min-w-0">
-					<p class="mb-1 text-xs tracking-wide text-muted-foreground uppercase">
-						Criterion
-					</p>
+					<Eyebrow variant="subtle" class="mb-1">Criterion</Eyebrow>
 					<Select.Root
 						type="single"
 						value={`${criterionIndex}`}

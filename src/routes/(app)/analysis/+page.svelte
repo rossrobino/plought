@@ -3,6 +3,7 @@
 	import MethodMatrixChart from "$lib/components/output/charts/method-matrix-chart.svelte";
 	import Scores from "$lib/components/scores/scores.svelte";
 	import { Button } from "$lib/components/ui/button";
+	import Eyebrow from "$lib/components/ui/eyebrow.svelte";
 	import {
 		type MethodKey,
 		allocation,
@@ -221,9 +222,7 @@
 		<p class="mt-1 text-muted-foreground">{guidance.summary}</p>
 		<div class="mt-3 grid gap-3 sm:grid-cols-3">
 			<div class="rounded-lg border bg-muted/25 p-3 shadow-xs">
-				<p class="mb-0 text-xs tracking-wide text-muted-foreground uppercase">
-					Recommended Option
-				</p>
+				<Eyebrow variant="subtle" class="mb-0">Recommended Option</Eyebrow>
 				<p class="mt-1 mb-0 truncate text-base font-semibold">{winnerName}</p>
 				{#if winnerScore != null}
 					<p class="mt-1 mb-0 text-xs text-muted-foreground">
@@ -232,9 +231,7 @@
 				{/if}
 			</div>
 			<div class="rounded-lg border bg-muted/25 p-3 shadow-xs">
-				<p class="mb-0 text-xs tracking-wide text-muted-foreground uppercase">
-					Agreement Level
-				</p>
+				<Eyebrow variant="subtle" class="mb-0">Agreement Level</Eyebrow>
 				<p class="mt-1 mb-0 text-base font-semibold">{agreementLabel}</p>
 				<p class="mt-1 mb-0 text-xs text-muted-foreground">
 					{guidance.comparison}
@@ -253,9 +250,7 @@
 				{/if}
 			</div>
 			<div class="rounded-lg border bg-muted/25 p-3 shadow-xs">
-				<p class="mb-0 text-xs tracking-wide text-muted-foreground uppercase">
-					Runner-up Gap
-				</p>
+				<Eyebrow variant="subtle" class="mb-0">Runner-up Gap</Eyebrow>
 				{#if runnerName == null}
 					<p class="mt-1 mb-0 text-base font-semibold">-</p>
 				{:else}

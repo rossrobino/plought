@@ -130,6 +130,101 @@ describe("state", () => {
 		).toBe(true);
 	});
 
+	it("appends alternatives and updates dependent state", () => {
+		const added = state.appendAlternatives(["Seattle", "Portland"]);
+
+		expect(added).toEqual(["Seattle", "Portland"]);
+		expect(state.alternatives.current.map((item) => item.name)).toEqual([
+			"Alternative #1",
+			"Alternative #2",
+			"Seattle",
+			"Portland",
+		]);
+		expect(
+			state.alternatives.current.every((item) => item.scores.length === 2),
+		).toBe(true);
+		expect(
+			state.alternatives.current.every((item) => item.pairwise.length === 4),
+		).toBe(true);
+		expect(state.rankOrder.current).toEqual([0, 1, 2, 3]);
+		expect(state.allocation.current.length).toBe(2);
+		expect(state.allocation.current.every((row) => row.length === 4)).toBe(
+			true,
+		);
+	});
+
+	it("replaces untouched alternative defaults before appending AI suggestions", () => {
+		const added = state.insertAlternativeSuggestions([
+			"Seattle",
+			"Portland",
+			"San Diego",
+		]);
+
+		expect(added).toEqual(["Seattle", "Portland", "San Diego"]);
+		expect(state.alternatives.current.map((item) => item.name)).toEqual([
+			"Seattle",
+			"Portland",
+			"San Diego",
+		]);
+		expect(
+			state.alternatives.current.every((item) => item.scores.length === 2),
+		).toBe(true);
+		expect(
+			state.alternatives.current.every((item) => item.pairwise.length === 3),
+		).toBe(true);
+		expect(state.rankOrder.current).toEqual([0, 1, 2]);
+		expect(state.allocation.current.every((row) => row.length === 3)).toBe(
+			true,
+		);
+	});
+
+	it("appends criteria and updates scores, allocation, and weights", () => {
+		const added = state.appendCriteria(["Schools", "Weather"]);
+
+		expect(added).toEqual(["Schools", "Weather"]);
+		expect(state.criteria.current.map((item) => item.name)).toEqual([
+			"Criterion #1",
+			"Criterion #2",
+			"Schools",
+			"Weather",
+		]);
+		expect(
+			state.alternatives.current.every((item) => item.scores.length === 4),
+		).toBe(true);
+		expect(state.allocation.current.length).toBe(4);
+		expect(state.allocation.current.every((row) => row.length === 2)).toBe(
+			true,
+		);
+		expect(state.criteria.current.map((item) => item.weight)).toEqual([
+			0.5, 0.5, 0, 0,
+		]);
+	});
+
+	it("replaces untouched criteria defaults before appending AI suggestions", () => {
+		const added = state.insertCriteriaSuggestions([
+			"Cost",
+			"Risk",
+			"Long-term fit",
+		]);
+
+		expect(added).toEqual(["Cost", "Risk", "Long-term fit"]);
+		expect(state.criteria.current.map((item) => item.name)).toEqual([
+			"Cost",
+			"Risk",
+			"Long-term fit",
+		]);
+		expect(
+			state.alternatives.current.every((item) => item.scores.length === 3),
+		).toBe(true);
+		expect(state.allocation.current.length).toBe(3);
+		expect(state.allocation.current.every((row) => row.length === 2)).toBe(
+			true,
+		);
+		expect(state.criteria.current.map((item) => item.weight)).toEqual([
+			0.5, 0.5, 0,
+		]);
+	});
+
 	it("exports snapshot state with all expected keys", () => {
 		const snapshot = state.exportSnapshotState();
 

@@ -68,6 +68,9 @@ const getAlternatives = (): Alternative[] => [
 	{ name: "Alternative #2", scores: [5, 5], pairwise: [0.5, 0.5] },
 ];
 
+const alternativePlaceholderPattern = /^Alternative #\d+$/i;
+const criteriaPlaceholderPattern = /^Criterion #\d+$/i;
+
 const getRankOrder = (count: number) => {
 	return Array.from({ length: count }, (_, i) => i);
 };
@@ -307,6 +310,52 @@ const cloneAllocation = (value: number[][]) => {
 	return value.map((row) => [...row]);
 };
 
+const collapseName = (value: string) => {
+	return value.trim().replace(/\s+/g, " ");
+};
+
+const getUniqueNames = (names: string[], existing: string[]) => {
+	const seen = new Set(
+		existing.map((value) => collapseName(value).toLocaleLowerCase()),
+	);
+	const next = [];
+
+	for (const value of names) {
+		const name = collapseName(value);
+		const key = name.toLocaleLowerCase();
+		if (!name || seen.has(key)) {
+			continue;
+		}
+		seen.add(key);
+		next.push(name);
+	}
+
+	return next;
+};
+
+const replacePlaceholderNames = (
+	values: { name: string }[],
+	names: string[],
+	pattern: RegExp,
+) => {
+	const placeholderIndices = values.flatMap((item, i) => {
+		return pattern.test(collapseName(item.name)) ? [i] : [];
+	});
+	const next = getUniqueNames(
+		names,
+		values
+			.filter((item) => !pattern.test(collapseName(item.name)))
+			.map((item) => item.name),
+	);
+	const replaced = Math.min(placeholderIndices.length, next.length);
+
+	for (let i = 0; i < replaced; i++) {
+		values[placeholderIndices[i]].name = next[i];
+	}
+
+	return { next, rest: next.slice(replaced) };
+};
+
 const cloneMethodMeta = (value: MethodMetaState) => {
 	return methodKeys.reduce((next, key) => {
 		next[key] = { used: value[key].used, included: value[key].included };
@@ -522,6 +571,26 @@ export const getRankScore = (rank: number, count: number) => {
 	return Number((((count - 1 - rank) / (count - 1)) * 10).toFixed(2));
 };
 
+const clampWeightPercent = (value: number) => {
+	return Math.max(0, Math.min(100, value));
+};
+
+const normalizePercent = (values: number[], target = 100) => {
+	const count = values.length;
+	if (count === 0) {
+		return [];
+	}
+	if (target <= 0) {
+		return Array.from({ length: count }, () => 0);
+	}
+	const positive = values.map((value) => Math.max(0, value));
+	const sum = positive.reduce((a, b) => a + b, 0);
+	if (sum <= 0) {
+		return Array.from({ length: count }, () => target / count);
+	}
+	return positive.map((value) => (value / sum) * target);
+};
+
 const methodMeta = new PersistedState("methodMeta", getMethodMeta());
 const appMeta = new PersistedState("appMeta", getAppMeta());
 const setupStepMeta = new PersistedState("setupStepMeta", getSetupStepMeta());
@@ -613,6 +682,99 @@ export const syncRankOrder = (count = alternatives.current.length) => {
 		next.some((id, i) => id !== current[i])
 	) {
 		applyArray(rankOrder.current, next);
+	}
+	return next;
+};
+
+export const normalizeCriteriaWeights = () => {
+	const current = criteria.current.map((item) => {
+		const weight = Number(item.weight) * 100;
+		return Number.isFinite(weight) ? clampWeightPercent(weight) : 0;
+	});
+	const next = normalizePercent(current, 100);
+
+	if (next.some((value, i) => Math.abs(value - current[i]) > 0.001)) {
+		next.forEach((value, i) => {
+			if (criteria.current[i] == null) {
+				return;
+			}
+			criteria.current[i].weight = clampWeightPercent(value) / 100;
+		});
+	}
+
+	return criteria.current;
+};
+
+export const appendAlternatives = (names: string[]) => {
+	const next = getUniqueNames(
+		names,
+		alternatives.current.map((item) => item.name),
+	);
+	if (next.length === 0) {
+		return [];
+	}
+
+	for (const name of next) {
+		alternatives.current.forEach((item) => {
+			item.pairwise.push(0.5);
+		});
+		alternatives.current.push({
+			name,
+			scores: Array.from({ length: criteria.current.length }, () => 0),
+			pairwise: Array.from(
+				{ length: alternatives.current.length + 1 },
+				() => 0.5,
+			),
+		});
+	}
+
+	syncAllocation();
+	syncRankOrder();
+	return next;
+};
+
+export const insertAlternativeSuggestions = (names: string[]) => {
+	const { next, rest } = replacePlaceholderNames(
+		alternatives.current,
+		names,
+		alternativePlaceholderPattern,
+	);
+	if (rest.length > 0) {
+		appendAlternatives(rest);
+	}
+	return next;
+};
+
+export const appendCriteria = (names: string[]) => {
+	const next = getUniqueNames(
+		names,
+		criteria.current.map((item) => item.name),
+	);
+	if (next.length === 0) {
+		return [];
+	}
+
+	for (const name of next) {
+		criteria.current.push({ name, weight: 0 });
+	}
+
+	for (const item of alternatives.current) {
+		item.scores.push(...Array.from({ length: next.length }, () => 0));
+	}
+
+	syncAllocation();
+	normalizeCriteriaWeights();
+	return next;
+};
+
+export const insertCriteriaSuggestions = (names: string[]) => {
+	const { next, rest } = replacePlaceholderNames(
+		criteria.current,
+		names,
+		criteriaPlaceholderPattern,
+	);
+	if (rest.length > 0) {
+		appendCriteria(rest);
 	}
 	return next;
 };

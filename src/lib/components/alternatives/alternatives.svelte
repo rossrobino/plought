@@ -37,7 +37,7 @@
 	const guidance = $derived(
 		showCriteria
 			? "Score each alternative from 0 to 10 for every criterion. Higher numbers mean a stronger fit for that criterion."
-			: "Add the options you are deciding between.",
+			: "",
 	);
 
 	const markUsed = () => {

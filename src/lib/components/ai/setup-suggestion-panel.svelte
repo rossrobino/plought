@@ -1,0 +1,226 @@
+<script lang="ts">
+	import type {
+		AlternativeSuggestionRequest,
+		CriteriaSuggestionRequest,
+	} from "$lib/ai/types";
+	import {
+		generateAlternativeSuggestions,
+		generateCriteriaSuggestions,
+	} from "$lib/ai/suggestions.remote";
+	import SetupSuggestionResults from "$lib/components/ai/setup-suggestion-results.svelte";
+	import { Button } from "$lib/components/ui/button";
+	import * as Field from "$lib/components/ui/field";
+	import { Textarea } from "$lib/components/ui/textarea";
+	import {
+		alternatives,
+		criteria,
+		decision,
+		decisionDefaults,
+		insertAlternativeSuggestions,
+		insertCriteriaSuggestions,
+	} from "$lib/state";
+
+	type Kind = "alternatives" | "criteria";
+	type Request = AlternativeSuggestionRequest | CriteriaSuggestionRequest;
+	type Props = { kind: Kind; onApply?: () => void };
+
+	let { kind, onApply }: Props = $props();
+
+	const uid = $props.id();
+	let context = $state("");
+	let request = $state<Request | null>(null);
+	const alternativePattern = /^Alternative #\d+$/i;
+	const criteriaPattern = /^Criterion #\d+$/i;
+
+	const currentAlternatives = $derived(
+		alternatives.current.map((item) => item.name),
+	);
+	const currentCriteria = $derived(criteria.current.map((item) => item.name));
+	const canGenerate = $derived.by(() => {
+		const collapse = (value: string) => {
+			return value.trim().replace(/\s+/g, " ");
+		};
+		const dedupe = (values: string[]) => {
+			const seen = new Set<string>();
+			const next = [];
+
+			for (const value of values) {
+				const current = collapse(value);
+				const key = current.toLocaleLowerCase();
+				if (!current || seen.has(key)) {
+					continue;
+				}
+				seen.add(key);
+				next.push(current);
+			}
+
+			return next;
+		};
+		const filter = (values: string[], pattern: RegExp) => {
+			return dedupe(values).filter((value) => !pattern.test(value));
+		};
+		const title = collapse(decision.current.title);
+		const goal = collapse(decision.current.goal);
+
+		return (
+			(title.length > 0 && title !== decisionDefaults.title) ||
+			(goal.length > 0 && goal !== decisionDefaults.goal) ||
+			collapse(context).length > 0 ||
+			filter(currentAlternatives, alternativePattern).length > 0 ||
+			(kind === "criteria"
+				? filter(currentCriteria, criteriaPattern).length > 0
+				: false)
+		);
+	});
+	const title = $derived(
+		kind === "alternatives"
+			? "Need more alternatives?"
+			: "Need help drafting criteria?",
+	);
+	const desc = $derived(
+		kind === "alternatives"
+			? "Use your title, goal, and current list to brainstorm more options."
+			: "Use your title, goal, and current list to draft factors to compare.",
+	);
+	const hint = $derived(
+		kind === "alternatives"
+			? "Optional: budget, location, timing, or must-have features."
+			: "Optional: cost, effort, time, risk, or long-term fit.",
+	);
+
+	const createRequest = (): Request => {
+		if (kind === "alternatives") {
+			return {
+				title: decision.current.title,
+				goal: decision.current.goal,
+				context,
+				existingAlternatives: [...currentAlternatives],
+				requestId: crypto.randomUUID(),
+			};
+		}
+
+		return {
+			title: decision.current.title,
+			goal: decision.current.goal,
+			context,
+			existingAlternatives: [...currentAlternatives],
+			existingCriteria: [...currentCriteria],
+			requestId: crypto.randomUUID(),
+		};
+	};
+
+	const generate = () => {
+		request = createRequest();
+	};
+
+	const addOne = (name: string) => {
+		const added =
+			kind === "alternatives"
+				? insertAlternativeSuggestions([name])
+				: insertCriteriaSuggestions([name]);
+		if (added.length > 0) {
+			onApply?.();
+		}
+	};
+
+	const addAll = (names: string[]) => {
+		const added =
+			kind === "alternatives"
+				? insertAlternativeSuggestions(names)
+				: insertCriteriaSuggestions(names);
+		if (added.length > 0) {
+			onApply?.();
+		}
+	};
+
+	const loadSuggestions = (input: Request) => {
+		if (kind === "alternatives") {
+			return generateAlternativeSuggestions(
+				input as AlternativeSuggestionRequest,
+			);
+		}
+
+		return generateCriteriaSuggestions(input as CriteriaSuggestionRequest);
+	};
+
+	const getErrorMessage = (value: unknown) => {
+		return value instanceof Error
+			? value.message
+			: "Suggestions could not be generated right now.";
+	};
+</script>
+
+<section class="rounded-lg border bg-muted/10 p-3 shadow-xs">
+	<div class="flex flex-wrap items-start justify-between gap-3">
+		<div class="min-w-0 flex-1">
+			<h2 class="text-base font-medium">{title}</h2>
+			<p class="mt-1 text-sm text-muted-foreground">{desc}</p>
+		</div>
+		<span
+			class="rounded-md border bg-background px-2 py-1 text-xs font-medium text-muted-foreground"
+		>
+			Optional
+		</span>
+	</div>
+	<div class="mt-3 grid gap-3">
+		<Field.Field class="gap-2.5">
+			<Field.Label for={`${uid}-context`}>Additional context</Field.Label>
+			<Textarea
+				id={`${uid}-context`}
+				name={`${uid}-context`}
+				bind:value={context}
+				rows={4}
+				placeholder={hint}
+			/>
+		</Field.Field>
+
+		<div class="flex justify-end">
+			<Button
+				size="sm"
+				variant="outline"
+				disabled={!canGenerate}
+				onclick={generate}
+			>
+				Generate
+			</Button>
+		</div>
+	</div>
+
+	{#if request != null}
+		{#key request.requestId}
+			<svelte:boundary>
+				<SetupSuggestionResults
+					existing={kind === "alternatives"
+						? currentAlternatives
+						: currentCriteria}
+					{kind}
+					onAdd={addOne}
+					onAddAll={addAll}
+					result={await loadSuggestions(request)}
+				/>
+				{#snippet pending()}
+					<div
+						aria-live="polite"
+						class="mt-3 rounded-lg border bg-background p-3 text-sm text-muted-foreground shadow-xs"
+					>
+						Generating suggestions...
+					</div>
+				{/snippet}
+				{#snippet failed(error, reset)}
+					<div
+						class="mt-3 rounded-lg border border-destructive/30 bg-background p-3 shadow-xs"
+					>
+						<p class="text-sm text-muted-foreground">
+							{getErrorMessage(error)}
+						</p>
+						<div class="mt-3 flex justify-end">
+							<Button size="sm" variant="outline" onclick={reset}>
+								Try again
+							</Button>
+						</div>
+					</div>
+				{/snippet}
+			</svelte:boundary>
+		{/key}
+	{/if}
+</section>

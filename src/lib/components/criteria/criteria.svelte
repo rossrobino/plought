@@ -11,8 +11,10 @@
 	import {
 		type MethodKey,
 		alternatives,
+		appendCriteria,
 		criteria,
 		markMethodUsed,
+		normalizeCriteriaWeights,
 		syncAllocation,
 	} from "$lib/state";
 	import type { Criteria } from "$lib/types";
@@ -40,7 +42,7 @@
 	const guidance = $derived(
 		weights
 			? "Set each criterion as a percentage of importance so weighted analyses reflect your priorities across all alternatives."
-			: "List the factors you will use to evaluate alternatives.",
+			: "",
 	);
 
 	const markUsed = () => {
@@ -101,23 +103,18 @@
 		const current = criteria.current.map((item) =>
 			toWeightPercent(item.weight),
 		);
-		const next = normalizePercent(current, 100);
-		if (next.some((value, i) => Math.abs(value - current[i]) > 0.001)) {
-			setWeightsFromPercent(next);
+		normalizeCriteriaWeights();
+		if (
+			criteria.current.some((item, i) => {
+				return Math.abs(toWeightPercent(item.weight) - current[i]) > 0.001;
+			})
+		) {
 			markUsed();
 		}
 	};
 
 	const addCriteria = () => {
-		criteria.current.push({
-			name: `Criterion #${criteria.current.length + 1}`,
-			weight: 0,
-		});
-		alternatives.current.forEach((alt) => {
-			alt.scores.push(0);
-		});
-		syncAllocation();
-		normalizeCurrentWeights();
+		appendCriteria([`Criterion #${criteria.current.length + 1}`]);
 		markUsed();
 	};
 

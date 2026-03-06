@@ -181,6 +181,10 @@
 							/>
 						</Button>
 					</div>
+					<p class="mt-4 max-w-xl text-sm leading-6 text-muted-foreground">
+						If you need a push, AI setup help can generate starter
+						alternatives and criteria from the context you have provided.
+					</p>
 				</div>
 
 				<div

@@ -1,198 +1,364 @@
 <script lang="ts">
 	import Head from "$lib/components/head.svelte";
+	import { Button } from "$lib/components/ui/button";
 	import { Progress } from "$lib/components/ui/progress";
-	import { Separator } from "$lib/components/ui/separator";
 	import { apps, info } from "$lib/info";
 	import {
+		type MethodKey,
+		type SetupStepKey,
+		allocation,
 		alternatives,
 		criteria,
+		decision,
 		isAppUsed,
+		isMethodIncluded,
 		isSetupStepUsed,
+		rankOrder,
 	} from "$lib/state";
+	import {
+		getHomeNextStep,
+		getHomePreview,
+		homeSetupItems,
+	} from "$lib/util/home";
 	import ArrowRightIcon from "@lucide/svelte/icons/arrow-right";
 	import BarChart3Icon from "@lucide/svelte/icons/bar-chart-3";
 	import FlagIcon from "@lucide/svelte/icons/flag";
+	import GitForkIcon from "@lucide/svelte/icons/git-fork";
+	import ListChecksIcon from "@lucide/svelte/icons/list-checks";
+	import ShieldCheckIcon from "@lucide/svelte/icons/shield-check";
 
-	const setupSteps = ["start", "alternatives", "criteria"] as const;
+	const methodKeys = [
+		"weightedSum",
+		"pairwise",
+		"rankOrder",
+		"allocate",
+		"topsis",
+	] as const satisfies readonly MethodKey[];
 
-	const setupProgress = $derived.by(() => {
-		const total = setupSteps.length;
-		const done = setupSteps.reduce((count, step) => {
-			return count + (isSetupStepUsed(step) ? 1 : 0);
-		}, 0);
-		return { done, total, percent: Math.round((done / total) * 100) };
+	const setupIcons: Record<
+		SetupStepKey,
+		typeof FlagIcon | typeof GitForkIcon | typeof ListChecksIcon
+	> = { start: FlagIcon, alternatives: GitForkIcon, criteria: ListChecksIcon };
+
+	const stages = [
+		{
+			href: "#journey-setup",
+			icon: FlagIcon,
+			label: "Setup",
+			note: "Define the decision, the alternatives, and the criteria before you touch a scoring model.",
+			number: "01",
+		},
+		{
+			href: "#journey-evaluate",
+			icon: BarChart3Icon,
+			label: "Evaluate",
+			note: "Use the tools to compare tradeoffs from different angles.",
+			number: "02",
+		},
+		{
+			href: "#journey-decide",
+			icon: ShieldCheckIcon,
+			label: "Decide",
+			note: "Review the summary and check stability before locking in the final choice.",
+			number: "03",
+		},
+	] as const;
+
+	const setupUsed = $derived.by(() => {
+		return {
+			start: isSetupStepUsed("start"),
+			alternatives: isSetupStepUsed("alternatives"),
+			criteria: isSetupStepUsed("criteria"),
+		};
 	});
 
-	const appProgress = $derived.by(() => {
-		const total = apps.length;
-		const done = apps.reduce((count, app) => {
-			return count + (isAppUsed(app.key) ? 1 : 0);
-		}, 0);
-		if (total === 0) {
-			return { done, total, percent: 0 };
+	const appUsed = $derived.by(() => {
+		return {
+			weigh: isAppUsed("weigh"),
+			score: isAppUsed("score"),
+			compare: isAppUsed("compare"),
+			rank: isAppUsed("rank"),
+			allocate: isAppUsed("allocate"),
+		};
+	});
+
+	const includedMethods = $derived.by(() => {
+		return methodKeys.filter((key) => isMethodIncluded(key));
+	});
+
+	const nextStep = $derived(getHomeNextStep(setupUsed, appUsed));
+
+	const preview = $derived(
+		getHomePreview({
+			decision: decision.current,
+			criteria: criteria.current,
+			alternatives: alternatives.current,
+			allocation: Array.isArray(allocation.current) ? allocation.current : [],
+			rankOrder: Array.isArray(rankOrder.current) ? rankOrder.current : [],
+			setupUsed,
+			appUsed,
+			includedMethods,
+		}),
+	);
+
+	const setupCards = $derived.by(() => {
+		return homeSetupItems.map((item) => {
+			return { ...item, icon: setupIcons[item.key], used: setupUsed[item.key] };
+		});
+	});
+
+	const setupCta = $derived.by(() => {
+		const item = homeSetupItems.find((entry) => !setupUsed[entry.key]);
+		if (item != null) {
+			return {
+				href: item.href,
+				label:
+					item.key === "start"
+						? "Start setup"
+						: `Continue with ${item.label.toLowerCase()}`,
+			};
 		}
-		return { done, total, percent: Math.round((done / total) * 100) };
+		return { href: "/weigh", label: "Start evaluating" };
+	});
+
+	const toolDoneCount = $derived.by(() => {
+		return apps.reduce((count, app) => count + (appUsed[app.key] ? 1 : 0), 0);
+	});
+
+	const leaderMeta = $derived.by(() => {
+		const parts = [];
+		if (preview.leaderSource != null) {
+			parts.push(preview.leaderSource);
+		}
+		if (preview.agreementLabel != null) {
+			parts.push(`${preview.agreementLabel} agreement`);
+		}
+		return parts.join(" · ");
 	});
 </script>
 
-<div class="w-full space-y-4 pt-4">
-	<Head desc={info.tagline} />
+<div class="w-full space-y-6 pt-4">
+	<Head
+		desc={`${info.tagline}. Resume the next step, work through the tools, and review the decision before you commit.`}
+	/>
 
-	<section class="border-accent/70 bg-accent/45 text-foreground">
-		<div>
-			<h2 class="mb-0 text-2xl tracking-tight sm:text-3xl">
-				{info.tagline}
-			</h2>
-			<p class="mt-3 mb-0 text-muted-foreground">
-				Use one or more methods to evaluate alternatives from different angles.
-				{info.name} turns complex choices into structured comparisons by separating
-				inputs from outcomes.
-			</p>
-			<p class="mt-3 mb-0 text-muted-foreground">
-				Define criteria, score alternatives, and compare results before
-				deciding. This keeps the process consistent and reduces judgment noise
-				when tradeoffs are involved.
-			</p>
+	<section
+		class="rounded-lg border border-border bg-[color-mix(in_oklch,var(--color-sky-300)_14%,transparent)] p-5 shadow-sm md:p-6"
+	>
+		<div class="grid gap-6 lg:grid-cols-[1.1fr_0.9fr] lg:items-start">
+			<div class="reveal">
+				<p
+					class="mb-3 text-xs font-semibold tracking-[0.24em] text-muted-foreground uppercase"
+				>
+					Structured decision support
+				</p>
+				<h1
+					class="max-w-[12ch] text-4xl leading-none font-semibold tracking-tight text-balance sm:text-5xl"
+				>
+					Make better decisions before you commit.
+				</h1>
+				<p class="mt-4 max-w-xl text-base leading-7 text-muted-foreground">
+					{info.name} separates setup from evaluation so you can weigh priorities,
+					work through the tools, and review the tradeoffs before you choose an option.
+				</p>
+				<div class="mt-5 flex flex-wrap gap-3">
+					<Button href={nextStep.href} class="group h-11 px-5 text-sm">
+						{nextStep.label}
+						<ArrowRightIcon
+							class="size-4 transition-transform group-hover:translate-x-0.5 group-focus-visible:translate-x-0.5"
+						/>
+					</Button>
+					<Button
+						href="#homepage-flow"
+						variant="outline"
+						class="group h-11 px-5 text-sm"
+					>
+						See the workflow
+						<ArrowRightIcon
+							class="size-4 transition-transform group-hover:translate-x-0.5 group-focus-visible:translate-x-0.5"
+						/>
+					</Button>
+				</div>
+			</div>
+
+			<div
+				class="reveal reveal-2 rounded-lg border border-border/70 bg-background/90 p-4 shadow-[0_18px_44px_color-mix(in_oklch,var(--color-slate-950)_10%,transparent)] backdrop-blur"
+			>
+				{#if preview.hasMeaningfulProgress}
+					<h3 class="text-2xl font-semibold tracking-tight">
+						{preview.decisionTitle}
+					</h3>
+					<p class="mt-1 text-sm leading-6 text-muted-foreground">
+						{nextStep.note}
+					</p>
+
+					<div class="mt-4 grid gap-3 sm:grid-cols-2">
+						<div class="rounded-lg border bg-muted/25 p-3 shadow-xs">
+							<div class="flex items-center justify-between gap-2">
+								<p
+									class="mb-0 truncate text-xs tracking-[0.16em] text-muted-foreground uppercase"
+								>
+									Setup
+								</p>
+								<p class="mb-0 text-sm font-medium">
+									{preview.setupProgress.done}/{preview.setupProgress.total}
+								</p>
+							</div>
+							<Progress
+								class="mt-2"
+								max={100}
+								value={preview.setupProgress.percent}
+								aria-label={`Setup progress: ${preview.setupProgress.done} of ${preview.setupProgress.total}`}
+							/>
+						</div>
+						<div class="rounded-lg border bg-muted/25 p-3 shadow-xs">
+							<div class="flex items-center justify-between gap-2">
+								<p
+									class="mb-0 truncate text-xs tracking-[0.16em] text-muted-foreground uppercase"
+								>
+									Tools
+								</p>
+								<p class="mb-0 text-sm font-medium">
+									{preview.appProgress.done}/{preview.appProgress.total}
+								</p>
+							</div>
+							<Progress
+								class="mt-2"
+								max={100}
+								value={preview.appProgress.percent}
+								aria-label={`Tool progress: ${preview.appProgress.done} of ${preview.appProgress.total}`}
+							/>
+						</div>
+					</div>
+
+					<div class="mt-4 grid gap-2 sm:grid-cols-3">
+						<div class="rounded-lg border bg-card p-3 shadow-xs">
+							<p
+								class="mb-0 truncate text-[11px] tracking-[0.16em] text-muted-foreground uppercase"
+							>
+								Criteria
+							</p>
+							<p class="mt-1 mb-0 text-2xl leading-none font-semibold">
+								{preview.criteriaCount}
+							</p>
+						</div>
+						<div class="rounded-lg border bg-card p-3 shadow-xs">
+							<p
+								class="mb-0 truncate text-[11px] tracking-[0.16em] text-muted-foreground uppercase"
+							>
+								Alternatives
+							</p>
+							<p class="mt-1 mb-0 text-2xl leading-none font-semibold">
+								{preview.alternativesCount}
+							</p>
+						</div>
+						<div class="rounded-lg border bg-card p-3 shadow-xs">
+							<p
+								class="mb-0 truncate text-[11px] tracking-[0.16em] text-muted-foreground uppercase"
+							>
+								Methods
+							</p>
+							<p class="mt-1 mb-0 text-2xl leading-none font-semibold">
+								{preview.includedMethodsCount}
+							</p>
+						</div>
+					</div>
+
+					{#if preview.leaderName != null}
+						<div
+							class="mt-4 rounded-lg border border-sky-400/30 bg-sky-400/10 p-3"
+						>
+							<p
+								class="mb-0 truncate text-[11px] tracking-[0.16em] text-muted-foreground uppercase"
+							>
+								Leading option
+							</p>
+							<div class="mt-2 flex items-start justify-between gap-3">
+								<div class="min-w-0">
+									<p class="mb-0 truncate text-lg font-semibold">
+										{preview.leaderName}
+									</p>
+									{#if leaderMeta.length > 0}
+										<p class="mt-1 mb-0 text-xs text-muted-foreground">
+											{leaderMeta}
+										</p>
+									{/if}
+								</div>
+								{#if preview.leaderScore != null}
+									<p class="mb-0 shrink-0 text-sm font-semibold">
+										{preview.leaderScore.toFixed(2)} / 10
+									</p>
+								{/if}
+							</div>
+						</div>
+					{/if}
+				{:else}
+					<h3 class="text-2xl font-semibold tracking-tight">
+						Start with a decision, not a blank sheet.
+					</h3>
+					<p class="mt-1 text-sm leading-6 text-muted-foreground">
+						Name the decision, list the alternatives, then decide how you want
+						to evaluate them.
+					</p>
+
+					<div class="mt-4 grid gap-2">
+						{#each homeSetupItems as item, i (item.key)}
+							<div class="rounded-lg border bg-muted/25 p-3 shadow-xs">
+								<div class="flex items-center gap-3">
+									<div
+										class="inline-flex size-7 shrink-0 items-center justify-center rounded-md border bg-background text-xs font-semibold"
+									>
+										{i + 1}
+									</div>
+									<div>
+										<p class="mb-0 text-sm font-medium">{item.label}</p>
+										<p
+											class="mt-1 mb-0 text-xs leading-5 text-muted-foreground"
+										>
+											{item.note}
+										</p>
+									</div>
+								</div>
+							</div>
+						{/each}
+					</div>
+				{/if}
+			</div>
 		</div>
-		<div class="mt-5 grid gap-3 text-sm sm:grid-cols-3">
-			<div
-				class="rounded-lg border border-accent/70 bg-background/85 p-3 shadow-xs"
-			>
-				<p class="mb-0 font-medium">Encourage independent judgment</p>
-				<p class="mt-1 mb-0 text-muted-foreground">
-					Decision making is difficult when many alternatives and criteria are
-					involved. Evaluate each option on its own first to reduce noise.
-				</p>
-			</div>
-			<div
-				class="rounded-lg border border-accent/70 bg-background/85 p-3 shadow-xs"
-			>
-				<p class="mb-0 font-medium">Weight priorities</p>
-				<p class="mt-1 mb-0 text-muted-foreground">
-					Let important criteria contribute more to your result.
-				</p>
-			</div>
-			<div
-				class="rounded-lg border border-accent/70 bg-background/85 p-3 shadow-xs"
-			>
-				<p class="mb-0 font-medium">Compare outcomes</p>
-				<p class="mt-1 mb-0 text-muted-foreground">
-					Review method outputs together before making a final choice.
-				</p>
-			</div>
-		</div>
-		<p class="mt-4 mb-0 text-sm text-muted-foreground">
-			Use results as guidance, not a verdict. Final decisions are still yours.
-		</p>
 	</section>
 
-	<a href="/setup" class="group block no-underline" data-card-link>
-		<div
-			class="rounded-lg border bg-card p-3 shadow-xs transition-colors group-hover:bg-accent/35"
-		>
-			<div class="flex items-start justify-between gap-3">
-				<div>
-					<h2 class="mb-0">Get Started</h2>
-					<p class="mt-1 text-muted-foreground">
-						Set up your decision title, goal, and alternatives before scoring.
-					</p>
-				</div>
-				<div
-					class="inline-flex size-9 shrink-0 items-center justify-center rounded-md border bg-background"
-				>
-					<FlagIcon class="size-4" />
-				</div>
-			</div>
-			<div class="mt-3 inline-flex items-center gap-1 text-sm font-medium">
-				Open setup
-				<ArrowRightIcon
-					class="size-4 transition-transform group-hover:translate-x-0.5"
-				/>
-			</div>
-		</div>
-	</a>
-
-	<section class="rounded-lg border bg-card p-3 shadow-xs">
-		<div class="flex items-start justify-between gap-3">
-			<div>
-				<h2 class="mb-0">Progress</h2>
-				<p class="mt-1 text-muted-foreground">
-					Track setup and app progress as you work through your decision.
-				</p>
-			</div>
-			<div
-				class="inline-flex size-9 shrink-0 items-center justify-center rounded-md border bg-background"
+	<div class="grid gap-3 md:grid-cols-3">
+		{#each stages as item, i (item.label)}
+			<a
+				href={item.href}
+				class={`group reveal block no-underline reveal-${i + 2}`}
+				data-card-link
 			>
-				<BarChart3Icon class="size-4" />
-			</div>
-		</div>
-		<Separator class="my-3" />
-		<div class="grid gap-2 sm:grid-cols-2">
-			<div class="rounded-lg border bg-muted/25 p-3 shadow-xs">
-				<div class="flex items-center justify-between gap-2">
-					<p class="mb-0 text-xs tracking-wide text-muted-foreground uppercase">
-						Setup
-					</p>
-					<p class="mb-0 text-sm font-medium text-foreground">
-						{setupProgress.done}/{setupProgress.total}
-					</p>
-				</div>
-				<Progress
-					class="mt-2"
-					max={100}
-					value={setupProgress.percent}
-					aria-label={`Setup progress: ${setupProgress.done} of ${setupProgress.total}`}
-				/>
-				<p class="mt-2 mb-0 text-xs text-muted-foreground">
-					{setupProgress.percent}% complete
-				</p>
-			</div>
-			<div class="rounded-lg border bg-muted/25 p-3 shadow-xs">
-				<div class="flex items-center justify-between gap-2">
-					<p class="mb-0 text-xs tracking-wide text-muted-foreground uppercase">
-						App
-					</p>
-					<p class="mb-0 text-sm font-medium text-foreground">
-						{appProgress.done}/{appProgress.total}
-					</p>
-				</div>
-				<Progress
-					class="mt-2"
-					max={100}
-					value={appProgress.percent}
-					aria-label={`App progress: ${appProgress.done} of ${appProgress.total}`}
-				/>
-				<p class="mt-2 mb-0 text-xs text-muted-foreground">
-					{appProgress.percent}% complete
-				</p>
-			</div>
-		</div>
-	</section>
-
-	<div class="mt-4 grid gap-4 sm:grid-cols-2">
-		{#each apps as app (app.path)}
-			<a href={app.path} class="group block no-underline" data-card-link>
 				<div
-					class="h-full rounded-lg border bg-card p-3 shadow-xs transition-colors group-hover:bg-accent/35"
+					class="h-full rounded-lg border bg-card p-4 shadow-xs transition-colors duration-200 group-hover:bg-accent/35"
 				>
-					<div class="flex items-start justify-between gap-2">
+					<div class="flex items-start justify-between gap-3">
+						<div>
+							<p
+								class="mb-2 text-[11px] tracking-[0.24em] text-muted-foreground uppercase"
+							>
+								{item.number}
+							</p>
+							<p class="mb-0 text-lg font-semibold">{item.label}</p>
+						</div>
 						<div
 							class="inline-flex size-9 shrink-0 items-center justify-center rounded-md border bg-background"
 						>
-							<app.icon class="size-4" />
+							<item.icon class="size-4" />
 						</div>
-						<span
-							class="rounded-full border bg-muted/50 px-2 py-0.5 text-[11px] text-muted-foreground"
-						>
-							{app.badge}
-						</span>
 					</div>
-					<div class="mt-3 text-xl font-semibold capitalize">{app.title}</div>
-					<p class="mt-2 text-muted-foreground">{app.desc}</p>
+					<p class="mt-3 mb-0 text-sm leading-6 text-muted-foreground">
+						{item.note}
+					</p>
 					<div class="mt-4 inline-flex items-center gap-1 text-sm font-medium">
-						Open app
+						Go to {item.label.toLowerCase()}
 						<ArrowRightIcon
-							class="size-4 transition-transform group-hover:translate-x-0.5"
+							class="size-4 transition-transform group-hover:translate-x-0.5 group-focus-visible:translate-x-0.5"
 						/>
 					</div>
 				</div>
@@ -200,46 +366,354 @@
 		{/each}
 	</div>
 
-	<a href="/analysis" class="group block no-underline" data-card-link>
-		<section
-			class="border-primary/35 bg-primary/10 transition-colors group-hover:bg-primary/15"
-		>
-			<div class="flex items-start justify-between gap-3">
-				<div>
-					<h2 class="mb-0">Summary</h2>
-					<p class="mt-1 text-muted-foreground">
-						Compare Weighted Sum, Pairwise, Rank, and TOPSIS side by side.
-					</p>
-				</div>
-				<div
-					class="inline-flex size-9 shrink-0 items-center justify-center rounded-md border border-primary/40 bg-background/70"
+	<section id="homepage-flow" class="reveal reveal-3 p-5 md:p-6">
+		<div class="flex flex-wrap items-end justify-between gap-3">
+			<div>
+				<p
+					class="mb-2 text-xs font-semibold tracking-[0.24em] text-muted-foreground uppercase"
 				>
-					<BarChart3Icon class="size-4" />
-				</div>
+					Guide
+				</p>
+				<h2 class="mb-0 text-2xl tracking-tight">
+					Move from setup through evaluation
+				</h2>
+				<p class="mt-2 mb-0 max-w-2xl text-sm leading-6 text-muted-foreground">
+					Keep the overall flow simple: define the choice, work through the
+					tools, then compare outputs before deciding.
+				</p>
 			</div>
-			<Separator class="my-3" />
-			<div class="grid gap-2 sm:grid-cols-2">
-				<div class="rounded-lg border bg-card/70 p-3 shadow-xs">
-					<p class="mb-0 text-xs tracking-wide text-muted-foreground uppercase">
-						Criteria
-					</p>
-					<p
-						class="mt-1 mb-0 text-2xl leading-none font-semibold text-foreground"
-					>
-						{criteria.current.length}
-					</p>
-				</div>
-				<div class="rounded-lg border bg-card/70 p-3 shadow-xs">
-					<p class="mb-0 text-xs tracking-wide text-muted-foreground uppercase">
-						Alternatives
-					</p>
-					<p
-						class="mt-1 mb-0 text-2xl leading-none font-semibold text-foreground"
-					>
-						{alternatives.current.length}
-					</p>
-				</div>
+			<div
+				class="rounded-full border bg-muted/25 px-3 py-1.5 text-xs text-muted-foreground"
+			>
+				{preview.setupProgress.done + preview.appProgress.done} tracked steps completed
 			</div>
-		</section>
-	</a>
+		</div>
+
+		<div class="mt-5 grid gap-4 xl:grid-cols-[0.88fr_1.12fr]">
+			<article
+				id="journey-setup"
+				class="rounded-lg border bg-card/85 p-4 shadow-xs"
+			>
+				<div class="flex items-start justify-between gap-3">
+					<div>
+						<p
+							class="mb-2 text-xs font-semibold tracking-[0.24em] text-muted-foreground uppercase"
+						>
+							Setup
+						</p>
+						<h3 class="mb-0 text-xl font-semibold tracking-tight">
+							Build the decision before you score it
+						</h3>
+					</div>
+					<div
+						class="inline-flex size-9 shrink-0 items-center justify-center rounded-md border bg-background"
+					>
+						<FlagIcon class="size-4" />
+					</div>
+				</div>
+				<p class="mt-3 mb-0 text-sm leading-6 text-muted-foreground">
+					A strong decision starts with clean inputs: a clear goal, a real list
+					of alternatives, and criteria that reflect what matters.
+				</p>
+
+				<div class="mt-4 space-y-2">
+					{#each setupCards as item (item.key)}
+						<a href={item.href} class="group block no-underline" data-card-link>
+							<div
+								class="rounded-lg border bg-muted/25 p-3 transition-all duration-200 group-hover:bg-accent/35"
+							>
+								<div class="flex items-start justify-between gap-3">
+									<div class="flex min-w-0 items-start gap-3">
+										<div
+											class="inline-flex size-8 shrink-0 items-center justify-center rounded-md border bg-background"
+										>
+											<item.icon class="size-4" />
+										</div>
+										<div class="min-w-0">
+											<p class="mb-0 font-medium">{item.label}</p>
+											<p
+												class="mt-1 mb-0 text-xs leading-5 text-muted-foreground"
+											>
+												{item.note}
+											</p>
+										</div>
+									</div>
+									<span
+										class={`shrink-0 rounded-full border px-2 py-0.5 text-[11px] ${
+											item.used
+												? "border-primary/30 bg-primary/10 text-foreground"
+												: "bg-background text-muted-foreground"
+										}`}
+									>
+										{item.used ? "Done" : "Open"}
+									</span>
+								</div>
+							</div>
+						</a>
+					{/each}
+				</div>
+
+				<div class="mt-4">
+					<Button href={setupCta.href} variant="outline" size="sm">
+						{setupCta.label}
+						<ArrowRightIcon class="size-4" />
+					</Button>
+				</div>
+			</article>
+
+			<article
+				id="journey-evaluate"
+				class="rounded-lg border bg-card/85 p-4 shadow-xs"
+			>
+				<div class="flex items-start justify-between gap-3">
+					<div>
+						<p
+							class="mb-2 text-xs font-semibold tracking-[0.24em] text-muted-foreground uppercase"
+						>
+							Evaluate
+						</p>
+						<h3 class="mb-0 text-xl font-semibold tracking-tight">
+							Use the tools to work through tradeoffs
+						</h3>
+					</div>
+					<div
+						class="rounded-full border bg-muted/25 px-3 py-1.5 text-xs text-muted-foreground"
+					>
+						{toolDoneCount}/{apps.length} done
+					</div>
+				</div>
+				<p class="mt-3 mb-0 text-sm leading-6 text-muted-foreground">
+					Each tool gives you a different angle on the decision. Compare the
+					outputs once you have enough signal.
+				</p>
+
+				<div class="mt-4 grid gap-3 sm:grid-cols-2">
+					{#each apps as app (app.key)}
+						<a href={app.path} class="group block no-underline" data-card-link>
+							<div
+								class="h-full rounded-lg border bg-muted/25 p-3 transition-colors duration-200 group-hover:bg-accent/35"
+							>
+								<div class="flex items-start justify-between gap-2">
+									<div
+										class="inline-flex size-9 shrink-0 items-center justify-center rounded-md border bg-background"
+									>
+										<app.icon class="size-4" />
+									</div>
+									<div class="flex flex-wrap justify-end gap-1">
+										<span
+											class="rounded-full border bg-background px-2 py-0.5 text-[11px] text-muted-foreground"
+										>
+											{app.badge}
+										</span>
+										<span
+											class={`rounded-full border px-2 py-0.5 text-[11px] ${
+												appUsed[app.key]
+													? "border-primary/30 bg-primary/10 text-foreground"
+													: "bg-background text-muted-foreground"
+											}`}
+										>
+											{appUsed[app.key] ? "Done" : "Open"}
+										</span>
+									</div>
+								</div>
+								<p class="mt-3 mb-0 text-base font-semibold">{app.title}</p>
+								<p class="mt-2 mb-0 text-sm leading-6 text-muted-foreground">
+									{app.desc}
+								</p>
+							</div>
+						</a>
+					{/each}
+				</div>
+			</article>
+		</div>
+	</section>
+
+	<section
+		id="journey-decide"
+		class="reveal reveal-4 rounded-lg border border-primary/30 bg-[color-mix(in_oklch,var(--color-primary)_12%,transparent)] p-5 md:p-6"
+	>
+		<div class="grid gap-5 lg:grid-cols-[0.82fr_1.18fr] lg:items-start">
+			<div>
+				<p
+					class="mb-2 text-xs font-semibold tracking-[0.24em] text-muted-foreground uppercase"
+				>
+					Decide
+				</p>
+				<h2 class="mb-0 text-2xl tracking-tight">
+					Bring the outputs together before you choose.
+				</h2>
+				<p class="mt-3 mb-0 text-sm leading-6 text-muted-foreground">
+					Summary helps you compare the models side by side. Robustness checks
+					whether the recommendation still holds if your weights move around.
+				</p>
+
+				<div class="mt-4 grid gap-2 sm:grid-cols-3">
+					<div class="rounded-lg border bg-background/85 p-3 shadow-xs">
+						<p
+							class="mb-0 truncate text-[11px] tracking-[0.16em] text-muted-foreground uppercase"
+						>
+							Criteria
+						</p>
+						<p class="mt-1 mb-0 text-2xl leading-none font-semibold">
+							{preview.criteriaCount}
+						</p>
+					</div>
+					<div class="rounded-lg border bg-background/85 p-3 shadow-xs">
+						<p
+							class="mb-0 truncate text-[11px] tracking-[0.16em] text-muted-foreground uppercase"
+						>
+							Alternatives
+						</p>
+						<p class="mt-1 mb-0 text-2xl leading-none font-semibold">
+							{preview.alternativesCount}
+						</p>
+					</div>
+					<div class="rounded-lg border bg-background/85 p-3 shadow-xs">
+						<p
+							class="mb-0 truncate text-[11px] tracking-[0.16em] text-muted-foreground uppercase"
+						>
+							Methods
+						</p>
+						<p class="mt-1 mb-0 text-2xl leading-none font-semibold">
+							{preview.includedMethodsCount}
+						</p>
+					</div>
+				</div>
+
+				{#if preview.leaderName != null}
+					<div class="mt-4 rounded-lg border bg-background/85 p-3 shadow-xs">
+						<p
+							class="mb-0 truncate text-[11px] tracking-[0.16em] text-muted-foreground uppercase"
+						>
+							Leading option
+						</p>
+						<p class="mt-2 mb-0 text-lg font-semibold">{preview.leaderName}</p>
+						<p class="mt-1 mb-0 text-xs text-muted-foreground">
+							{preview.leaderScore?.toFixed(2)} / 10
+							{#if leaderMeta.length > 0}
+								· {leaderMeta}
+							{/if}
+						</p>
+					</div>
+				{/if}
+			</div>
+
+			<div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-1">
+				<a href="/analysis" class="group block no-underline" data-card-link>
+					<div
+						class="h-full rounded-lg border bg-background/90 p-4 shadow-xs transition-colors duration-200 group-hover:bg-accent/35"
+					>
+						<div class="flex items-start justify-between gap-3">
+							<div>
+								<p
+									class="mb-2 text-xs font-semibold tracking-[0.24em] text-muted-foreground uppercase"
+								>
+									Summary
+								</p>
+								<p class="mb-0 text-xl font-semibold tracking-tight">
+									Compare results side by side
+								</p>
+							</div>
+							<div
+								class="inline-flex size-9 shrink-0 items-center justify-center rounded-md border bg-card"
+							>
+								<BarChart3Icon class="size-4" />
+							</div>
+						</div>
+						<p class="mt-3 mb-0 text-sm leading-6 text-muted-foreground">
+							Review the current recommendation, runner-up gap, and cross-method
+							agreement in one place.
+						</p>
+						<div
+							class="mt-4 inline-flex items-center gap-1 text-sm font-medium"
+						>
+							Open Summary
+							<ArrowRightIcon
+								class="size-4 transition-transform group-hover:translate-x-0.5 group-focus-visible:translate-x-0.5"
+							/>
+						</div>
+					</div>
+				</a>
+
+				<a
+					href="/analysis/robustness"
+					class="group block no-underline"
+					data-card-link
+				>
+					<div
+						class="h-full rounded-lg border bg-background/90 p-4 shadow-xs transition-colors duration-200 group-hover:bg-accent/35"
+					>
+						<div class="flex items-start justify-between gap-3">
+							<div>
+								<p
+									class="mb-2 text-xs font-semibold tracking-[0.24em] text-muted-foreground uppercase"
+								>
+									Robustness
+								</p>
+								<p class="mb-0 text-xl font-semibold tracking-tight">
+									Test whether the result holds up
+								</p>
+							</div>
+							<div
+								class="inline-flex size-9 shrink-0 items-center justify-center rounded-md border bg-card"
+							>
+								<ShieldCheckIcon class="size-4" />
+							</div>
+						</div>
+						<p class="mt-3 mb-0 text-sm leading-6 text-muted-foreground">
+							Check whether small weight shifts change the winner before you
+							treat the recommendation as settled.
+						</p>
+						<div
+							class="mt-4 inline-flex items-center gap-1 text-sm font-medium"
+						>
+							Open Robustness
+							<ArrowRightIcon
+								class="size-4 transition-transform group-hover:translate-x-0.5 group-focus-visible:translate-x-0.5"
+							/>
+						</div>
+					</div>
+				</a>
+			</div>
+		</div>
+	</section>
 </div>
+
+<style>
+	.reveal {
+		animation: rise 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+	}
+
+	.reveal-2 {
+		animation-delay: 0.08s;
+	}
+
+	.reveal-3 {
+		animation-delay: 0.16s;
+	}
+
+	.reveal-4 {
+		animation-delay: 0.24s;
+	}
+
+	@keyframes rise {
+		from {
+			transform: translateY(16px);
+			opacity: 0;
+		}
+
+		to {
+			transform: translateY(0);
+			opacity: 1;
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.reveal,
+		.reveal-2,
+		.reveal-3,
+		.reveal-4 {
+			animation: none;
+		}
+	}
+</style>

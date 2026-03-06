@@ -87,7 +87,7 @@ const rankFromScores = (scores: number[]) => {
 			return a.i - b.i;
 		});
 
-	const ranks = new Array(scores.length).fill(0);
+	const ranks = Array.from({ length: scores.length }, () => 0);
 	let i = 0;
 	while (i < sorted.length) {
 		let j = i;
@@ -200,26 +200,29 @@ export const getRobustnessAnalysis = (
 	}
 
 	const methods: RobustnessMethodKey[] = ["weightedSum", "topsis", "combined"];
+	const createSeries = (value: number) => {
+		return Array.from({ length: count }, () => value);
+	};
 
 	const wins: Record<RobustnessMethodKey, number[]> = {
-		weightedSum: new Array(count).fill(0),
-		topsis: new Array(count).fill(0),
-		combined: new Array(count).fill(0),
+		weightedSum: createSeries(0),
+		topsis: createSeries(0),
+		combined: createSeries(0),
 	};
 	const rankSums: Record<RobustnessMethodKey, number[]> = {
-		weightedSum: new Array(count).fill(0),
-		topsis: new Array(count).fill(0),
-		combined: new Array(count).fill(0),
+		weightedSum: createSeries(0),
+		topsis: createSeries(0),
+		combined: createSeries(0),
 	};
 	const bestRanks: Record<RobustnessMethodKey, number[]> = {
-		weightedSum: new Array(count).fill(Infinity),
-		topsis: new Array(count).fill(Infinity),
-		combined: new Array(count).fill(Infinity),
+		weightedSum: createSeries(Infinity),
+		topsis: createSeries(Infinity),
+		combined: createSeries(Infinity),
 	};
 	const worstRanks: Record<RobustnessMethodKey, number[]> = {
-		weightedSum: new Array(count).fill(0),
-		topsis: new Array(count).fill(0),
-		combined: new Array(count).fill(0),
+		weightedSum: createSeries(0),
+		topsis: createSeries(0),
+		combined: createSeries(0),
 	};
 
 	const baseWeights = normalizeWeights(

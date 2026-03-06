@@ -48,7 +48,7 @@
 			if (Math.random() < 0.5) {
 				return pair;
 			}
-			return { ...pair, left: pair.b, right: pair.a };
+			return { a: pair.a, b: pair.b, left: pair.b, right: pair.a };
 		});
 	};
 

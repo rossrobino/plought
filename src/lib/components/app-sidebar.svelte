@@ -47,7 +47,12 @@
 		"inset-e-2 top-1/2 h-4 w-4 min-w-0 -translate-y-1/2 rounded-none bg-transparent p-0 text-sidebar-foreground/70 peer-hover/menu-button:text-sidebar-foreground/80 peer-data-[active=true]/menu-button:text-sidebar-foreground peer-data-[size=default]/menu-button:top-1/2 peer-data-[size=lg]/menu-button:top-1/2 peer-data-[size=sm]/menu-button:top-1/2";
 
 	const apps = appRegistry.map((item) => {
-		return { ...item, href: item.path, label: item.title };
+		return {
+			href: item.path,
+			icon: item.icon,
+			key: item.key,
+			label: item.title,
+		};
 	});
 
 	const output = [

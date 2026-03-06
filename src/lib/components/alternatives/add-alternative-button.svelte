@@ -16,11 +16,15 @@
 
 	export const addAlternative = () => {
 		// create an array of zeros based on the number of criteria
-		const scores: number[] = new Array(criteria.current.length).fill(0);
+		const scores: number[] = Array.from(
+			{ length: criteria.current.length },
+			() => 0,
+		);
 
 		// create an array of pairwise scores based on the number of alternatives
-		const pairwise: number[] = new Array(alternatives.current.length + 1).fill(
-			0.5,
+		const pairwise: number[] = Array.from(
+			{ length: alternatives.current.length + 1 },
+			() => 0.5,
 		);
 
 		// add an extra pairwise score for each alternative

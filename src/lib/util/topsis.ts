@@ -24,9 +24,9 @@ export const getTopsisDiagnostics = (
 		return { closeness: empty, distanceBest: empty, distanceWorst: empty };
 	}
 
-	const normalized = Array.from({ length: rows }, () =>
-		new Array(cols).fill(0),
-	);
+	const normalized = Array.from({ length: rows }, () => {
+		return Array.from({ length: cols }, () => 0);
+	});
 	for (let j = 0; j < cols; j++) {
 		let sumSquares = 0;
 		for (let i = 0; i < rows; i++) {
@@ -40,7 +40,9 @@ export const getTopsisDiagnostics = (
 		}
 	}
 
-	const weighted = Array.from({ length: rows }, () => new Array(cols).fill(0));
+	const weighted = Array.from({ length: rows }, () => {
+		return Array.from({ length: cols }, () => 0);
+	});
 	for (let j = 0; j < cols; j++) {
 		const weight = getSafeValue(criteria[j]?.weight);
 		for (let i = 0; i < rows; i++) {
@@ -48,8 +50,8 @@ export const getTopsisDiagnostics = (
 		}
 	}
 
-	const idealBest = new Array(cols).fill(0);
-	const idealWorst = new Array(cols).fill(0);
+	const idealBest = Array.from({ length: cols }, () => 0);
+	const idealWorst = Array.from({ length: cols }, () => 0);
 	for (let j = 0; j < cols; j++) {
 		let max = -Infinity;
 		let min = Infinity;

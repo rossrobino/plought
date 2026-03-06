@@ -19,7 +19,7 @@ const normalizeRow = (values: number[], total: number) => {
 		return [];
 	}
 	if (total <= 0) {
-		return new Array(count).fill(0);
+		return Array.from({ length: count }, () => 0);
 	}
 
 	const positive = values.map((value) => Math.max(0, toSafeNumber(value)));
@@ -37,7 +37,7 @@ export const splitEven = (count: number, total = allocationTotal) => {
 	if (count <= 0 || total <= 0) {
 		return [];
 	}
-	return new Array(count).fill(total / count);
+	return Array.from({ length: count }, () => total / count);
 };
 
 export const normalizeAllocationRow = (
@@ -49,7 +49,7 @@ export const normalizeAllocationRow = (
 		return [];
 	}
 	if (total <= 0) {
-		return new Array(count).fill(0);
+		return Array.from({ length: count }, () => 0);
 	}
 
 	const values = Array.from({ length: count }, (_, i) => {
@@ -81,7 +81,7 @@ export const rebalanceAllocationRow = (
 		return [];
 	}
 	if (total <= 0) {
-		return new Array(count).fill(0);
+		return Array.from({ length: count }, () => 0);
 	}
 
 	const normalized = normalizeAllocationRow(row, count, total);
@@ -141,7 +141,7 @@ export const getAllocateScores = (matrix: number[][], criteria: Criteria[]) => {
 	}, 0);
 
 	if (totalWeight <= 0) {
-		return new Array(alternativeCount).fill(0);
+		return Array.from({ length: alternativeCount }, () => 0);
 	}
 
 	return Array.from({ length: alternativeCount }, (_, altIndex) => {

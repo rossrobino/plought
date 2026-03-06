@@ -132,7 +132,7 @@ const rankWithTies = (scores: number[]) => {
 	const sorted = scores
 		.map((value, i) => ({ value, i }))
 		.sort((a, b) => b.value - a.value);
-	const ranks = new Array(scores.length).fill(0);
+	const ranks = Array.from({ length: scores.length }, () => 0);
 
 	let i = 0;
 	while (i < sorted.length) {
@@ -203,7 +203,7 @@ export const getConsensusScore10 = (
 		return scores.weightedSum.map(() => 0);
 	}
 	const count = scores.weightedSum.length;
-	const totals = new Array(count).fill(0);
+	const totals = Array.from({ length: count }, () => 0);
 	for (const method of includedMethods) {
 		const methodScores = scores[method] ?? [];
 		for (let i = 0; i < count; i++) {
@@ -219,7 +219,7 @@ export const getConsensusRank = (
 	consensusScores: number[],
 ): ConsensusRank => {
 	const count = consensusScores.length;
-	const meanRank = new Array(count).fill(0);
+	const meanRank = Array.from({ length: count }, () => 0);
 	if (includedMethods.length === 0 || count === 0) {
 		return {
 			meanRank,

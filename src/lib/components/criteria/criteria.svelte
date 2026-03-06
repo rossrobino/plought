@@ -87,12 +87,12 @@
 			return [];
 		}
 		if (target <= 0) {
-			return new Array(count).fill(0);
+			return Array.from({ length: count }, () => 0);
 		}
 		const positive = values.map((value) => Math.max(0, value));
 		const sum = positive.reduce((a, b) => a + b, 0);
 		if (sum <= 0) {
-			return new Array(count).fill(target / count);
+			return Array.from({ length: count }, () => target / count);
 		}
 		return positive.map((value) => (value / sum) * target);
 	};

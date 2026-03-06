@@ -333,8 +333,8 @@ const getDefaultAlternatives = (count: number, criteriaCount: number) => {
 	return Array.from({ length: safeCount }, (_, i) => {
 		return {
 			name: `Alternative #${i + 1}`,
-			scores: new Array(criteriaCount).fill(5),
-			pairwise: new Array(safeCount).fill(0.5),
+			scores: Array.from({ length: criteriaCount }, () => 5),
+			pairwise: Array.from({ length: safeCount }, () => 0.5),
 		} satisfies Alternative;
 	});
 };
@@ -429,7 +429,7 @@ const normalizeAlternativesState = (
 		return {
 			name,
 			scores,
-			pairwise: new Array(count).fill(0.5),
+			pairwise: Array.from({ length: count }, () => 0.5),
 		} satisfies Alternative;
 	});
 

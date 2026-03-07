@@ -36,7 +36,11 @@
 	<div class="flex flex-wrap items-start justify-between gap-3">
 		<div class="min-w-0 flex-1">
 			<Eyebrow class="mb-2">Summary</Eyebrow>
-			<p class="text-sm text-muted-foreground">{result.summary}</p>
+			<p
+				class="text-sm text-muted-foreground [&_a]:text-foreground [&_a]:underline [&_a]:decoration-border [&_a]:underline-offset-4 hover:[&_a]:text-foreground"
+			>
+				{@html result.summary}
+			</p>
 		</div>
 		<Button
 			size="sm"
@@ -60,8 +64,10 @@
 					<div class="flex flex-wrap items-start justify-between gap-3">
 						<div class="min-w-0 flex-1">
 							<p class="font-medium">{item.name}</p>
-							<p class="mt-1 text-sm text-muted-foreground">
-								{item.reason}
+							<p
+								class="mt-1 text-sm text-muted-foreground [&_a]:text-foreground [&_a]:underline [&_a]:decoration-border [&_a]:underline-offset-4 hover:[&_a]:text-foreground"
+							>
+								{@html item.reason}
 							</p>
 						</div>
 						<Button

@@ -1,9 +1,5 @@
 import { query } from "$app/server";
 import { client } from "$lib/ai";
-import type {
-	AlternativeSuggestionRequest,
-	CriteriaSuggestionRequest,
-} from "$lib/ai";
 import { error } from "@sveltejs/kit";
 
 export const generateAlternativeSuggestions = query(
@@ -17,9 +13,7 @@ export const generateAlternativeSuggestions = query(
 		}
 
 		return client.createSuggestions({
-			input: client.buildAlternativePrompt(
-				input as AlternativeSuggestionRequest,
-			),
+			input: client.buildAlternativePrompt(input),
 			existingNames: input.existingAlternatives,
 		});
 	},
@@ -36,7 +30,7 @@ export const generateCriteriaSuggestions = query(
 		}
 
 		return client.createSuggestions({
-			input: client.buildCriteriaPrompt(input as CriteriaSuggestionRequest),
+			input: client.buildCriteriaPrompt(input),
 			existingNames: [...input.existingCriteria, ...input.existingAlternatives],
 		});
 	},

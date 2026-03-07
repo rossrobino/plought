@@ -1,4 +1,4 @@
-import { AI } from "$lib/ai/core";
+import { AI } from "$lib/ai";
 import { decisionDefaults } from "$lib/state";
 import { describe, expect, it } from "vitest";
 

@@ -71,6 +71,14 @@ const getAlternatives = (): Alternative[] => [
 const alternativePlaceholderPattern = /^Alternative #\d+$/i;
 const criteriaPlaceholderPattern = /^Criterion #\d+$/i;
 
+export const isAlternativePlaceholder = (value: string) => {
+	return alternativePlaceholderPattern.test(value.trim());
+};
+
+export const isCriteriaPlaceholder = (value: string) => {
+	return criteriaPlaceholderPattern.test(value.trim());
+};
+
 const getRankOrder = (count: number) => {
 	return Array.from({ length: count }, (_, i) => i);
 };

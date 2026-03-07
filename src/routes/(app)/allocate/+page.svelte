@@ -1,4 +1,11 @@
 <script lang="ts">
+	import { generateAllocateResearch } from "$lib/ai/research.remote";
+	import type {
+		AllocateResearchRequest,
+		AllocateResearchResult,
+		ScoreResearchResult,
+	} from "$lib/ai/types";
+	import ResearchPanel from "$lib/components/ai/research-panel.svelte";
 	import Info from "$lib/components/info.svelte";
 	import { Button } from "$lib/components/ui/button";
 	import Eyebrow from "$lib/components/ui/eyebrow.svelte";
@@ -9,6 +16,9 @@
 		allocation,
 		alternatives,
 		criteria,
+		decision,
+		isAlternativePlaceholder,
+		isCriteriaPlaceholder,
 		markAppUsed,
 		markMethodUsed,
 	} from "$lib/state";
@@ -20,8 +30,11 @@
 	} from "$lib/util/allocate";
 	import MinusIcon from "@lucide/svelte/icons/minus";
 	import PlusIcon from "@lucide/svelte/icons/plus";
+	import { tick } from "svelte";
 
 	let criterionIndex = $state(0);
+	let showResearch = $state(false);
+	let research = $state<HTMLDivElement | null>(null);
 
 	$effect(() => {
 		const count = criteria.current.length;
@@ -59,6 +72,33 @@
 	const currentCriterion = $derived(criteria.current[criterionIndex] ?? null);
 	const canGoPrev = $derived(criterionIndex > 0);
 	const canGoNext = $derived(criterionIndex < criteria.current.length - 1);
+	const target = $derived(
+		currentCriterion?.name ?? "Choose a criterion to research",
+	);
+	const targetKey = $derived(`allocate:${criterionIndex}:${target}`);
+	const message = $derived.by(() => {
+		if (currentCriterion == null) {
+			return "Choose a criterion to research.";
+		}
+		if (isCriteriaPlaceholder(currentCriterion.name)) {
+			return "Rename this criterion before researching it.";
+		}
+		if (
+			alternatives.current.some((item) => isAlternativePlaceholder(item.name))
+		) {
+			return "Rename every alternative before researching this allocation.";
+		}
+		if (alternatives.current.length < 2) {
+			return "Add at least two alternatives before researching this allocation.";
+		}
+		return "";
+	});
+	const canGenerate = $derived(message.length === 0);
+
+	const scrollResearch = async () => {
+		await tick();
+		research?.scrollIntoView({ behavior: "smooth", block: "start" });
+	};
 
 	const updateCriterion = (value: string) => {
 		const next = Number(value);
@@ -108,6 +148,53 @@
 			return;
 		}
 		allocation.current[criterionIndex] = splitEven(alternatives.current.length);
+		markAppUsed("allocate");
+		markMethodUsed("allocate");
+	};
+
+	const openResearch = async () => {
+		showResearch = true;
+		await scrollResearch();
+	};
+
+	const createRequest = (context: string): AllocateResearchRequest => {
+		return {
+			title: decision.current.title,
+			goal: decision.current.goal,
+			context,
+			criterion: currentCriterion?.name ?? "",
+			existingAlternatives: alternatives.current.map((item) => item.name),
+			existingCriteria: criteria.current.map((item) => item.name),
+			requestId: crypto.randomUUID(),
+		};
+	};
+
+	const load = (input: AllocateResearchRequest) => {
+		return generateAllocateResearch(input);
+	};
+
+	const apply = (result: AllocateResearchResult | ScoreResearchResult) => {
+		if (!("suggestedPoints" in result) || alternatives.current.length === 0) {
+			return;
+		}
+
+		const points = new Map(
+			result.suggestedPoints.map((item) => [
+				item.alternative.trim().replace(/\s+/g, " ").toLocaleLowerCase(),
+				item.points,
+			]),
+		);
+		allocation.current[criterionIndex] = normalizeAllocationRow(
+			alternatives.current.map((item) => {
+				return (
+					points.get(
+						item.name.trim().replace(/\s+/g, " ").toLocaleLowerCase(),
+					) ?? 0
+				);
+			}),
+			alternatives.current.length,
+			allocationTotal,
+		);
 		markAppUsed("allocate");
 		markMethodUsed("allocate");
 	};
@@ -174,7 +261,10 @@
 						</Select.Content>
 					</Select.Root>
 				</div>
-				<div class="flex items-end gap-2">
+				<div class="flex flex-wrap items-end gap-2">
+					<Button size="sm" variant="outline" onclick={openResearch}>
+						Research this criterion
+					</Button>
 					<Button size="sm" variant="outline" onclick={evenSplitCriterion}>
 						Even split criterion
 					</Button>
@@ -243,3 +333,21 @@
 		</div>
 	{/if}
 </section>
+
+{#if hasInputs && showResearch}
+	<div bind:this={research}>
+		{#key targetKey}
+			<ResearchPanel
+				{canGenerate}
+				{message}
+				{target}
+				{createRequest}
+				desc="Get a suggested point split, short reasons, and source links for this criterion."
+				hint="Optional: tradeoffs, constraints, or anything not already captured."
+				{load}
+				mode="allocate"
+				onApply={apply}
+			/>
+		{/key}
+	</div>
+{/if}

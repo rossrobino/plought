@@ -13,19 +13,19 @@ import {
 	getMethodScores,
 } from "$lib/util/analysis";
 
-export interface HomeNextStep {
+interface HomeNextStep {
 	href: string;
 	label: string;
 	note: string;
 }
 
-export interface HomeProgress {
+interface HomeProgress {
 	done: number;
 	total: number;
 	percent: number;
 }
 
-export interface HomePreview {
+interface HomePreview {
 	decisionTitle: string;
 	setupProgress: HomeProgress;
 	appProgress: HomeProgress;

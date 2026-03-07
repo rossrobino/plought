@@ -2,7 +2,7 @@ import { apps } from "$lib/info";
 
 type ChangeFreq = "daily" | "weekly" | "monthly";
 
-export interface SeoMeta {
+interface SeoMeta {
 	title: string;
 	desc: string;
 	changefreq?: ChangeFreq;

@@ -32,7 +32,7 @@
 	<meta name="robots" content="noindex" />
 </svelte:head>
 
-<section>
+<section class="mx-4">
 	<div class="grid gap-4">
 		<div
 			class="inline-flex w-fit items-center gap-2 rounded-full border bg-background px-3 py-1 text-[11px] font-medium tracking-[0.18em] text-muted-foreground uppercase"

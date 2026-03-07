@@ -6,5 +6,6 @@
 <Criteria
 	editNames={false}
 	manageList={false}
+	tableView={false}
 	onChange={() => markAppUsed("weigh")}
 />

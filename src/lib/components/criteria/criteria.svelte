@@ -18,6 +18,7 @@
 		syncAllocation,
 	} from "$lib/state";
 	import type { Criteria } from "$lib/types";
+	import MinusIcon from "@lucide/svelte/icons/minus";
 	import PlusIcon from "@lucide/svelte/icons/plus";
 	import XIcon from "@lucide/svelte/icons/x";
 
@@ -166,6 +167,14 @@
 
 		setWeightsFromPercent(next);
 		markUsed();
+	};
+
+	const nudgeWeightPercent = (index: number, direction: -1 | 1) => {
+		const current = criteria.current[index];
+		if (current == null) {
+			return;
+		}
+		setWeightPercent(index, toPercent(current.weight) + direction);
 	};
 
 	const getWeights = (criteria: Criteria[]) => {
@@ -333,6 +342,105 @@
 					</Table.Body>
 				</Table.Root>
 			</ScrollArea>
+		{:else if weights}
+			<ul class="mt-3 grid gap-2">
+				{#each criteria.current as item, i (i)}
+					<li class="rounded-lg border bg-card p-3 shadow-xs">
+						<div class="flex items-center justify-between gap-2">
+							<div class="min-w-0 flex-1">
+								{#if editNames}
+									<Field.Field>
+										<Input
+											type="text"
+											name="name"
+											id={`name${i}`}
+											bind:value={item.name}
+											oninput={markUsed}
+											required
+											placeholder="Criteria"
+										/>
+									</Field.Field>
+								{:else}
+									<p class="mb-0 truncate font-medium">{item.name}</p>
+								{/if}
+							</div>
+							<div class="flex items-center gap-2">
+								<p class="mb-0 w-12 text-right text-sm text-muted-foreground">
+									{toPercent(item.weight)}%
+								</p>
+								{#if manageList}
+									<Tooltip.Root>
+										<Tooltip.Trigger>
+											{#snippet child({ props })}
+												<Button
+													{...props}
+													variant="secondary"
+													size="icon-sm"
+													aria-disabled={criteria.current.length < 2}
+													class={criteria.current.length < 2
+														? "aria-disabled:pointer-events-auto"
+														: undefined}
+													onclick={() => {
+														if (criteria.current.length >= 2) {
+															removeCriteria(i);
+														}
+													}}
+													aria-label={`Remove criteria ${i + 1}`}
+												>
+													<XIcon class="size-4" />
+												</Button>
+											{/snippet}
+										</Tooltip.Trigger>
+										{#if criteria.current.length < 2}
+											<Tooltip.Content sideOffset={8}>
+												At least two criteria are required.
+											</Tooltip.Content>
+										{/if}
+									</Tooltip.Root>
+								{/if}
+							</div>
+						</div>
+						<div class="mt-2 flex items-center gap-2">
+							<Button
+								variant="secondary"
+								size="icon-sm"
+								onclick={() => nudgeWeightPercent(i, -1)}
+								aria-label={`Decrease weight for ${item.name}`}
+							>
+								<MinusIcon class="size-3.5" />
+							</Button>
+							<Slider
+								id={`weight${i}`}
+								min={0}
+								max={100}
+								step={1}
+								label={`Weight for ${item.name}`}
+								text={`${toPercent(item.weight)}%`}
+								value={toPercent(item.weight)}
+								onValueChange={(value) => setWeightPercent(i, value)}
+							/>
+							<Button
+								variant="secondary"
+								size="icon-sm"
+								onclick={() => nudgeWeightPercent(i, 1)}
+								aria-label={`Increase weight for ${item.name}`}
+							>
+								<PlusIcon class="size-3.5" />
+							</Button>
+						</div>
+					</li>
+				{/each}
+			</ul>
+			<div class="mt-3 rounded-lg border bg-muted/25 px-3 py-2 shadow-xs">
+				<div class="flex items-center justify-between gap-2">
+					<p class="mb-0 font-medium">Total</p>
+					<p class="mb-0 text-sm text-muted-foreground">
+						<span class:text-destructive={Math.round(total * 100) !== 100}>
+							{(total * 100).toFixed()}%
+						</span>
+					</p>
+				</div>
+			</div>
 		{:else}
 			<ul class="mt-3 grid gap-2">
 				{#each criteria.current as item, i (i)}

@@ -25,31 +25,48 @@
 		onValueChange,
 	}: Props = $props();
 
+	let current = $state(value);
+	let active = $state(false);
+
 	const equal = (a: number, b: number) => {
 		return Math.abs(a - b) < 0.000001;
 	};
 
-	const handleValueChange = (next: number) => {
-		if (equal(next, value)) {
+	$effect(() => {
+		if (active || equal(current, value)) {
 			return;
 		}
+		current = value;
+	});
+
+	const handleValueChange = (next: number) => {
+		if (equal(next, current)) {
+			return;
+		}
+		active = true;
+		current = next;
 		if (onValueChange == null) {
 			value = next;
 			return;
 		}
 		onValueChange?.(next);
 	};
+
+	const handleValueCommit = () => {
+		active = false;
+	};
 </script>
 
 <SliderPrimitive.Root
 	bind:ref
 	type="single"
-	{value}
+	value={current}
 	{min}
 	{max}
 	{step}
 	{disabled}
 	onValueChange={handleValueChange}
+	onValueCommit={handleValueCommit}
 	data-slot="slider"
 	class={cn(
 		"relative flex w-full touch-none items-center select-none",

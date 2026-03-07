@@ -108,7 +108,7 @@
 						</Table.Row>
 					</Table.Header>
 					<Table.Body>
-						{#each alternatives.current as alt, i (alt)}
+						{#each alternatives.current as alt, i (i)}
 							<Table.Row>
 								<Table.Head scope="row" class="font-semibold">
 									{#if editNames}
@@ -183,7 +183,7 @@
 		</Tooltip.Provider>
 	{:else}
 		<ul class="mt-3 grid gap-2">
-			{#each alternatives.current as alt, i (alt)}
+			{#each alternatives.current as alt, i (i)}
 				<li class="flex items-center gap-2">
 					<div class="min-w-0 flex-1">
 						{#if editNames}

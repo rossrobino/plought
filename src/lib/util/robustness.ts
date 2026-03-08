@@ -1,5 +1,8 @@
 import type { Alternative, Criteria } from "$lib/types";
-import { getTopsisCloseness } from "$lib/util/topsis";
+import {
+	getTopsisClosenessFromNormalized,
+	getTopsisNormalized,
+} from "$lib/util/topsis";
 
 type RobustnessMethodKey = "weightedSum" | "topsis" | "combined";
 
@@ -23,6 +26,7 @@ interface RobustnessResult {
 }
 
 export const robustnessRuns = 500;
+export const summaryRobustnessRuns = 200;
 export const robustnessStrength = 0.1;
 
 const tieEpsilon = 1e-9;
@@ -65,8 +69,7 @@ const perturbWeights = (
 	rng: () => number,
 	strength = robustnessStrength,
 ) => {
-	const normalized = normalizeWeights(base);
-	const jittered = normalized.map((value) => {
+	const jittered = base.map((value) => {
 		const delta = (rng() * 2 - 1) * strength;
 		const next = value * (1 + delta);
 		if (!Number.isFinite(next) || next < 0) {
@@ -186,11 +189,13 @@ export const getRobustnessAnalysis = (
 	alternatives: Alternative[],
 	criteria: Criteria[],
 	strength = robustnessStrength,
+	runs = robustnessRuns,
 ): RobustnessResult => {
+	const totalRuns = Math.max(1, Math.round(safeNumber(runs)));
 	const count = alternatives.length;
 	if (count === 0 || criteria.length === 0) {
 		return {
-			runs: robustnessRuns,
+			runs: totalRuns,
 			methods: {
 				weightedSum: buildEmptyMethod("weightedSum"),
 				topsis: buildEmptyMethod("topsis"),
@@ -228,18 +233,17 @@ export const getRobustnessAnalysis = (
 	const baseWeights = normalizeWeights(
 		criteria.map((item) => safeNumber(item.weight)),
 	);
+	const normalized = getTopsisNormalized(alternatives, criteria.length);
 	const rng = Math.random;
 	const runStrength = Math.min(1, Math.max(0, safeNumber(strength)));
 
-	for (let run = 0; run < robustnessRuns; run++) {
+	for (let run = 0; run < totalRuns; run++) {
 		const weights = perturbWeights(baseWeights, rng, runStrength);
 		const weightedScores = getWeightedScore10(alternatives, weights);
-		const weightedCriteria = criteria.map((item, i) => {
-			return { ...item, weight: weights[i] ?? 0 };
-		});
-		const topsisScores = getTopsisCloseness(alternatives, weightedCriteria).map(
-			(value) => safeNumber(value) * 10,
-		);
+		const topsisScores = getTopsisClosenessFromNormalized(
+			normalized,
+			weights,
+		).map((value) => safeNumber(value) * 10);
 		const combinedScores = weightedScores.map((value, i) => {
 			return (value + (topsisScores[i] ?? 0)) / 2;
 		});
@@ -269,8 +273,8 @@ export const getRobustnessAnalysis = (
 			const alternativesStats = alternatives.map((item, i) => {
 				return {
 					name: item.name,
-					winRatePct: round((wins[method][i] / robustnessRuns) * 100),
-					avgRank: round(rankSums[method][i] / robustnessRuns),
+					winRatePct: round((wins[method][i] / totalRuns) * 100),
+					avgRank: round(rankSums[method][i] / totalRuns),
 					bestRank: round(bestRanks[method][i]),
 					worstRank: round(worstRanks[method][i]),
 				};
@@ -286,5 +290,5 @@ export const getRobustnessAnalysis = (
 		{} as Record<RobustnessMethodKey, RobustnessMethodStats>,
 	);
 
-	return { runs: robustnessRuns, methods: methodsResult };
+	return { runs: totalRuns, methods: methodsResult };
 };

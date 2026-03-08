@@ -13,40 +13,43 @@ interface TopsisDiagnostics {
 	distanceWorst: number[];
 }
 
-export const getTopsisDiagnostics = (
-	alternatives: Alternative[],
-	criteria: Criteria[],
-): TopsisDiagnostics => {
+const getNormalized = (alternatives: Alternative[], cols: number) => {
 	const rows = alternatives.length;
-	const cols = criteria.length;
-	if (rows === 0 || cols === 0) {
-		const empty = alternatives.map(() => 0);
-		return { closeness: empty, distanceBest: empty, distanceWorst: empty };
-	}
-
-	const normalized = Array.from({ length: rows }, () => {
-		return Array.from({ length: cols }, () => 0);
+	return Array.from({ length: rows }, (_, i) => {
+		return Array.from({ length: cols }, (_, j) => {
+			return getSafeValue(alternatives[i]?.scores[j]);
+		});
 	});
+};
+
+const applyNormalization = (normalized: number[][]) => {
+	const rows = normalized.length;
+	const cols = normalized[0]?.length ?? 0;
 	for (let j = 0; j < cols; j++) {
 		let sumSquares = 0;
 		for (let i = 0; i < rows; i++) {
-			const score = getSafeValue(alternatives[i]?.scores[j]);
+			const score = normalized[i][j];
 			sumSquares += score * score;
 		}
 		const norm = Math.sqrt(sumSquares);
 		for (let i = 0; i < rows; i++) {
-			const score = getSafeValue(alternatives[i]?.scores[j]);
-			normalized[i][j] = norm > 0 ? score / norm : 0;
+			normalized[i][j] = norm > 0 ? normalized[i][j] / norm : 0;
 		}
 	}
+	return normalized;
+};
+
+const getDiagnostics = (normalized: number[][], weights: number[]) => {
+	const rows = normalized.length;
+	const cols = weights.length;
 
 	const weighted = Array.from({ length: rows }, () => {
 		return Array.from({ length: cols }, () => 0);
 	});
 	for (let j = 0; j < cols; j++) {
-		const weight = getSafeValue(criteria[j]?.weight);
+		const weight = getSafeValue(weights[j] ?? 0);
 		for (let i = 0; i < rows; i++) {
-			weighted[i][j] = normalized[i][j] * weight;
+			weighted[i][j] = (normalized[i]?.[j] ?? 0) * weight;
 		}
 	}
 
@@ -96,6 +99,40 @@ export const getTopsisDiagnostics = (
 	});
 
 	return { closeness, distanceBest, distanceWorst };
+};
+
+export const getTopsisNormalized = (
+	alternatives: Alternative[],
+	criteriaCount: number,
+) => {
+	if (alternatives.length === 0 || criteriaCount === 0) {
+		return [];
+	}
+	return applyNormalization(getNormalized(alternatives, criteriaCount));
+};
+
+export const getTopsisClosenessFromNormalized = (
+	normalized: number[][],
+	weights: number[],
+) => {
+	return getDiagnostics(normalized, weights).closeness;
+};
+
+export const getTopsisDiagnostics = (
+	alternatives: Alternative[],
+	criteria: Criteria[],
+): TopsisDiagnostics => {
+	const rows = alternatives.length;
+	const cols = criteria.length;
+	if (rows === 0 || cols === 0) {
+		const empty = alternatives.map(() => 0);
+		return { closeness: empty, distanceBest: empty, distanceWorst: empty };
+	}
+
+	return getDiagnostics(
+		getTopsisNormalized(alternatives, cols),
+		criteria.map((item) => getSafeValue(item?.weight)),
+	);
 };
 
 export const getTopsisCloseness = (

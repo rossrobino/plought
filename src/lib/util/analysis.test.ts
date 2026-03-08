@@ -6,6 +6,7 @@ import {
 	getGuidanceCopy,
 	getMethodRanks,
 	getMethodScores,
+	getSummaryRobustnessMethod,
 } from "$lib/util/analysis";
 import { describe, expect, it } from "vitest";
 
@@ -201,5 +202,18 @@ describe("analysis utilities", () => {
 		expect(emptyCopy.summary).toContain("No methods are included");
 		expect(summaryCopy.summary).toContain("Alpha currently leads");
 		expect(summaryCopy.comparison).toContain("Most included methods agree");
+	});
+
+	it("only exposes summary robustness for weight-based method sets", () => {
+		expect(getSummaryRobustnessMethod([])).toBeNull();
+		expect(getSummaryRobustnessMethod(["pairwise"])).toBeNull();
+		expect(getSummaryRobustnessMethod(["weightedSum"])).toBe("weightedSum");
+		expect(getSummaryRobustnessMethod(["topsis"])).toBe("topsis");
+		expect(getSummaryRobustnessMethod(["weightedSum", "topsis"])).toBe(
+			"combined",
+		);
+		expect(
+			getSummaryRobustnessMethod(["weightedSum", "pairwise", "topsis"]),
+		).toBeNull();
 	});
 });

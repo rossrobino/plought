@@ -1,6 +1,5 @@
 <script lang="ts">
 	import Head from "$lib/components/head.svelte";
-	import MethodMatrixChart from "$lib/components/output/charts/method-matrix-chart.svelte";
 	import Scores from "$lib/components/scores/scores.svelte";
 	import { Button } from "$lib/components/ui/button";
 	import SectionHeader from "$lib/components/ui/section-header.svelte";
@@ -21,12 +20,21 @@
 		getGuidanceCopy,
 		getMethodRanks,
 		getMethodScores,
+		getSummaryRobustnessMethod,
 	} from "$lib/util/analysis";
 	import { chartColors } from "$lib/util/chart-colors";
 	import {
 		getRobustnessAnalysis,
 		robustnessStrength,
+		summaryRobustnessRuns,
 	} from "$lib/util/robustness";
+
+	let robustness = $state<ReturnType<typeof getRobustnessAnalysis> | null>(null);
+	let comparison = $state<HTMLElement | null>(null);
+	let showComparisonChart = $state(false);
+	let comparisonChart = $state<Promise<
+		typeof import("$lib/components/output/charts/method-matrix-chart.svelte")
+	> | null>(null);
 
 	const methods: {
 		color: string;
@@ -154,31 +162,63 @@
 	const hasRobustnessInputs = $derived(
 		alternatives.current.length >= 2 && criteria.current.length >= 1,
 	);
+	const robustnessMethod = $derived(
+		getSummaryRobustnessMethod(includedMethods),
+	);
 
-	const robustness = $derived.by(() => {
+	$effect(() => {
 		if (!hasRobustnessInputs) {
-			return null;
+			robustness = null;
+			return;
 		}
-		return getRobustnessAnalysis(
-			alternatives.current,
-			criteria.current,
-			robustnessStrength,
-		);
+
+		let cancelled = false;
+		let idleId: number | null = null;
+		let timeoutId: ReturnType<typeof setTimeout> | null = null;
+
+		const run = () => {
+			if (cancelled) {
+				return;
+			}
+			robustness = getRobustnessAnalysis(
+				alternatives.current,
+				criteria.current,
+				robustnessStrength,
+				summaryRobustnessRuns,
+			);
+		};
+
+		if (typeof globalThis.requestIdleCallback === "function") {
+			idleId = globalThis.requestIdleCallback(run, { timeout: 250 });
+		} else {
+			timeoutId = setTimeout(run, 16);
+		}
+
+		return () => {
+			cancelled = true;
+			if (
+				idleId != null &&
+				typeof globalThis.cancelIdleCallback === "function"
+			) {
+				globalThis.cancelIdleCallback(idleId);
+			}
+			if (timeoutId != null) {
+				clearTimeout(timeoutId);
+			}
+		};
 	});
 
 	const winnerRobustness = $derived.by(() => {
-		if (robustness == null || consensus.winnerIndex == null) {
+		if (
+			robustness == null ||
+			robustnessMethod == null ||
+			consensus.winnerIndex == null
+		) {
 			return null;
 		}
-		const name = alternatives.current[consensus.winnerIndex]?.name;
-		if (name == null) {
-			return null;
-		}
-		return (
-			robustness.methods.combined.alternatives.find(
-				(item) => item.name === name,
-			) ?? null
-		);
+		return robustness.methods[robustnessMethod].alternatives[
+			consensus.winnerIndex
+		] ?? null;
 	});
 
 	const sensitivityLabel = $derived.by(() => {
@@ -192,6 +232,37 @@
 			return "Mixed";
 		}
 		return "Sensitive";
+	});
+
+	$effect(() => {
+		if (showComparisonChart || comparison == null) {
+			return;
+		}
+
+		if (typeof IntersectionObserver !== "function") {
+			showComparisonChart = true;
+			comparisonChart ??=
+				import("$lib/components/output/charts/method-matrix-chart.svelte");
+			return;
+		}
+
+		const observer = new IntersectionObserver(
+			(entries) => {
+				if (!entries.some((item) => item.isIntersecting)) {
+					return;
+				}
+				showComparisonChart = true;
+				comparisonChart ??=
+					import("$lib/components/output/charts/method-matrix-chart.svelte");
+				observer.disconnect();
+			},
+			{ rootMargin: "320px 0px" },
+		);
+		observer.observe(comparison);
+
+		return () => {
+			observer.disconnect();
+		};
 	});
 </script>
 
@@ -268,13 +339,32 @@
 			title="Cross-Method Analysis"
 			desc="Each row shows normalized 0-10 scores for included methods."
 		/>
-		<div class="mt-3">
-			<MethodMatrixChart
-				rows={alternatives.current.map((item) => item.name)}
-				methods={comparisonSeries}
-				xLabel="Alternative"
-				yLabel="Score (0-10)"
-			/>
+		<div bind:this={comparison} class="mt-3">
+			{#if comparisonChart != null}
+				<svelte:boundary>
+					{#snippet pending()}
+						<div
+							class="rounded-lg border bg-muted/20 p-3 text-sm text-muted-foreground shadow-xs"
+						>
+							Loading chart...
+						</div>
+					{/snippet}
+					{#await comparisonChart then chart}
+						<chart.default
+							rows={alternatives.current.map((item) => item.name)}
+							methods={comparisonSeries}
+							xLabel="Alternative"
+							yLabel="Score (0-10)"
+						/>
+					{/await}
+				</svelte:boundary>
+			{:else}
+				<div
+					class="rounded-lg border bg-muted/20 p-3 text-sm text-muted-foreground shadow-xs"
+				>
+					Chart loads when this section comes into view.
+				</div>
+			{/if}
 		</div>
 	</section>
 

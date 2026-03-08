@@ -293,6 +293,23 @@ interface GuidanceOptions {
 	method?: MethodKey;
 }
 
+export const getSummaryRobustnessMethod = (includedMethods: MethodKey[]) => {
+	const hasWeighted = includedMethods.includes("weightedSum");
+	const hasTopsis = includedMethods.includes("topsis");
+	if (!hasWeighted && !hasTopsis) {
+		return null;
+	}
+	if (includedMethods.some((method) => {
+		return method !== "weightedSum" && method !== "topsis";
+	})) {
+		return null;
+	}
+	if (hasWeighted && hasTopsis) {
+		return "combined" as const;
+	}
+	return hasWeighted ? ("weightedSum" as const) : ("topsis" as const);
+};
+
 export const getGuidanceCopy = ({
 	agreement,
 	alternatives,

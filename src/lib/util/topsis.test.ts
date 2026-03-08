@@ -1,5 +1,10 @@
 import type { Alternative, Criteria } from "$lib/types";
-import { getTopsisCloseness, getTopsisDiagnostics } from "$lib/util/topsis";
+import {
+	getTopsisCloseness,
+	getTopsisClosenessFromNormalized,
+	getTopsisDiagnostics,
+	getTopsisNormalized,
+} from "$lib/util/topsis";
 import { describe, expect, it } from "vitest";
 
 describe("topsis utilities", () => {
@@ -19,6 +24,24 @@ describe("topsis utilities", () => {
 		const close = getTopsisCloseness(alt, cri);
 
 		expect(close).toEqual([0, 1]);
+	});
+
+	it("reuses normalized scores without changing closeness output", () => {
+		const alt: Alternative[] = [
+			{ name: "A", scores: [6, 4], pairwise: [0.5, 0.5] },
+			{ name: "B", scores: [2, 9], pairwise: [0.5, 0.5] },
+		];
+		const cri: Criteria[] = [
+			{ name: "Cost", weight: 0.7 },
+			{ name: "Fit", weight: 0.3 },
+		];
+
+		expect(
+			getTopsisClosenessFromNormalized(
+				getTopsisNormalized(alt, cri.length),
+				cri.map((item) => item.weight),
+			),
+		).toEqual(getTopsisCloseness(alt, cri));
 	});
 
 	it("sanitizes non-finite numbers to avoid NaN output", () => {

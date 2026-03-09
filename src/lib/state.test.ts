@@ -226,6 +226,7 @@ describe("state", () => {
 	});
 
 	it("exports snapshot state with all expected keys", () => {
+		state.decision.current.notes = "Family friendly and within budget.";
 		const snapshot = state.exportSnapshotState();
 
 		expect(Object.keys(snapshot).sort()).toEqual([
@@ -242,6 +243,7 @@ describe("state", () => {
 		expect(Array.isArray(snapshot.alternatives)).toBe(true);
 		expect(Array.isArray(snapshot.allocation)).toBe(true);
 		expect(Array.isArray(snapshot.rankOrder)).toBe(true);
+		expect(snapshot.decision.notes).toBe("Family friendly and within budget.");
 	});
 
 	it("imports snapshot state and defaults missing keys", () => {
@@ -254,6 +256,7 @@ describe("state", () => {
 		expect(state.decision.current).toEqual({
 			title: "Imported",
 			goal: "Imported goal",
+			notes: "",
 		});
 		expect(state.criteria.current.length).toBe(2);
 		expect(state.alternatives.current.length).toBe(2);

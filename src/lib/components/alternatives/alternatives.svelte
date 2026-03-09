@@ -30,6 +30,8 @@
 		onChange?: () => void;
 		/** currently selected score cell for research */
 		activeCell?: { alternativeIndex: number; criterionIndex: number } | null;
+		/** currently selected score cell keys for research */
+		activeKeys?: string[];
 		/** optional callback to research a specific score cell */
 		onResearch?: (alternativeIndex: number, criterionIndex: number) => void;
 	}
@@ -41,6 +43,7 @@
 		method = "weightedSum",
 		onChange,
 		activeCell = null,
+		activeKeys = [],
 		onResearch,
 	}: Props = $props();
 	const guidance = $derived(
@@ -66,7 +69,9 @@
 	};
 
 	const isActiveCell = (alternativeIndex: number, criterionIndex: number) => {
+		const key = `${alternativeIndex}:${criterionIndex}`;
 		return (
+			activeKeys.includes(key) ||
 			activeCell?.alternativeIndex === alternativeIndex &&
 			activeCell?.criterionIndex === criterionIndex
 		);

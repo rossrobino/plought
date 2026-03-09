@@ -1,52 +1,46 @@
 <script lang="ts">
 	import type {
 		AllocateResearchResult,
+		AllocateResearchRequest,
 		ResearchSource,
+		ScoreResearchRequest,
 		ScoreResearchResult,
 	} from "$lib/ai/types";
 	import { Button } from "$lib/components/ui/button";
 	import Eyebrow from "$lib/components/ui/eyebrow.svelte";
-	import * as Field from "$lib/components/ui/field";
 	import { Skeleton } from "$lib/components/ui/skeleton";
-	import { Textarea } from "$lib/components/ui/textarea";
 	import CheckIcon from "@lucide/svelte/icons/check";
+	import XIcon from "@lucide/svelte/icons/x";
 	import { tick } from "svelte";
 
 	type Mode = "score" | "allocate";
 	type Result = ScoreResearchResult | AllocateResearchResult;
-	interface LoadRequest {
-		requestId: string;
-	}
+	type LoadRequest = ScoreResearchRequest | AllocateResearchRequest;
 	type Card = { pending: boolean; value: Result | null };
 	type Props = {
 		canGenerate: boolean;
-		createRequest: (context: string) => LoadRequest;
-		desc: string;
-		hint: string;
-		load: (input: any) => PromiseLike<Result>;
+		load: (input: LoadRequest) => PromiseLike<Result>;
 		message?: string;
 		mode: Mode;
+		onClose?: () => void;
 		onApply: (result: Result) => void;
+		request: LoadRequest | null;
 		target: string;
 	};
 
 	let {
 		canGenerate,
-		createRequest,
-		desc,
-		hint,
 		load,
 		message = "",
 		mode,
+		onClose,
 		onApply,
+		request,
 		target,
 	}: Props = $props();
 
-	const uid = $props.id();
 	let applied = $state(false);
-	let context = $state("");
 	let output = $state<HTMLDivElement | null>(null);
-	let request = $state<LoadRequest | null>(null);
 
 	const isScore = (value: Result | null): value is ScoreResearchResult => {
 		return value != null && "suggestedScore" in value;
@@ -75,21 +69,23 @@
 		applied = true;
 	};
 
-	const generate = async () => {
-		if (!canGenerate) {
-			return;
-		}
-		applied = false;
-		request = createRequest(context);
-		await tick();
-		output?.scrollIntoView({ behavior: "smooth", block: "start" });
-	};
-
 	const getErrorMessage = (value: unknown) => {
 		return value instanceof Error
 			? value.message
 			: "Research could not be generated right now.";
 	};
+
+	$effect(() => {
+		const requestId = request?.requestId;
+		if (requestId == null) {
+			return;
+		}
+
+		applied = false;
+		tick().then(() => {
+			output?.scrollIntoView({ behavior: "smooth", block: "start" });
+		});
+	});
 </script>
 
 {#snippet scoreCard({ value, pending }: Card)}
@@ -273,41 +269,22 @@
 {/snippet}
 
 <section class="mt-3 rounded-lg border bg-muted/10 p-3 shadow-xs">
-	<div class="min-w-0">
-		<Eyebrow class="mb-2">Research</Eyebrow>
-		<p class="font-medium">{target}</p>
-		<p class="mt-1 text-sm text-muted-foreground">{desc}</p>
-	</div>
-
-	<div class="mt-3 grid gap-3">
-		<Field.Field class="gap-2.5">
-			<Field.Label for={`${uid}-context`}>Additional context</Field.Label>
-			<Textarea
-				id={`${uid}-context`}
-				name={`${uid}-context`}
-				bind:value={context}
-				rows={3}
-				placeholder={hint}
-			/>
-		</Field.Field>
-
-		{#if !canGenerate && message}
-			<p class="text-sm text-muted-foreground">{message}</p>
-		{/if}
-
-		<div class="flex justify-end">
-			<Button
-				size="sm"
-				variant="outline"
-				disabled={!canGenerate}
-				onclick={generate}
-			>
-				Generate
-			</Button>
+	<div class="flex items-start justify-between gap-3">
+		<div class="min-w-0 flex-1">
+			<Eyebrow class="mb-2">Research</Eyebrow>
+			<p class="font-medium">{target}</p>
 		</div>
+		{#if onClose != null}
+			<Button size="icon-sm" variant="ghost" aria-label={`Dismiss ${target}`} onclick={onClose}>
+				<XIcon class="size-3.5" />
+			</Button>
+		{/if}
 	</div>
 
 	<div bind:this={output}>
+		{#if !canGenerate && message}
+			<p class="mt-3 text-sm text-muted-foreground">{message}</p>
+		{/if}
 		{#if request != null}
 			{#key request.requestId}
 				<svelte:boundary>

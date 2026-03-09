@@ -292,6 +292,7 @@ const getAllocationState = () => {
 export const decisionDefaults: Decision = {
 	title: "My Decision",
 	goal: "Choose the best option based on my priorities.",
+	notes: "",
 };
 
 const getDecision = (): Decision => {
@@ -406,6 +407,7 @@ const normalizeDecisionState = (
 	return {
 		title: typeof value.title === "string" ? value.title : fallback.title,
 		goal: typeof value.goal === "string" ? value.goal : fallback.goal,
+		notes: typeof value.notes === "string" ? value.notes : fallback.notes,
 	};
 };
 
@@ -512,6 +514,7 @@ const applyDecision = (next: Decision) => {
 	const current = decision.current;
 	current.title = next.title;
 	current.goal = next.goal;
+	current.notes = next.notes;
 };
 
 const applyMethodMeta = (next: MethodMetaState) => {

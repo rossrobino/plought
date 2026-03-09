@@ -9,14 +9,14 @@ describe("AI suggestion helpers", () => {
 		const prompt = client.buildAlternativePrompt({
 			title: decisionDefaults.title,
 			goal: decisionDefaults.goal,
-			context: "  west coast  ",
+			notes: "  west coast  ",
 			existingAlternatives: ["Alternative #1", "Portland"],
 			requestId: "abc",
 		});
 
 		expect(prompt).toContain("Decision title: not provided");
 		expect(prompt).toContain("Decision goal: not provided");
-		expect(prompt).toContain("Extra context: west coast");
+		expect(prompt).toContain("Decision notes: west coast");
 		expect(prompt).toContain("Portland");
 		expect(prompt).not.toContain("Alternative #1");
 	});
@@ -25,7 +25,7 @@ describe("AI suggestion helpers", () => {
 		const prompt = client.buildCriteriaPrompt({
 			title: "Next move",
 			goal: "Choose a city",
-			context: "",
+			notes: "",
 			existingAlternatives: ["Alternative #1", "Seattle", "Portland"],
 			existingCriteria: ["Criterion #1", "Schools", "Weather"],
 			requestId: "abc",
@@ -43,7 +43,7 @@ describe("AI suggestion helpers", () => {
 			{
 				title: decisionDefaults.title,
 				goal: decisionDefaults.goal,
-				context: "",
+				notes: "",
 				existingAlternatives: ["Alternative #1", "Alternative #2"],
 				existingCriteria: ["Criterion #1", "Criterion #2"],
 				requestId: "abc",

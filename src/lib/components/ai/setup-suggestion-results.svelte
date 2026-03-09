@@ -54,7 +54,7 @@
 
 	{#if result.items.length === 0}
 		<p class="mt-3 text-sm text-muted-foreground">
-			No new {noun} came back. Try adding a little more context.
+			No new {noun} came back. Try updating your start details.
 		</p>
 	{:else}
 		<ul class="mt-3 grid gap-2">

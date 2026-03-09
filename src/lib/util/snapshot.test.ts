@@ -9,7 +9,7 @@ import {
 import { describe, expect, it } from "vitest";
 
 const snapshotState: SnapshotState = {
-	decision: { title: "Title", goal: "Goal" },
+	decision: { title: "Title", goal: "Goal", notes: "" },
 	criteria: [{ name: "Cost", weight: 0.5 }],
 	alternatives: [
 		{ name: "A", scores: [5], pairwise: [0.5, 1] },

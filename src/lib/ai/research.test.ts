@@ -13,12 +13,12 @@ const createClient = (response: {
 };
 
 describe("AI research helpers", () => {
-	it("includes cleaned decision context and target details in the score prompt", () => {
+	it("includes cleaned decision notes and target details in the score prompt", () => {
 		const client = new AI("test");
 		const prompt = client.buildScoreResearchPrompt({
 			title: decisionDefaults.title,
 			goal: decisionDefaults.goal,
-			context: "  current cost and commute details  ",
+			notes: "  current cost and commute details  ",
 			alternative: "Seattle",
 			criterion: "Affordability",
 			existingAlternatives: ["Alternative #1", "Seattle", "Portland"],
@@ -28,7 +28,9 @@ describe("AI research helpers", () => {
 
 		expect(prompt).toContain("Decision title: not provided");
 		expect(prompt).toContain("Decision goal: not provided");
-		expect(prompt).toContain("Extra context: current cost and commute details");
+		expect(prompt).toContain(
+			"Decision notes: current cost and commute details",
+		);
 		expect(prompt).toContain("Target alternative: Seattle");
 		expect(prompt).toContain("Target criterion: Affordability");
 		expect(prompt).not.toContain("Alternative #1");
@@ -42,7 +44,7 @@ describe("AI research helpers", () => {
 			client.canScore({
 				title: decisionDefaults.title,
 				goal: decisionDefaults.goal,
-				context: "",
+				notes: "",
 				alternative: "Alternative #1",
 				criterion: "Criterion #1",
 				existingAlternatives: ["Alternative #1", "Alternative #2"],
@@ -55,7 +57,7 @@ describe("AI research helpers", () => {
 			client.canAllocate({
 				title: "Move",
 				goal: "Choose a city",
-				context: "",
+				notes: "",
 				criterion: "Criterion #1",
 				existingAlternatives: ["Seattle", "Alternative #2"],
 				existingCriteria: ["Criterion #1", "Weather"],
@@ -103,7 +105,7 @@ describe("AI research helpers", () => {
 		const result = await client.createScoreResearch({
 			title: "Next move",
 			goal: "Choose a city",
-			context: "",
+			notes: "",
 			alternative: "Seattle",
 			criterion: "Affordability",
 			existingAlternatives: ["Seattle", "Portland"],
@@ -158,7 +160,7 @@ describe("AI research helpers", () => {
 		const result = await client.createAllocateResearch({
 			title: "Next move",
 			goal: "Choose a city",
-			context: "",
+			notes: "",
 			criterion: "Schools",
 			existingAlternatives: ["Seattle", "Portland"],
 			existingCriteria: ["Schools", "Weather"],

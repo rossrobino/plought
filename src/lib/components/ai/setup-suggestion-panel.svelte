@@ -10,9 +10,7 @@
 	import SetupSuggestionResults from "$lib/components/ai/setup-suggestion-results.svelte";
 	import { Button } from "$lib/components/ui/button";
 	import Eyebrow from "$lib/components/ui/eyebrow.svelte";
-	import * as Field from "$lib/components/ui/field";
 	import { Skeleton } from "$lib/components/ui/skeleton";
-	import { Textarea } from "$lib/components/ui/textarea";
 	import {
 		alternatives,
 		criteria,
@@ -28,8 +26,6 @@
 
 	let { kind, onApply }: Props = $props();
 
-	const uid = $props.id();
-	let context = $state("");
 	let request = $state<Request | null>(null);
 	const alternativePattern = /^Alternative #\d+$/i;
 	const criteriaPattern = /^Criterion #\d+$/i;
@@ -67,13 +63,18 @@
 		return (
 			(title.length > 0 && title !== decisionDefaults.title) ||
 			(goal.length > 0 && goal !== decisionDefaults.goal) ||
-			collapse(context).length > 0 ||
+			collapse(decision.current.notes).length > 0 ||
 			filter(currentAlternatives, alternativePattern).length > 0 ||
 			(kind === "criteria"
 				? filter(currentCriteria, criteriaPattern).length > 0
 				: false)
 		);
 	});
+	const message = $derived(
+		kind === "alternatives"
+			? "Add a title, goal, preferences, or real alternatives first."
+			: "Add a title, goal, preferences, or real decision details first.",
+	);
 	const title = $derived(
 		kind === "alternatives"
 			? "Need more alternatives?"
@@ -81,13 +82,8 @@
 	);
 	const desc = $derived(
 		kind === "alternatives"
-			? "Use your title, goal, and current list to brainstorm more options."
-			: "Use your title, goal, and current list to draft factors to compare.",
-	);
-	const hint = $derived(
-		kind === "alternatives"
-			? "Optional: budget, location, timing, or must-have features."
-			: "Optional: cost, effort, time, risk, or long-term fit.",
+			? "Use your start details and current list to brainstorm more options."
+			: "Use your start details and current list to draft factors to compare.",
 	);
 
 	const createRequest = (): Request => {
@@ -95,7 +91,7 @@
 			return {
 				title: decision.current.title,
 				goal: decision.current.goal,
-				context,
+				notes: decision.current.notes,
 				existingAlternatives: [...currentAlternatives],
 				requestId: crypto.randomUUID(),
 			};
@@ -104,7 +100,7 @@
 		return {
 			title: decision.current.title,
 			goal: decision.current.goal,
-			context,
+			notes: decision.current.notes,
 			existingAlternatives: [...currentAlternatives],
 			existingCriteria: [...currentCriteria],
 			requestId: crypto.randomUUID(),
@@ -136,13 +132,11 @@
 	};
 
 	const loadSuggestions = (input: Request) => {
-		if (kind === "alternatives") {
-			return generateAlternativeSuggestions(
-				input as AlternativeSuggestionRequest,
-			);
+		if ("existingCriteria" in input) {
+			return generateCriteriaSuggestions(input);
 		}
 
-		return generateCriteriaSuggestions(input as CriteriaSuggestionRequest);
+		return generateAlternativeSuggestions(input);
 	};
 
 	const getErrorMessage = (value: unknown) => {
@@ -158,25 +152,7 @@
 			<h2 class="text-base font-medium">{title}</h2>
 			<p class="mt-1 text-sm text-muted-foreground">{desc}</p>
 		</div>
-		<span
-			class="rounded-md border bg-background px-2 py-1 text-xs font-medium text-muted-foreground"
-		>
-			Optional
-		</span>
-	</div>
-	<div class="mt-3 grid gap-3">
-		<Field.Field class="gap-2.5">
-			<Field.Label for={`${uid}-context`}>Additional context</Field.Label>
-			<Textarea
-				id={`${uid}-context`}
-				name={`${uid}-context`}
-				bind:value={context}
-				rows={4}
-				placeholder={hint}
-			/>
-		</Field.Field>
-
-		<div class="flex justify-end">
+		<div class="shrink-0">
 			<Button
 				size="sm"
 				variant="outline"
@@ -187,6 +163,9 @@
 			</Button>
 		</div>
 	</div>
+	{#if !canGenerate}
+		<p class="mt-3 text-sm text-muted-foreground">{message}</p>
+	{/if}
 
 	{#if request != null}
 		{#key request.requestId}

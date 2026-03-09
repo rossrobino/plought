@@ -3,6 +3,7 @@
 	import type {
 		AllocateResearchRequest,
 		AllocateResearchResult,
+		ScoreResearchRequest,
 		ScoreResearchResult,
 	} from "$lib/ai/types";
 	import ResearchPanel from "$lib/components/ai/research-panel.svelte";
@@ -34,6 +35,7 @@
 
 	let criterionIndex = $state(0);
 	let showResearch = $state(false);
+	let request = $state<AllocateResearchRequest | null>(null);
 	let research = $state<HTMLDivElement | null>(null);
 
 	$effect(() => {
@@ -42,11 +44,13 @@
 			if (criterionIndex !== 0) {
 				criterionIndex = 0;
 			}
+			request = null;
 			return;
 		}
 		const bounded = Math.max(0, Math.min(criterionIndex, count - 1));
 		if (bounded !== criterionIndex) {
 			criterionIndex = bounded;
+			request = null;
 		}
 	});
 
@@ -100,12 +104,22 @@
 		research?.scrollIntoView({ behavior: "smooth", block: "start" });
 	};
 
+	const setCriterion = (value: number) => {
+		const next = Math.max(0, Math.min(value, criteria.current.length - 1));
+		if (next === criterionIndex) {
+			return;
+		}
+
+		criterionIndex = next;
+		request = null;
+	};
+
 	const updateCriterion = (value: string) => {
 		const next = Number(value);
 		if (!Number.isInteger(next)) {
 			return;
 		}
-		criterionIndex = Math.max(0, Math.min(next, criteria.current.length - 1));
+		setCriterion(next);
 	};
 
 	const setPoints = (altIndex: number, value: number) => {
@@ -154,22 +168,25 @@
 
 	const openResearch = async () => {
 		showResearch = true;
+		request = canGenerate
+			? {
+					title: decision.current.title,
+					goal: decision.current.goal,
+					notes: decision.current.notes,
+					criterion: currentCriterion?.name ?? "",
+					existingAlternatives: alternatives.current.map((item) => item.name),
+					existingCriteria: criteria.current.map((item) => item.name),
+					requestId: crypto.randomUUID(),
+				}
+			: null;
 		await scrollResearch();
 	};
 
-	const createRequest = (context: string): AllocateResearchRequest => {
-		return {
-			title: decision.current.title,
-			goal: decision.current.goal,
-			context,
-			criterion: currentCriterion?.name ?? "",
-			existingAlternatives: alternatives.current.map((item) => item.name),
-			existingCriteria: criteria.current.map((item) => item.name),
-			requestId: crypto.randomUUID(),
-		};
-	};
+	const load = (input: AllocateResearchRequest | ScoreResearchRequest) => {
+		if ("alternative" in input) {
+			throw new TypeError("Invalid allocation research request.");
+		}
 
-	const load = (input: AllocateResearchRequest) => {
 		return generateAllocateResearch(input);
 	};
 
@@ -276,7 +293,7 @@
 					size="sm"
 					variant="outline"
 					disabled={!canGoPrev}
-					onclick={() => (criterionIndex -= 1)}
+					onclick={() => setCriterion(criterionIndex - 1)}
 				>
 					Previous
 				</Button>
@@ -284,7 +301,7 @@
 					size="sm"
 					variant="outline"
 					disabled={!canGoNext}
-					onclick={() => (criterionIndex += 1)}
+					onclick={() => setCriterion(criterionIndex + 1)}
 				>
 					Next
 				</Button>
@@ -340,10 +357,8 @@
 			<ResearchPanel
 				{canGenerate}
 				{message}
+				{request}
 				{target}
-				{createRequest}
-				desc="Get a suggested point split, short reasons, and source links for this criterion."
-				hint="Optional: tradeoffs, constraints, or anything not already captured."
 				{load}
 				mode="allocate"
 				onApply={apply}

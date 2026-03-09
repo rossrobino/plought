@@ -27,7 +27,7 @@ type Api = Pick<OpenAI, "responses">;
 interface Clean {
 	title: string;
 	goal: string;
-	context: string;
+	notes: string;
 	existingAlternatives: string[];
 	existingCriteria: string[];
 }
@@ -111,7 +111,7 @@ export class AI {
 	readonly alternativeSchema = v.strictObject({
 		title: this.#text,
 		goal: this.#text,
-		context: this.#text,
+		notes: this.#text,
 		existingAlternatives: v.array(this.#name),
 		requestId: v.pipe(v.string(), v.nonEmpty(), v.maxLength(200)),
 	});
@@ -119,7 +119,7 @@ export class AI {
 	readonly criteriaSchema = v.strictObject({
 		title: this.#text,
 		goal: this.#text,
-		context: this.#text,
+		notes: this.#text,
 		existingAlternatives: v.array(this.#name),
 		existingCriteria: v.optional(v.array(this.#name), []),
 		requestId: v.pipe(v.string(), v.nonEmpty(), v.maxLength(200)),
@@ -128,7 +128,7 @@ export class AI {
 	readonly scoreResearchSchema = v.strictObject({
 		title: this.#text,
 		goal: this.#text,
-		context: this.#text,
+		notes: this.#text,
 		alternative: this.#name,
 		criterion: this.#name,
 		existingAlternatives: v.array(this.#name),
@@ -139,7 +139,7 @@ export class AI {
 	readonly allocateResearchSchema = v.strictObject({
 		title: this.#text,
 		goal: this.#text,
-		context: this.#text,
+		notes: this.#text,
 		criterion: this.#name,
 		existingAlternatives: v.array(this.#name),
 		existingCriteria: v.array(this.#name),
@@ -195,7 +195,7 @@ export class AI {
 		return (
 			clean.title.length > 0 ||
 			clean.goal.length > 0 ||
-			clean.context.length > 0 ||
+			clean.notes.length > 0 ||
 			clean.existingAlternatives.length > 0 ||
 			clean.existingCriteria.length > 0
 		);
@@ -487,16 +487,16 @@ export class AI {
 		return current === fallback ? "" : current;
 	}
 
-	#cleanDecision(title: string, goal: string, context: string) {
+	#cleanDecision(title: string, goal: string, notes: string) {
 		return {
 			title: this.#stripDefault(title, decisionDefaults.title),
 			goal: this.#stripDefault(goal, decisionDefaults.goal),
-			context: this.#collapse(context),
+			notes: this.#collapse(notes),
 		};
 	}
 
 	#clean(input: Request, kind: Kind): Clean {
-		const clean = this.#cleanDecision(input.title, input.goal, input.context);
+		const clean = this.#cleanDecision(input.title, input.goal, input.notes);
 		return {
 			...clean,
 			existingAlternatives: this.#filter(
@@ -514,7 +514,7 @@ export class AI {
 	}
 
 	#cleanScore(input: ScoreResearchRequest): CleanScore {
-		const clean = this.#cleanDecision(input.title, input.goal, input.context);
+		const clean = this.#cleanDecision(input.title, input.goal, input.notes);
 		const alternative = this.#collapse(input.alternative);
 		const criterion = this.#collapse(input.criterion);
 		return {
@@ -533,7 +533,7 @@ export class AI {
 	}
 
 	#cleanAllocate(input: AllocateResearchRequest): CleanAllocate {
-		const clean = this.#cleanDecision(input.title, input.goal, input.context);
+		const clean = this.#cleanDecision(input.title, input.goal, input.notes);
 		const criterion = this.#collapse(input.criterion);
 		return {
 			...clean,
@@ -565,7 +565,7 @@ export class AI {
 		return [
 			`Decision title: ${input.title || "not provided"}`,
 			`Decision goal: ${input.goal || "not provided"}`,
-			`Extra context: ${input.context || "none"}`,
+			`Decision notes: ${input.notes || "none"}`,
 			this.#formatSection("Existing alternatives", input.existingAlternatives),
 		].join("\n\n");
 	}

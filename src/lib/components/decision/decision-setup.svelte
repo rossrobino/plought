@@ -46,5 +46,20 @@
 				aligned.
 			</Field.Description>
 		</Field.Field>
+		<Field.Field class="gap-2.5">
+			<Field.Label for="decision-notes">Preferences and constraints</Field.Label>
+			<Textarea
+				id="decision-notes"
+				name="decision-notes"
+				bind:value={decision.current.notes}
+				oninput={markUsed}
+				rows={3}
+				placeholder="Optional details that should inform suggestions and research across the app."
+			/>
+			<Field.Description>
+				Optional details that should inform suggestions and research across
+				the app.
+			</Field.Description>
+		</Field.Field>
 	</div>
 </div>

@@ -12,4 +12,5 @@ export interface Criteria {
 export interface Decision {
 	title: string;
 	goal: string;
+	notes: string;
 }

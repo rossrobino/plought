@@ -8,7 +8,7 @@ export const generateAlternativeSuggestions = query(
 		if (!client.hasInput(input, "alternatives")) {
 			error(
 				400,
-				"Add a title, goal, extra context, or real alternatives before asking for suggestions.",
+				"Add a title, goal, preferences, or real alternatives before asking for suggestions.",
 			);
 		}
 
@@ -25,7 +25,7 @@ export const generateCriteriaSuggestions = query(
 		if (!client.hasInput(input, "criteria")) {
 			error(
 				400,
-				"Add a title, goal, extra context, or real decision details before asking for suggestions.",
+				"Add a title, goal, preferences, or real decision details before asking for suggestions.",
 			);
 		}
 

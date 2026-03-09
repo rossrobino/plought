@@ -67,12 +67,6 @@ export const seoByPath: Record<string, SeoMeta> = {
 		changefreq: "weekly",
 		priority: 0.8,
 	},
-	"/analysis/rank": {
-		title: "Rank Order",
-		desc: "See ordinal rankings converted to a 0 to 10 scale for comparison.",
-		changefreq: "weekly",
-		priority: 0.8,
-	},
 	"/analysis/allocate": {
 		title: "Point Allocation",
 		desc: "Analyze weighted results from per-criterion point allocations.",

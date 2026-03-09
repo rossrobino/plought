@@ -17,7 +17,6 @@
 		{ href: "/weigh", label: "Weigh" },
 		{ href: "/score", label: "Score" },
 		{ href: "/compare", label: "Compare" },
-		{ href: "/rank", label: "Rank" },
 		{ href: "/allocate", label: "Allocate" },
 	];
 	const flowIndex = new Map(
@@ -28,7 +27,6 @@
 		"/setup/criteria": "Criteria",
 		"/analysis/weight": "Weighted Sum",
 		"/analysis/compare": "Pairwise Comparison",
-		"/analysis/rank": "Rank Order",
 		"/analysis/allocate": "Point Allocation",
 		"/analysis/topsis": "TOPSIS",
 		"/analysis/robustness": "Robustness",

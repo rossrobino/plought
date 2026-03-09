@@ -5,16 +5,12 @@
 	import Scores from "$lib/components/scores/scores.svelte";
 	import { Button } from "$lib/components/ui/button";
 	import SectionHeader from "$lib/components/ui/section-header.svelte";
-	import { alternatives, criteria, rankOrder } from "$lib/state";
+	import { alternatives, criteria } from "$lib/state";
 	import { getGuidanceCopy, getMethodScores } from "$lib/util/analysis";
 	import { chartColors } from "$lib/util/chart-colors";
 
 	const scores = $derived(
-		getMethodScores(
-			alternatives.current,
-			criteria.current,
-			Array.isArray(rankOrder.current) ? rankOrder.current : [],
-		),
+		getMethodScores(alternatives.current, criteria.current),
 	);
 
 	const outcomes = $derived.by(() => {

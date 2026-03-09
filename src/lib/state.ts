@@ -5,11 +5,10 @@ import { PersistedState } from "runed";
 const methodKeys = [
 	"weightedSum",
 	"pairwise",
-	"rankOrder",
 	"topsis",
 	"allocate",
 ] as const;
-const appKeys = ["weigh", "score", "compare", "rank", "allocate"] as const;
+const appKeys = ["weigh", "score", "compare", "allocate"] as const;
 const setupStepKeys = ["start", "alternatives", "criteria"] as const;
 
 export type MethodKey = (typeof methodKeys)[number];
@@ -41,7 +40,6 @@ export interface SnapshotState {
 	criteria: Criteria[];
 	alternatives: Alternative[];
 	allocation: number[][];
-	rankOrder: number[];
 	appMeta: Record<AppKey, AppMeta>;
 	methodMeta: Record<MethodKey, MethodMeta>;
 	setupStepMeta: Record<SetupStepKey, SetupStepMeta>;
@@ -52,7 +50,6 @@ export interface SnapshotImportState {
 	criteria?: Criteria[];
 	alternatives?: Alternative[];
 	allocation?: number[][];
-	rankOrder?: number[];
 	appMeta?: AppMetaInput;
 	methodMeta?: MethodMetaInput;
 	setupStepMeta?: SetupStepMetaInput;
@@ -79,8 +76,48 @@ export const isCriteriaPlaceholder = (value: string) => {
 	return criteriaPlaceholderPattern.test(value.trim());
 };
 
-const getRankOrder = (count: number) => {
-	return Array.from({ length: count }, (_, i) => i);
+const cleanupLegacyRankStorage = () => {
+	if (typeof window === "undefined") {
+		return;
+	}
+
+	try {
+		const storage = window.localStorage;
+		storage.removeItem("rankOrder");
+
+		const methodCurrent = storage.getItem("methodMeta");
+		if (methodCurrent != null) {
+			try {
+				const parsed = JSON.parse(methodCurrent) as MethodMetaInput & {
+					rankOrder?: Partial<MethodMeta>;
+				};
+				if ("rankOrder" in parsed) {
+					storage.setItem(
+						"methodMeta",
+						JSON.stringify(normalizeMethodMeta(parsed)),
+					);
+				}
+			} catch {
+				// Ignore malformed legacy storage and fall back to defaults.
+			}
+		}
+
+		const appCurrent = storage.getItem("appMeta");
+		if (appCurrent != null) {
+			try {
+				const parsed = JSON.parse(appCurrent) as AppMetaInput & {
+					rank?: Partial<AppMeta>;
+				};
+				if ("rank" in parsed) {
+					storage.setItem("appMeta", JSON.stringify(normalizeAppMeta(parsed)));
+				}
+			} catch {
+				// Ignore malformed legacy storage and fall back to defaults.
+			}
+		}
+	} catch {
+		// Ignore storage access failures.
+	}
 };
 
 const getAllocation = (criteriaCount: number, alternativeCount: number) => {
@@ -94,7 +131,6 @@ const getMethodMetaDefaults = (
 	return {
 		weightedSum: { used, included },
 		pairwise: { used, included },
-		rankOrder: { used, included },
 		topsis: { used, included },
 		allocate: { used, included },
 	};
@@ -105,7 +141,6 @@ const getAppMetaDefaults = (used = false): AppMetaState => {
 		weigh: { used },
 		score: { used },
 		compare: { used },
-		rank: { used },
 		allocate: { used },
 	};
 };
@@ -181,12 +216,11 @@ const getMethodMeta = (): MethodMetaState => {
 				return defaults;
 			}
 		}
-		const hasLegacyData = [
-			"criteria",
-			"alternatives",
-			"decision",
-			"rankOrder",
-		].some((key) => storage.getItem(key) != null);
+			const hasLegacyData = [
+				"criteria",
+				"alternatives",
+				"decision",
+			].some((key) => storage.getItem(key) != null);
 		if (hasLegacyData) {
 			return {
 				...normalizeMethodMeta(undefined, true, true),
@@ -225,7 +259,6 @@ const getAppMeta = (): AppMetaState => {
 			return {
 				...defaults,
 				compare: { used: methodMeta.pairwise.used },
-				rank: { used: methodMeta.rankOrder.used },
 				allocate: { used: methodMeta.allocate.used },
 			};
 		} catch {
@@ -554,34 +587,6 @@ const applySetupStepMeta = (next: SetupStepMetaState) => {
 	}
 };
 
-export const normalizeRankOrder = (order: number[], count: number) => {
-	const next = [];
-	const seen = new Set<number>();
-
-	for (const id of order) {
-		if (!Number.isInteger(id) || id < 0 || id >= count || seen.has(id)) {
-			continue;
-		}
-		seen.add(id);
-		next.push(id);
-	}
-
-	for (let i = 0; i < count; i++) {
-		if (!seen.has(i)) {
-			next.push(i);
-		}
-	}
-
-	return next;
-};
-
-export const getRankScore = (rank: number, count: number) => {
-	if (count <= 1) {
-		return 10;
-	}
-	return Number((((count - 1 - rank) / (count - 1)) * 10).toFixed(2));
-};
-
 const clampWeightPercent = (value: number) => {
 	return Math.max(0, Math.min(100, value));
 };
@@ -615,10 +620,8 @@ export const allocation = new PersistedState(
 	getAllocationState(),
 );
 export const decision = new PersistedState("decision", getDecision());
-export const rankOrder = new PersistedState(
-	"rankOrder",
-	getRankOrder(getAlternatives().length),
-);
+
+cleanupLegacyRankStorage();
 
 const syncMethodMeta = () => {
 	const current = methodMeta.current;
@@ -684,19 +687,6 @@ export const syncAllocation = (
 	return current;
 };
 
-export const syncRankOrder = (count = alternatives.current.length) => {
-	const order = Array.isArray(rankOrder.current) ? rankOrder.current : [];
-	const next = normalizeRankOrder(order, count);
-	const current = Array.isArray(rankOrder.current) ? rankOrder.current : [];
-	if (
-		next.length !== current.length ||
-		next.some((id, i) => id !== current[i])
-	) {
-		applyArray(rankOrder.current, next);
-	}
-	return next;
-};
-
 export const normalizeCriteriaWeights = () => {
 	const current = criteria.current.map((item) => {
 		const weight = Number(item.weight) * 100;
@@ -740,7 +730,6 @@ export const appendAlternatives = (names: string[]) => {
 	}
 
 	syncAllocation();
-	syncRankOrder();
 	return next;
 };
 
@@ -797,10 +786,6 @@ export const exportSnapshotState = (): SnapshotState => {
 		decision.current,
 		getDecision(),
 	);
-	const currentRankOrder = normalizeRankOrder(
-		Array.isArray(rankOrder.current) ? rankOrder.current : [],
-		currentAlternatives.length,
-	);
 	const currentAllocation = normalizeAllocation(
 		Array.isArray(allocation.current) ? allocation.current : [],
 		currentCriteria.length,
@@ -815,7 +800,6 @@ export const exportSnapshotState = (): SnapshotState => {
 		criteria: currentCriteria,
 		alternatives: currentAlternatives,
 		allocation: cloneAllocation(currentAllocation),
-		rankOrder: [...currentRankOrder],
 		appMeta: cloneAppMeta(currentAppMeta),
 		methodMeta: cloneMethodMeta(currentMethodMeta),
 		setupStepMeta: cloneSetupStepMeta(currentSetupStepMeta),
@@ -846,10 +830,6 @@ export const importSnapshotState = (value: SnapshotImportState) => {
 		normalizedCriteria.length,
 		normalizedAlternatives.length,
 	);
-	const normalizedRankOrder = normalizeRankOrder(
-		Array.isArray(value.rankOrder) ? value.rankOrder : getRankOrder(0),
-		normalizedAlternatives.length,
-	);
 	const normalizedMethodMeta = normalizeMethodMeta(
 		value.methodMeta,
 		methodDefaults.weightedSum.used,
@@ -868,7 +848,6 @@ export const importSnapshotState = (value: SnapshotImportState) => {
 	applyArray(criteria.current, normalizedCriteria);
 	applyArray(alternatives.current, normalizedAlternatives);
 	applyArray(allocation.current, normalizedAllocation);
-	applyArray(rankOrder.current, normalizedRankOrder);
 	applyMethodMeta(normalizedMethodMeta);
 	applyAppMeta(normalizedAppMeta);
 	applySetupStepMeta(normalizedSetupMeta);
@@ -937,7 +916,6 @@ export const reset = () => {
 		getAllocation(nextCriteria.length, nextAlternatives.length),
 	);
 	applyDecision(getDecision());
-	applyArray(rankOrder.current, getRankOrder(nextAlternatives.length));
 	applyMethodMeta(getMethodMetaDefaults());
 	applyAppMeta(getAppMetaDefaults());
 	applySetupStepMeta(getSetupStepMetaDefaults());

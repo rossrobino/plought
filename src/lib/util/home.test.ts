@@ -22,7 +22,6 @@ const allocation = [
 	[70, 20, 10],
 	[20, 30, 50],
 ];
-const rankOrder = [2, 0, 1];
 
 const getSetupUsed = (
 	overrides: Partial<HomeSetupState> = {},
@@ -35,7 +34,6 @@ const getAppUsed = (overrides: Partial<HomeAppState> = {}): HomeAppState => {
 		weigh: false,
 		score: false,
 		compare: false,
-		rank: false,
 		allocate: false,
 		...overrides,
 	};
@@ -84,7 +82,6 @@ describe("home utilities", () => {
 					weigh: true,
 					score: true,
 					compare: true,
-					rank: true,
 					allocate: true,
 				}),
 			),
@@ -97,7 +94,6 @@ describe("home utilities", () => {
 			criteria: [],
 			alternatives: [{ name: "A", scores: [], pairwise: [0.5] }],
 			allocation: [],
-			rankOrder: [0],
 			setupUsed: getSetupUsed(),
 			appUsed: getAppUsed(),
 			includedMethods: [],
@@ -114,7 +110,6 @@ describe("home utilities", () => {
 			criteria,
 			alternatives,
 			allocation,
-			rankOrder,
 			setupUsed: getSetupUsed({
 				start: true,
 				alternatives: true,
@@ -136,7 +131,6 @@ describe("home utilities", () => {
 			criteria,
 			alternatives,
 			allocation,
-			rankOrder,
 			setupUsed: getSetupUsed({ start: true }),
 			appUsed: getAppUsed(),
 			includedMethods: [],

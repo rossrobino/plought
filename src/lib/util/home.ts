@@ -47,7 +47,6 @@ interface HomePreviewInput {
 	criteria: Criteria[];
 	alternatives: Alternative[];
 	allocation: number[][];
-	rankOrder: number[];
 	setupUsed: HomeSetupState;
 	appUsed: HomeAppState;
 	includedMethods: MethodKey[];
@@ -97,12 +96,6 @@ const homeAppSteps = [
 		key: "compare",
 		label: "Resume comparisons",
 		note: "Run head-to-head comparisons when absolute scoring feels noisy.",
-	},
-	{
-		href: "/rank",
-		key: "rank",
-		label: "Resume ranking",
-		note: "Order options from most to least preferred as a gut check.",
 	},
 	{
 		href: "/allocate",
@@ -224,7 +217,6 @@ export const getHomePreview = ({
 	criteria,
 	alternatives,
 	allocation,
-	rankOrder,
 	setupUsed,
 	appUsed,
 	includedMethods,
@@ -258,7 +250,7 @@ export const getHomePreview = ({
 		return preview;
 	}
 
-	const scores = getMethodScores(alternatives, criteria, rankOrder, allocation);
+	const scores = getMethodScores(alternatives, criteria, allocation);
 
 	if (includedMethods.length > 0) {
 		const methodRanks = getMethodRanks(scores.normalized10);

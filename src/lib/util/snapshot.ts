@@ -1,6 +1,6 @@
 import type { SnapshotImportState, SnapshotState } from "$lib/state";
 
-export const snapshotSchemaVersion = 1;
+export const snapshotSchemaVersion = 2;
 
 interface SnapshotFile {
 	schemaVersion: number;
@@ -31,7 +31,21 @@ const assertKnownKeyTypes = (value: Record<string, unknown>) => {
 	if ("appMeta" in value && !isRecord(value.appMeta)) {
 		throw new Error("Snapshot format is not supported.");
 	}
+	if (
+		isRecord(value.appMeta) &&
+		"rank" in value.appMeta &&
+		!isRecord(value.appMeta.rank)
+	) {
+		throw new Error("Snapshot format is not supported.");
+	}
 	if ("methodMeta" in value && !isRecord(value.methodMeta)) {
+		throw new Error("Snapshot format is not supported.");
+	}
+	if (
+		isRecord(value.methodMeta) &&
+		"rankOrder" in value.methodMeta &&
+		!isRecord(value.methodMeta.rankOrder)
+	) {
 		throw new Error("Snapshot format is not supported.");
 	}
 	if ("setupStepMeta" in value && !isRecord(value.setupStepMeta)) {
@@ -48,6 +62,38 @@ const getStateSource = (value: Record<string, unknown>) => {
 		throw new Error("Snapshot format is not supported.");
 	}
 	return state;
+};
+
+const sanitizeState = (value: Record<string, unknown>): SnapshotImportState => {
+	const { appMeta, methodMeta, ...state } = value;
+	const next: SnapshotImportState = {};
+
+	if ("decision" in state) {
+		next.decision = state.decision as SnapshotImportState["decision"];
+	}
+	if ("criteria" in state) {
+		next.criteria = state.criteria as SnapshotImportState["criteria"];
+	}
+	if ("alternatives" in state) {
+		next.alternatives = state.alternatives as SnapshotImportState["alternatives"];
+	}
+	if ("allocation" in state) {
+		next.allocation = state.allocation as SnapshotImportState["allocation"];
+	}
+	if (isRecord(appMeta)) {
+		const { rank: _rank, ...rest } = appMeta;
+		next.appMeta = rest as SnapshotImportState["appMeta"];
+	}
+	if (isRecord(methodMeta)) {
+		const { rankOrder: _rankOrder, ...rest } = methodMeta;
+		next.methodMeta = rest as SnapshotImportState["methodMeta"];
+	}
+	if ("setupStepMeta" in state) {
+		next.setupStepMeta =
+			state.setupStepMeta as SnapshotImportState["setupStepMeta"];
+	}
+
+	return next;
 };
 
 export const createSnapshotFile = (state: SnapshotState): SnapshotFile => {
@@ -79,7 +125,7 @@ export const parseSnapshotJson = (text: string) => {
 		if (
 			typeof schemaVersion !== "number" ||
 			!Number.isInteger(schemaVersion) ||
-			schemaVersion !== snapshotSchemaVersion
+			(schemaVersion !== 1 && schemaVersion !== snapshotSchemaVersion)
 		) {
 			throw new Error("Snapshot format is not supported.");
 		}
@@ -87,7 +133,7 @@ export const parseSnapshotJson = (text: string) => {
 
 	const state = getStateSource(parsed);
 	assertKnownKeyTypes(state);
-	return state as SnapshotImportState;
+	return sanitizeState(state);
 };
 
 export const sanitizeSnapshotFilename = (title: string) => {

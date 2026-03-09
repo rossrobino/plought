@@ -15,7 +15,6 @@
 		isAppUsed,
 		isMethodIncluded,
 		isSetupStepUsed,
-		rankOrder,
 	} from "$lib/state";
 	import {
 		getHomeNextStep,
@@ -32,7 +31,6 @@
 	const methodKeys = [
 		"weightedSum",
 		"pairwise",
-		"rankOrder",
 		"allocate",
 		"topsis",
 	] as const satisfies readonly MethodKey[];
@@ -79,7 +77,6 @@
 			weigh: isAppUsed("weigh"),
 			score: isAppUsed("score"),
 			compare: isAppUsed("compare"),
-			rank: isAppUsed("rank"),
 			allocate: isAppUsed("allocate"),
 		};
 	});
@@ -96,7 +93,6 @@
 			criteria: criteria.current,
 			alternatives: alternatives.current,
 			allocation: Array.isArray(allocation.current) ? allocation.current : [],
-			rankOrder: Array.isArray(rankOrder.current) ? rankOrder.current : [],
 			setupUsed,
 			appUsed,
 			includedMethods,
@@ -182,7 +178,7 @@
 						</Button>
 					</div>
 					<p class="mt-4 max-w-xl text-sm leading-6 text-muted-foreground">
-						If you need a push, AI help can suggest alternatives, criteria, and
+						If you need help, AI help can suggest alternatives, criteria, and
 						research from the context you provide.
 					</p>
 				</div>

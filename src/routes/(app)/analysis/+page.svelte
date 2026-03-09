@@ -10,7 +10,6 @@
 		alternatives,
 		criteria,
 		isMethodIncluded,
-		rankOrder,
 		toggleMethodIncluded,
 	} from "$lib/state";
 	import {
@@ -59,20 +58,13 @@
 		},
 		{
 			color: chartColors[2],
-			href: "/analysis/rank",
-			key: "rankOrder",
-			label: "Rank Order",
-			note: "Ordinal ranking translated to a 0-10 score scale.",
-		},
-		{
-			color: chartColors[3],
 			href: "/analysis/allocate",
 			key: "allocate",
 			label: "Point Allocation",
 			note: "Per-criterion point distribution across alternatives.",
 		},
 		{
-			color: chartColors[4],
+			color: chartColors[3],
 			href: "/analysis/topsis",
 			key: "topsis",
 			label: "TOPSIS",
@@ -94,7 +86,6 @@
 		getMethodScores(
 			alternatives.current,
 			criteria.current,
-			Array.isArray(rankOrder.current) ? rankOrder.current : [],
 			Array.isArray(allocation.current) ? allocation.current : [],
 		),
 	);
@@ -400,7 +391,6 @@
 	<Scores
 		weightedSum={isMethodIncluded("weightedSum")}
 		pairwise={isMethodIncluded("pairwise")}
-		rankOrder={isMethodIncluded("rankOrder")}
 		allocate={isMethodIncluded("allocate")}
 		topsis={isMethodIncluded("topsis")}
 	/>

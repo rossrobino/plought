@@ -14,7 +14,6 @@
 	import GithubIcon from "@lucide/svelte/icons/github";
 	import HandCoinsIcon from "@lucide/svelte/icons/hand-coins";
 	import ListChecksIcon from "@lucide/svelte/icons/list-checks";
-	import ListOrderedIcon from "@lucide/svelte/icons/list-ordered";
 	import ScaleIcon from "@lucide/svelte/icons/scale";
 	import ShieldCheckIcon from "@lucide/svelte/icons/shield-check";
 	import TargetIcon from "@lucide/svelte/icons/target";
@@ -63,7 +62,6 @@
 			href: "/analysis/compare",
 			label: "Pairwise Comparison",
 		},
-		{ icon: ListOrderedIcon, href: "/analysis/rank", label: "Rank Order" },
 		{
 			icon: HandCoinsIcon,
 			href: "/analysis/allocate",

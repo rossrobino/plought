@@ -7,9 +7,6 @@
 		allocation,
 		alternatives,
 		criteria,
-		getRankScore,
-		normalizeRankOrder,
-		rankOrder as rankOrderState,
 	} from "$lib/state";
 	import { getAllocateScores, normalizeAllocation } from "$lib/util/allocate";
 	import { getTopsisCloseness } from "$lib/util/topsis";
@@ -18,14 +15,12 @@
 		| ""
 		| "weightedSum"
 		| "pairwise"
-		| "rankOrder"
 		| "allocate"
 		| "topsis";
 
 	interface Props {
 		allocate?: boolean;
 		pairwise?: boolean;
-		rankOrder?: boolean;
 		sortBy?: SortBy;
 		topsis?: boolean;
 		weightedSum?: boolean;
@@ -34,26 +29,10 @@
 	let {
 		weightedSum = false,
 		pairwise = false,
-		rankOrder = false,
 		allocate = false,
 		topsis = false,
 		sortBy = "",
 	}: Props = $props();
-
-	const normalizedRankOrder = $derived(
-		normalizeRankOrder(
-			Array.isArray(rankOrderState.current) ? rankOrderState.current : [],
-			alternatives.current.length,
-		),
-	);
-
-	const rankByAlternativeIndex = $derived.by(() => {
-		const map = new Map<number, number>();
-		normalizedRankOrder.forEach((altIndex, rank) => {
-			map.set(altIndex, rank);
-		});
-		return map;
-	});
 
 	const topsisScoreByAlternativeIndex = $derived(
 		getTopsisCloseness(alternatives.current, criteria.current).map((value) =>
@@ -91,22 +70,12 @@
 			return total;
 		}),
 	);
-	const rankOrderScoreByAlternativeIndex = $derived.by(() => {
-		const count = alternatives.current.length;
-		return alternatives.current.map((_, altIndex) => {
-			const rank = rankByAlternativeIndex.get(altIndex);
-			return getRankScore(rank == null ? count - 1 : rank, count);
-		});
-	});
 	const sortByScoreByIndex = $derived.by(() => {
 		if (sortBy === "weightedSum") {
 			return weightedSumScoreByAlternativeIndex;
 		}
 		if (sortBy === "pairwise") {
 			return pairwiseScoreByAlternativeIndex;
-		}
-		if (sortBy === "rankOrder") {
-			return rankOrderScoreByAlternativeIndex;
 		}
 		if (sortBy === "allocate") {
 			return allocateScoreByAlternativeIndex;
@@ -134,27 +103,22 @@
 		<SectionHeader title="Scores" class="min-w-0 flex-1" />
 		<Info label="About scores">
 			<div class="space-y-2">
-				{#if weightedSum && !pairwise && !rankOrder && !allocate && !topsis}
+				{#if weightedSum && !pairwise && !allocate && !topsis}
 					<p>
 						Each alternative score is multiplied by its criterion weight, then
 						those values are summed.
 					</p>
-				{:else if pairwise && !weightedSum && !rankOrder && !allocate && !topsis}
+				{:else if pairwise && !weightedSum && !allocate && !topsis}
 					<p>
 						Each row is scored from head-to-head comparisons: Preferred = +1,
 						Tie = +0.5, Unfavored = 0.
 					</p>
-				{:else if rankOrder && !weightedSum && !pairwise && !allocate && !topsis}
-					<p>
-						Order alternatives from most to least preferred. Scores are
-						normalized from 0 to 10 based on rank position.
-					</p>
-				{:else if allocate && !weightedSum && !pairwise && !rankOrder && !topsis}
+				{:else if allocate && !weightedSum && !pairwise && !topsis}
 					<p>
 						Allocate scores come from per-criterion point splits across
 						alternatives, combined with criterion weights.
 					</p>
-				{:else if topsis && !weightedSum && !pairwise && !rankOrder && !allocate}
+				{:else if topsis && !weightedSum && !pairwise && !allocate}
 					<p>
 						TOPSIS ranks alternatives by closeness to the ideal option and
 						distance from the worst option using weighted normalized scores.
@@ -166,9 +130,6 @@
 						{/if}
 						{#if pairwise}
 							Pairwise uses head-to-head preferences.
-						{/if}
-						{#if rankOrder}
-							Rank converts list position into a 0-10 score.
 						{/if}
 						{#if allocate}
 							Allocate converts criterion point splits into weighted 0-10
@@ -202,9 +163,6 @@
 					{#if pairwise}
 						<Table.Head>Pairwise</Table.Head>
 					{/if}
-					{#if rankOrder}
-						<Table.Head>Rank</Table.Head>
-					{/if}
 					{#if allocate}
 						<Table.Head>Allocate</Table.Head>
 					{/if}
@@ -227,11 +185,6 @@
 						{#if pairwise}
 							<Table.Cell class="font-semibold">
 								{pairwiseScoreByAlternativeIndex[item.i] ?? 0}
-							</Table.Cell>
-						{/if}
-						{#if rankOrder}
-							<Table.Cell class="font-semibold">
-								{rankOrderScoreByAlternativeIndex[item.i] ?? 0}
 							</Table.Cell>
 						{/if}
 						{#if allocate}

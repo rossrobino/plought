@@ -50,19 +50,6 @@ describe("state", () => {
 		Reflect.deleteProperty(globalThis, "window");
 	});
 
-	it("normalizes rank order by removing invalid entries and filling missing ids", () => {
-		expect(state.normalizeRankOrder([2, 2, -1, 5, 1.5, 0], 4)).toEqual([
-			2, 0, 1, 3,
-		]);
-	});
-
-	it("computes rank scores on a 0-10 scale", () => {
-		expect(state.getRankScore(0, 5)).toBe(10);
-		expect(state.getRankScore(2, 5)).toBe(5);
-		expect(state.getRankScore(4, 5)).toBe(0);
-		expect(state.getRankScore(0, 1)).toBe(10);
-	});
-
 	it("marks methods as used and toggles inclusion independently", () => {
 		expect(state.isMethodUsed("pairwise")).toBe(false);
 		expect(state.isMethodIncluded("pairwise")).toBe(false);
@@ -92,23 +79,6 @@ describe("state", () => {
 		expect(state.isSetupStepUsed("criteria")).toBe(true);
 		state.markSetupStepUsed("criteria");
 		expect(state.isSetupStepUsed("criteria")).toBe(true);
-	});
-
-	it("syncs rank order when alternatives change", () => {
-		state.alternatives.current.push({
-			name: "Alternative #3",
-			scores: [0, 0],
-			pairwise: [0.5, 0.5, 0.5],
-		});
-		state.rankOrder.current.splice(0, state.rankOrder.current.length, 2, 99, 2);
-
-		expect(state.syncRankOrder()).toEqual([2, 0, 1]);
-	});
-
-	it("syncs rank order to an explicit count", () => {
-		state.rankOrder.current.splice(0, state.rankOrder.current.length, 1, 0, 5);
-
-		expect(state.syncRankOrder(2)).toEqual([1, 0]);
 	});
 
 	it("syncs allocation matrix when criteria and alternatives change", () => {
@@ -146,7 +116,6 @@ describe("state", () => {
 		expect(
 			state.alternatives.current.every((item) => item.pairwise.length === 4),
 		).toBe(true);
-		expect(state.rankOrder.current).toEqual([0, 1, 2, 3]);
 		expect(state.allocation.current.length).toBe(2);
 		expect(state.allocation.current.every((row) => row.length === 4)).toBe(
 			true,
@@ -172,7 +141,6 @@ describe("state", () => {
 		expect(
 			state.alternatives.current.every((item) => item.pairwise.length === 3),
 		).toBe(true);
-		expect(state.rankOrder.current).toEqual([0, 1, 2]);
 		expect(state.allocation.current.every((row) => row.length === 3)).toBe(
 			true,
 		);
@@ -236,13 +204,11 @@ describe("state", () => {
 			"criteria",
 			"decision",
 			"methodMeta",
-			"rankOrder",
 			"setupStepMeta",
 		]);
 		expect(Array.isArray(snapshot.criteria)).toBe(true);
 		expect(Array.isArray(snapshot.alternatives)).toBe(true);
 		expect(Array.isArray(snapshot.allocation)).toBe(true);
-		expect(Array.isArray(snapshot.rankOrder)).toBe(true);
 		expect(snapshot.decision.notes).toBe("Family friendly and within budget.");
 	});
 
@@ -261,7 +227,6 @@ describe("state", () => {
 		expect(state.criteria.current.length).toBe(2);
 		expect(state.alternatives.current.length).toBe(2);
 		expect(state.allocation.current.length).toBe(2);
-		expect(state.rankOrder.current.length).toBe(2);
 		expect(state.isAppUsed("weigh")).toBe(false);
 		expect(state.isMethodUsed("pairwise")).toBe(false);
 		expect(state.isSetupStepUsed("criteria")).toBe(false);
@@ -280,7 +245,6 @@ describe("state", () => {
 				{ name: "C", scores: [2, 2, 2], pairwise: [0, 0, 0.5] },
 			],
 			allocation: [[40, 30, 30]],
-			rankOrder: [5, 1, 1],
 			methodMeta: { weightedSum: { used: true, included: true } },
 			setupStepMeta: { start: { used: true } },
 		});
@@ -312,11 +276,43 @@ describe("state", () => {
 				return Math.abs(row.reduce((a, b) => a + b, 0) - 100) < 0.001;
 			}),
 		).toBe(true);
-		expect(state.rankOrder.current).toEqual([1, 0, 2]);
 		expect(state.isAppUsed("weigh")).toBe(false);
 		expect(state.isMethodUsed("weightedSum")).toBe(true);
 		expect(state.isMethodUsed("pairwise")).toBe(false);
 		expect(state.isSetupStepUsed("start")).toBe(true);
 		expect(state.isSetupStepUsed("criteria")).toBe(false);
+	});
+
+	it("cleans legacy rank storage on load", async () => {
+		window.localStorage.setItem("rankOrder", JSON.stringify([1, 0]));
+		window.localStorage.setItem(
+			"appMeta",
+			JSON.stringify({
+				weigh: { used: true },
+				score: { used: false },
+				compare: { used: true },
+				rank: { used: true },
+				allocate: { used: false },
+			}),
+		);
+		window.localStorage.setItem(
+			"methodMeta",
+			JSON.stringify({
+				weightedSum: { used: true, included: true },
+				pairwise: { used: false, included: false },
+				rankOrder: { used: true, included: true },
+				topsis: { used: false, included: false },
+				allocate: { used: false, included: false },
+			}),
+		);
+
+		vi.resetModules();
+		state = await import("$lib/state");
+
+		expect(window.localStorage.getItem("rankOrder")).toBeNull();
+		expect(window.localStorage.getItem("appMeta")).not.toContain("rank");
+		expect(window.localStorage.getItem("methodMeta")).not.toContain(
+			"rankOrder",
+		);
 	});
 });

@@ -16,18 +16,15 @@ const snapshotState: SnapshotState = {
 		{ name: "B", scores: [7], pairwise: [0, 0.5] },
 	],
 	allocation: [[50, 50]],
-	rankOrder: [0, 1],
 	appMeta: {
 		weigh: { used: true },
 		score: { used: false },
 		compare: { used: true },
-		rank: { used: false },
 		allocate: { used: false },
 	},
 	methodMeta: {
 		weightedSum: { used: true, included: true },
 		pairwise: { used: true, included: true },
-		rankOrder: { used: false, included: false },
 		topsis: { used: false, included: false },
 		allocate: { used: false, included: false },
 	},
@@ -54,6 +51,24 @@ describe("snapshot util", () => {
 		const text = JSON.stringify({
 			schemaVersion: 1,
 			exportedAt: "2026-03-04T00:00:00.000Z",
+			state: {
+				...snapshotState,
+				rankOrder: [0, 1],
+				appMeta: { ...snapshotState.appMeta, rank: { used: false } },
+				methodMeta: {
+					...snapshotState.methodMeta,
+					rankOrder: { used: false, included: false },
+				},
+			},
+		});
+
+		expect(parseSnapshotJson(text)).toEqual(snapshotState);
+	});
+
+	it("parses current v2 snapshot files", () => {
+		const text = JSON.stringify({
+			schemaVersion: 2,
+			exportedAt: "2026-03-04T00:00:00.000Z",
 			state: snapshotState,
 		});
 
@@ -61,9 +76,19 @@ describe("snapshot util", () => {
 	});
 
 	it("parses legacy snapshots without envelope", () => {
-		expect(parseSnapshotJson(JSON.stringify(snapshotState))).toEqual(
-			snapshotState,
-		);
+		expect(
+			parseSnapshotJson(
+				JSON.stringify({
+					...snapshotState,
+					rankOrder: [0, 1],
+					appMeta: { ...snapshotState.appMeta, rank: { used: false } },
+					methodMeta: {
+						...snapshotState.methodMeta,
+						rankOrder: { used: false, included: false },
+					},
+				}),
+			),
+		).toEqual(snapshotState);
 	});
 
 	it("rejects invalid JSON", () => {
@@ -91,6 +116,20 @@ describe("snapshot util", () => {
 			schemaVersion: 1,
 			state: { ...snapshotState, criteria: {} },
 		});
+		expect(() => parseSnapshotJson(text)).toThrowError(
+			/Snapshot format is not supported\./,
+		);
+	});
+
+	it("rejects invalid legacy rank key types", () => {
+		const text = JSON.stringify({
+			schemaVersion: 1,
+			state: {
+				...snapshotState,
+				rankOrder: {},
+			},
+		});
+
 		expect(() => parseSnapshotJson(text)).toThrowError(
 			/Snapshot format is not supported\./,
 		);

@@ -1,4 +1,4 @@
-import { type MethodKey, getRankScore, normalizeRankOrder } from "$lib/state";
+import { type MethodKey } from "$lib/state";
 import type { Alternative, Criteria } from "$lib/types";
 import { getAllocateScores, normalizeAllocation } from "$lib/util/allocate";
 import { getTopsisCloseness } from "$lib/util/topsis";
@@ -40,14 +40,6 @@ const guidanceByMethod: Record<MethodKey, GuidanceCopy> = {
 			"It emphasizes direct wins and ties instead of weighted totals, so ranking can differ from Weighted Sum or TOPSIS.",
 		caveat:
 			"Many ties reduce separation between options. Revisit close matchups if the output feels flat.",
-	},
-	rankOrder: {
-		summary:
-			"Rank converts your top-to-bottom ordering into a 0-10 score scale, keeping focus on ordinal preference.",
-		comparison:
-			"It ignores absolute performance size, so it is useful as a gut-check against weight-driven methods.",
-		caveat:
-			"When options are near-equal, forced ordering can overstate differences.",
 	},
 	topsis: {
 		summary:
@@ -99,18 +91,6 @@ const getPairwiseScores = (alternatives: Alternative[]) => {
 	});
 };
 
-const getRankScores = (alternatives: Alternative[], order: number[]) => {
-	const normalized = normalizeRankOrder(order, alternatives.length);
-	const byIndex = new Map<number, number>();
-	normalized.forEach((altIndex, i) => {
-		byIndex.set(altIndex, i);
-	});
-	return alternatives.map((_, i) => {
-		const rank = byIndex.get(i) ?? alternatives.length - 1;
-		return round(getRankScore(rank, alternatives.length));
-	});
-};
-
 const normalizeWeighted10 = (scores: number[], criteria: Criteria[]) => {
 	const denominator =
 		criteria.reduce((total, item) => total + (item.weight ?? 0), 0) * 10;
@@ -153,12 +133,10 @@ const rankWithTies = (scores: number[]) => {
 export const getMethodScores = (
 	alternatives: Alternative[],
 	criteria: Criteria[],
-	order: number[],
 	allocation?: number[][],
 ): MethodScores => {
 	const weightedRaw = getWeightedScores(alternatives, criteria);
 	const pairwiseRaw = getPairwiseScores(alternatives);
-	const rankRaw = getRankScores(alternatives, order);
 	const allocateRaw = getAllocateScores(
 		normalizeAllocation(allocation, criteria.length, alternatives.length),
 		criteria,
@@ -171,14 +149,12 @@ export const getMethodScores = (
 		raw: {
 			weightedSum: weightedRaw,
 			pairwise: pairwiseRaw,
-			rankOrder: rankRaw,
 			allocate: allocateRaw,
 			topsis: topsisRaw,
 		},
 		normalized10: {
 			weightedSum: normalizeWeighted10(weightedRaw, criteria),
 			pairwise: normalizePairwise10(pairwiseRaw, alternatives.length),
-			rankOrder: rankRaw,
 			allocate: allocateRaw,
 			topsis: topsisRaw,
 		},
@@ -189,7 +165,6 @@ export const getMethodRanks = (scores: MethodScoreMap): MethodScoreMap => {
 	return {
 		weightedSum: rankWithTies(scores.weightedSum),
 		pairwise: rankWithTies(scores.pairwise),
-		rankOrder: rankWithTies(scores.rankOrder),
 		allocate: rankWithTies(scores.allocate),
 		topsis: rankWithTies(scores.topsis),
 	};
@@ -361,7 +336,7 @@ export const getGuidanceCopy = ({
 			runner == null
 				? `${winner} is currently the top recommendation from the included methods.`
 				: `${winner} currently leads, with ${runner} as the closest runner-up.`,
-		comparison: `${agreementText} This guidance blends rank position across methods instead of relying on one scoring model.`,
+		comparison: `${agreementText} This guidance blends the surviving method results instead of relying on one scoring model.`,
 		caveat:
 			"If your priorities change, revisit criteria weights and pairwise judgments, then confirm the summary remains stable.",
 	};

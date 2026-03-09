@@ -26,7 +26,6 @@
 	const methodKeys: MethodKey[] = [
 		"weightedSum",
 		"pairwise",
-		"rankOrder",
 		"topsis",
 		"allocate",
 	];

@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type {
-		AllocateResearchResult,
 		AllocateResearchRequest,
+		AllocateResearchResult,
 		ResearchSource,
 		ScoreResearchRequest,
 		ScoreResearchResult,
@@ -275,7 +275,12 @@
 			<p class="font-medium">{target}</p>
 		</div>
 		{#if onClose != null}
-			<Button size="icon-sm" variant="ghost" aria-label={`Dismiss ${target}`} onclick={onClose}>
+			<Button
+				size="icon-sm"
+				variant="ghost"
+				aria-label={`Dismiss ${target}`}
+				onclick={onClose}
+			>
 				<XIcon class="size-3.5" />
 			</Button>
 		{/if}

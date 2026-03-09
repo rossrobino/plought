@@ -78,12 +78,7 @@ describe("home utilities", () => {
 		expect(
 			getHomeNextStep(
 				getSetupUsed({ start: true, alternatives: true, criteria: true }),
-				getAppUsed({
-					weigh: true,
-					score: true,
-					compare: true,
-					allocate: true,
-				}),
+				getAppUsed({ weigh: true, score: true, compare: true, allocate: true }),
 			),
 		).toMatchObject({ href: "/analysis", label: "Review summary" });
 	});

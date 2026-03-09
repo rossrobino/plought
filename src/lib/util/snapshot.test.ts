@@ -124,10 +124,7 @@ describe("snapshot util", () => {
 	it("rejects invalid legacy rank key types", () => {
 		const text = JSON.stringify({
 			schemaVersion: 1,
-			state: {
-				...snapshotState,
-				rankOrder: {},
-			},
+			state: { ...snapshotState, rankOrder: {} },
 		});
 
 		expect(() => parseSnapshotJson(text)).toThrowError(

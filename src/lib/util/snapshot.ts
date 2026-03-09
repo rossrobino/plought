@@ -75,7 +75,8 @@ const sanitizeState = (value: Record<string, unknown>): SnapshotImportState => {
 		next.criteria = state.criteria as SnapshotImportState["criteria"];
 	}
 	if ("alternatives" in state) {
-		next.alternatives = state.alternatives as SnapshotImportState["alternatives"];
+		next.alternatives =
+			state.alternatives as SnapshotImportState["alternatives"];
 	}
 	if ("allocation" in state) {
 		next.allocation = state.allocation as SnapshotImportState["allocation"];

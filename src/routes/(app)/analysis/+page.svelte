@@ -28,7 +28,9 @@
 		summaryRobustnessRuns,
 	} from "$lib/util/robustness";
 
-	let robustness = $state<ReturnType<typeof getRobustnessAnalysis> | null>(null);
+	let robustness = $state<ReturnType<typeof getRobustnessAnalysis> | null>(
+		null,
+	);
 	let comparison = $state<HTMLElement | null>(null);
 	let showComparisonChart = $state(false);
 	let comparisonChart = $state<Promise<
@@ -207,9 +209,11 @@
 		) {
 			return null;
 		}
-		return robustness.methods[robustnessMethod].alternatives[
-			consensus.winnerIndex
-		] ?? null;
+		return (
+			robustness.methods[robustnessMethod].alternatives[
+				consensus.winnerIndex
+			] ?? null
+		);
 	});
 
 	const sensitivityLabel = $derived.by(() => {

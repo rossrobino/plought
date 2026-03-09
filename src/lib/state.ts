@@ -2,12 +2,7 @@ import type { Alternative, Criteria, Decision } from "$lib/types";
 import { normalizeAllocation } from "$lib/util/allocate";
 import { PersistedState } from "runed";
 
-const methodKeys = [
-	"weightedSum",
-	"pairwise",
-	"topsis",
-	"allocate",
-] as const;
+const methodKeys = ["weightedSum", "pairwise", "topsis", "allocate"] as const;
 const appKeys = ["weigh", "score", "compare", "allocate"] as const;
 const setupStepKeys = ["start", "alternatives", "criteria"] as const;
 
@@ -216,11 +211,9 @@ const getMethodMeta = (): MethodMetaState => {
 				return defaults;
 			}
 		}
-			const hasLegacyData = [
-				"criteria",
-				"alternatives",
-				"decision",
-			].some((key) => storage.getItem(key) != null);
+		const hasLegacyData = ["criteria", "alternatives", "decision"].some(
+			(key) => storage.getItem(key) != null,
+		);
 		if (hasLegacyData) {
 			return {
 				...normalizeMethodMeta(undefined, true, true),

@@ -74,7 +74,10 @@
 		research?.scrollIntoView({ behavior: "smooth", block: "start" });
 	};
 
-	const canResearchCell = (alternativeIndex: number, criterionIndex: number) => {
+	const canResearchCell = (
+		alternativeIndex: number,
+		criterionIndex: number,
+	) => {
 		const alternative = alternatives.current[alternativeIndex];
 		const criterion = criteria.current[criterionIndex];
 		return (
@@ -114,10 +117,7 @@
 				: null,
 		};
 
-		items = [
-			next,
-			...items.filter((item) => item.key !== next.key),
-		];
+		items = [next, ...items.filter((item) => item.key !== next.key)];
 		await scrollResearch();
 	};
 
@@ -144,9 +144,8 @@
 			return;
 		}
 
-		alternatives.current[cell.alternativeIndex].scores[
-			cell.criterionIndex
-		] = Number(Math.max(0, Math.min(10, result.suggestedScore)).toFixed(2));
+		alternatives.current[cell.alternativeIndex].scores[cell.criterionIndex] =
+			Number(Math.max(0, Math.min(10, result.suggestedScore)).toFixed(2));
 		markAppUsed("score");
 		markMethodUsed("weightedSum");
 	};

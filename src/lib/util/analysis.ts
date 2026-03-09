@@ -274,9 +274,11 @@ export const getSummaryRobustnessMethod = (includedMethods: MethodKey[]) => {
 	if (!hasWeighted && !hasTopsis) {
 		return null;
 	}
-	if (includedMethods.some((method) => {
-		return method !== "weightedSum" && method !== "topsis";
-	})) {
+	if (
+		includedMethods.some((method) => {
+			return method !== "weightedSum" && method !== "topsis";
+		})
+	) {
 		return null;
 	}
 	if (hasWeighted && hasTopsis) {

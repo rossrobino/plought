@@ -3,20 +3,11 @@
 	import { ScrollArea } from "$lib/components/ui/scroll-area";
 	import SectionHeader from "$lib/components/ui/section-header.svelte";
 	import * as Table from "$lib/components/ui/table";
-	import {
-		allocation,
-		alternatives,
-		criteria,
-	} from "$lib/state";
+	import { allocation, alternatives, criteria } from "$lib/state";
 	import { getAllocateScores, normalizeAllocation } from "$lib/util/allocate";
 	import { getTopsisCloseness } from "$lib/util/topsis";
 
-	type SortBy =
-		| ""
-		| "weightedSum"
-		| "pairwise"
-		| "allocate"
-		| "topsis";
+	type SortBy = "" | "weightedSum" | "pairwise" | "allocate" | "topsis";
 
 	interface Props {
 		allocate?: boolean;

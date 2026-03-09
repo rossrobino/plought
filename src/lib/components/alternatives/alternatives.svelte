@@ -72,8 +72,8 @@
 		const key = `${alternativeIndex}:${criterionIndex}`;
 		return (
 			activeKeys.includes(key) ||
-			activeCell?.alternativeIndex === alternativeIndex &&
-			activeCell?.criterionIndex === criterionIndex
+			(activeCell?.alternativeIndex === alternativeIndex &&
+				activeCell?.criterionIndex === criterionIndex)
 		);
 	};
 </script>

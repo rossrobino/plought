@@ -292,10 +292,12 @@ describe("state", () => {
 		state.criteria.current.push({ weight: 0.7 }, { name: "Budget", weight: 2 });
 		state.alternatives.current.splice(0, state.alternatives.current.length);
 		// @ts-expect-error simulate legacy persisted alternative data
-		state.alternatives.current.push(
-			{ scores: [11], pairwise: [0.5, 1] },
-			{ name: "Train", scores: [-5, 8], pairwise: [0, 0.5] },
-		);
+		state.alternatives.current.push({ scores: [11], pairwise: [0.5, 1] });
+		state.alternatives.current.push({
+			name: "Train",
+			scores: [-5, 8],
+			pairwise: [0, 0.5],
+		});
 		state.allocation.current.splice(0, state.allocation.current.length, [60, 40]);
 
 		state.syncPersistedState();

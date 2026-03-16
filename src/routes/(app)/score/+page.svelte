@@ -17,7 +17,6 @@
 		markAppUsed,
 		markMethodUsed,
 	} from "$lib/state";
-	import { tick } from "svelte";
 
 	interface Cell {
 		alternativeIndex: number;
@@ -30,7 +29,6 @@
 	}
 
 	let items = $state<Item[]>([]);
-	let research = $state<HTMLDivElement | null>(null);
 
 	const activeKeys = $derived(items.map((item) => item.key));
 
@@ -67,11 +65,6 @@
 			return "Rename this criterion before researching it.";
 		}
 		return "";
-	};
-
-	const scrollResearch = async () => {
-		await tick();
-		research?.scrollIntoView({ behavior: "smooth", block: "start" });
 	};
 
 	const canResearchCell = (
@@ -118,7 +111,6 @@
 		};
 
 		items = [next, ...items.filter((item) => item.key !== next.key)];
-		await scrollResearch();
 	};
 
 	const dismiss = (key: string) => {
@@ -161,7 +153,7 @@
 />
 
 {#if items.length > 0}
-	<div bind:this={research} class="grid gap-3">
+	<div class="grid gap-3">
 		{#each items as item (item.key)}
 			<ResearchPanel
 				canGenerate={getMessage(item).length === 0}

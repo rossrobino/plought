@@ -97,10 +97,7 @@
 		};
 	};
 
-	const selectCell = async (
-		alternativeIndex: number,
-		criterionIndex: number,
-	) => {
+	const selectCell = (alternativeIndex: number, criterionIndex: number) => {
 		const cell = { alternativeIndex, criterionIndex };
 		const next: Item = {
 			...cell,
@@ -156,6 +153,7 @@
 	<div class="grid gap-3">
 		{#each items as item (item.key)}
 			<ResearchPanel
+				autoScrollOnRequest={false}
 				canGenerate={getMessage(item).length === 0}
 				message={getMessage(item)}
 				target={getTarget(item)}

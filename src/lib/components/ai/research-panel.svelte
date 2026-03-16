@@ -18,6 +18,7 @@
 	type LoadRequest = ScoreResearchRequest | AllocateResearchRequest;
 	type Card = { pending: boolean; value: Result | null };
 	type Props = {
+		autoScrollOnRequest?: boolean;
 		canGenerate: boolean;
 		load: (input: LoadRequest) => PromiseLike<Result>;
 		message?: string;
@@ -29,6 +30,7 @@
 	};
 
 	let {
+		autoScrollOnRequest = true,
 		canGenerate,
 		load,
 		message = "",
@@ -82,6 +84,9 @@
 		}
 
 		applied = false;
+		if (!autoScrollOnRequest) {
+			return;
+		}
 		tick().then(() => {
 			output?.scrollIntoView({ behavior: "smooth", block: "start" });
 		});

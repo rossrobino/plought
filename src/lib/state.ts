@@ -616,6 +616,93 @@ export const decision = new PersistedState("decision", getDecision());
 
 cleanupLegacyRankStorage();
 
+export const syncPersistedState = () => {
+	const nextDecision = normalizeDecisionState(decision.current, getDecision());
+	const nextCriteria = normalizeCriteriaState(criteria.current, getCriteria());
+	const nextAlternatives = normalizeAlternativesState(
+		alternatives.current,
+		nextCriteria.length,
+		getAlternatives().length,
+	);
+	const nextAllocation = normalizeAllocation(
+		Array.isArray(allocation.current) ? allocation.current : undefined,
+		nextCriteria.length,
+		nextAlternatives.length,
+	);
+	const nextMethodMeta = normalizeMethodMeta(methodMeta.current);
+	const nextAppMeta = normalizeAppMeta(appMeta.current);
+	const nextSetupStepMeta = normalizeSetupStepMeta(setupStepMeta.current);
+	const currentDecision = decision.current;
+	const currentCriteria = criteria.current;
+	const currentAlternatives = alternatives.current;
+	const currentAllocation = allocation.current;
+	const currentMethodMeta = methodMeta.current;
+	const currentAppMeta = appMeta.current;
+	const currentSetupStepMeta = setupStepMeta.current;
+
+	if (
+		currentDecision != null &&
+		typeof currentDecision === "object" &&
+		!Array.isArray(currentDecision)
+	) {
+		applyDecision(nextDecision);
+	} else {
+		decision.current = nextDecision;
+	}
+
+	if (Array.isArray(currentCriteria)) {
+		applyArray(currentCriteria, nextCriteria);
+	} else {
+		criteria.current = nextCriteria;
+	}
+
+	if (Array.isArray(currentAlternatives)) {
+		applyArray(currentAlternatives, nextAlternatives);
+	} else {
+		alternatives.current = nextAlternatives;
+	}
+
+	if (Array.isArray(currentAllocation)) {
+		applyArray(currentAllocation, nextAllocation);
+	} else {
+		allocation.current = nextAllocation;
+	}
+
+	if (
+		currentMethodMeta != null &&
+		typeof currentMethodMeta === "object" &&
+		!Array.isArray(currentMethodMeta)
+	) {
+		applyMethodMeta(nextMethodMeta);
+	} else {
+		methodMeta.current = nextMethodMeta;
+	}
+
+	if (
+		currentAppMeta != null &&
+		typeof currentAppMeta === "object" &&
+		!Array.isArray(currentAppMeta)
+	) {
+		applyAppMeta(nextAppMeta);
+	} else {
+		appMeta.current = nextAppMeta;
+	}
+
+	if (
+		currentSetupStepMeta != null &&
+		typeof currentSetupStepMeta === "object" &&
+		!Array.isArray(currentSetupStepMeta)
+	) {
+		applySetupStepMeta(nextSetupStepMeta);
+	} else {
+		setupStepMeta.current = nextSetupStepMeta;
+	}
+};
+
+if (typeof window !== "undefined") {
+	syncPersistedState();
+}
+
 const syncMethodMeta = () => {
 	const current = methodMeta.current;
 	const next = normalizeMethodMeta(current);

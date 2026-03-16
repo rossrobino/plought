@@ -283,6 +283,45 @@ describe("state", () => {
 		expect(state.isSetupStepUsed("criteria")).toBe(false);
 	});
 
+	it("normalizes malformed persisted state", () => {
+		state.decision.current.title = "Imported";
+		Reflect.deleteProperty(state.decision.current, "goal");
+		Reflect.deleteProperty(state.decision.current, "notes");
+		state.criteria.current.splice(0, state.criteria.current.length);
+		// @ts-expect-error simulate legacy persisted criteria data
+		state.criteria.current.push({ weight: 0.7 }, { name: "Budget", weight: 2 });
+		state.alternatives.current.splice(0, state.alternatives.current.length);
+		// @ts-expect-error simulate legacy persisted alternative data
+		state.alternatives.current.push(
+			{ scores: [11], pairwise: [0.5, 1] },
+			{ name: "Train", scores: [-5, 8], pairwise: [0, 0.5] },
+		);
+		state.allocation.current.splice(0, state.allocation.current.length, [60, 40]);
+
+		state.syncPersistedState();
+
+		expect(state.decision.current).toEqual({
+			title: "Imported",
+			goal: state.decisionDefaults.goal,
+			notes: state.decisionDefaults.notes,
+		});
+		expect(state.criteria.current).toEqual([
+			{ name: "Criterion #1", weight: 0.7 },
+			{ name: "Budget", weight: 1 },
+		]);
+		expect(state.alternatives.current).toEqual([
+			{ name: "Alternative #1", scores: [10, 5], pairwise: [0.5, 1] },
+			{ name: "Train", scores: [0, 8], pairwise: [0, 0.5] },
+		]);
+		expect(state.allocation.current).toHaveLength(2);
+		expect(state.allocation.current.every((row) => row.length === 2)).toBe(true);
+		expect(
+			state.allocation.current.every((row) => {
+				return Math.abs(row.reduce((a, b) => a + b, 0) - 100) < 0.001;
+			}),
+		).toBe(true);
+	});
+
 	it("cleans legacy rank storage on load", async () => {
 		window.localStorage.setItem("rankOrder", JSON.stringify([1, 0]));
 		window.localStorage.setItem(

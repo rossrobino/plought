@@ -211,7 +211,7 @@
 		<Sidebar.Group>
 			<Sidebar.GroupLabel>Data</Sidebar.GroupLabel>
 			<Sidebar.GroupContent>
-				<SnapshotActions onAction={closeSidebarOnMobile} />
+				<SnapshotActions />
 			</Sidebar.GroupContent>
 		</Sidebar.Group>
 

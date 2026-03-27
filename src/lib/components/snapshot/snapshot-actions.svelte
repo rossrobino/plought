@@ -40,12 +40,6 @@
 			close: () => Promise<void>;
 		}>;
 	}>;
-
-	interface Props {
-		onAction?: () => void;
-	}
-
-	let { onAction }: Props = $props();
 	let fileInput = $state<HTMLInputElement | null>(null);
 	let confirmOpen = $state(false);
 	let statusOpen = $state(false);
@@ -109,7 +103,6 @@
 	};
 
 	const exportSnapshot = async () => {
-		onAction?.();
 		try {
 			const file = createSnapshotFile(exportSnapshotState());
 			const text = serializeSnapshot(file);
@@ -143,7 +136,6 @@
 	};
 
 	const triggerImport = () => {
-		onAction?.();
 		fileInput?.click();
 	};
 
@@ -206,7 +198,6 @@
 	<Reset
 		variant="outline"
 		className="col-span-2 w-full justify-center border-destructive/40 text-destructive hover:bg-destructive/10 hover:text-destructive"
-		{onAction}
 	/>
 </div>
 

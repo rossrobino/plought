@@ -283,24 +283,25 @@ describe("state", () => {
 		expect(state.isSetupStepUsed("criteria")).toBe(false);
 	});
 
-	it("normalizes malformed persisted state", () => {
-		state.decision.current.title = "Imported";
-		Reflect.deleteProperty(state.decision.current, "goal");
-		Reflect.deleteProperty(state.decision.current, "notes");
-		state.criteria.current.splice(0, state.criteria.current.length);
-		// @ts-expect-error simulate legacy persisted criteria data
-		state.criteria.current.push({ weight: 0.7 }, { name: "Budget", weight: 2 });
-		state.alternatives.current.splice(0, state.alternatives.current.length);
-		// @ts-expect-error simulate legacy persisted alternative data
-		state.alternatives.current.push({ scores: [11], pairwise: [0.5, 1] });
-		state.alternatives.current.push({
-			name: "Train",
-			scores: [-5, 8],
-			pairwise: [0, 0.5],
-		});
-		state.allocation.current.splice(0, state.allocation.current.length, [60, 40]);
-
-		state.syncPersistedState();
+	it("normalizes malformed persisted state", async () => {
+		window.localStorage.setItem(
+			"decision",
+			JSON.stringify({ title: "Imported" }),
+		);
+		window.localStorage.setItem(
+			"criteria",
+			JSON.stringify([{ weight: 0.7 }, { name: "Budget", weight: 2 }]),
+		);
+		window.localStorage.setItem(
+			"alternatives",
+			JSON.stringify([
+				{ scores: [11], pairwise: [0.5, 1] },
+				{ name: "Train", scores: [-5, 8], pairwise: [0, 0.5] },
+			]),
+		);
+		window.localStorage.setItem("allocation", JSON.stringify([[60, 40]]));
+		vi.resetModules();
+		state = await import("$lib/state");
 
 		expect(state.decision.current).toEqual({
 			title: "Imported",
@@ -316,7 +317,9 @@ describe("state", () => {
 			{ name: "Train", scores: [0, 8], pairwise: [0, 0.5] },
 		]);
 		expect(state.allocation.current).toHaveLength(2);
-		expect(state.allocation.current.every((row) => row.length === 2)).toBe(true);
+		expect(state.allocation.current.every((row) => row.length === 2)).toBe(
+			true,
+		);
 		expect(
 			state.allocation.current.every((row) => {
 				return Math.abs(row.reduce((a, b) => a + b, 0) - 100) < 0.001;

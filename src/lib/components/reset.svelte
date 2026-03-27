@@ -15,11 +15,10 @@
 
 	interface Props {
 		className?: string;
-		onAction?: () => void;
 		variant?: ResetVariant;
 	}
 
-	let { className = "", onAction, variant = "secondary" }: Props = $props();
+	let { className = "", variant = "secondary" }: Props = $props();
 	let open = $state(false);
 
 	const handleReset = async () => {
@@ -29,7 +28,6 @@
 	};
 
 	const openDialog = () => {
-		onAction?.();
 		open = true;
 	};
 </script>

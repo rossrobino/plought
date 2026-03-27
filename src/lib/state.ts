@@ -616,7 +616,7 @@ export const decision = new PersistedState("decision", getDecision());
 
 cleanupLegacyRankStorage();
 
-export const syncPersistedState = () => {
+const syncPersistedState = () => {
 	const nextDecision = normalizeDecisionState(decision.current, getDecision());
 	const nextCriteria = normalizeCriteriaState(criteria.current, getCriteria());
 	const nextAlternatives = normalizeAlternativesState(

@@ -87,7 +87,7 @@
 		aria-label={label}
 		aria-valuetext={text}
 		class={[
-			"block size-4 rounded-[2px] border border-primary/50 bg-background shadow-sm transition-[color,box-shadow] outline-none",
+			"block size-5 rounded-[2px] border border-primary/50 bg-background shadow-sm transition-[color,box-shadow] outline-none md:size-4",
 			"focus-visible:ring-2 focus-visible:ring-ring/50 focus-visible:outline-1 focus-visible:outline-ring",
 			"disabled:pointer-events-none disabled:opacity-50",
 		]}

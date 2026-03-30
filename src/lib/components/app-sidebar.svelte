@@ -5,7 +5,7 @@
 	import SnapshotActions from "$lib/components/snapshot/snapshot-actions.svelte";
 	import * as Sidebar from "$lib/components/ui/sidebar";
 	import { apps as appRegistry, info } from "$lib/info";
-	import { type SetupStepKey, isAppUsed, isSetupStepUsed } from "$lib/state";
+	import { type SetupStepKey, isAppUsed, isSetupStepDone } from "$lib/state";
 	import BarChart3Icon from "@lucide/svelte/icons/bar-chart-3";
 	import CheckIcon from "@lucide/svelte/icons/check";
 	import FlagIcon from "@lucide/svelte/icons/flag";
@@ -131,7 +131,7 @@
 									</a>
 								{/snippet}
 							</Sidebar.MenuButton>
-							{#if isSetupStepUsed(item.step)}
+							{#if isSetupStepDone(item.step)}
 								<Sidebar.MenuBadge
 									class={completedBadgeClass}
 									aria-hidden="true"

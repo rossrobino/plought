@@ -50,15 +50,9 @@ export interface SnapshotImportState {
 	setupStepMeta?: SetupStepMetaInput;
 }
 
-const getCriteria = (): Criteria[] => [
-	{ name: "Criterion #1", weight: 0.5 },
-	{ name: "Criterion #2", weight: 0.5 },
-];
+const getCriteria = (): Criteria[] => [];
 
-const getAlternatives = (): Alternative[] => [
-	{ name: "Alternative #1", scores: [5, 5], pairwise: [0.5, 0.5] },
-	{ name: "Alternative #2", scores: [5, 5], pairwise: [0.5, 0.5] },
-];
+const getAlternatives = (): Alternative[] => [];
 
 const alternativePlaceholderPattern = /^Alternative #\d+$/i;
 const criteriaPlaceholderPattern = /^Criterion #\d+$/i;
@@ -69,6 +63,20 @@ export const isAlternativePlaceholder = (value: string) => {
 
 export const isCriteriaPlaceholder = (value: string) => {
 	return criteriaPlaceholderPattern.test(value.trim());
+};
+
+const hasText = (value: string | null | undefined) => {
+	return typeof value === "string" && value.trim().length > 0;
+};
+
+const hasNamedValue = (
+	values: Array<{ name: string }>,
+	isPlaceholder: (value: string) => boolean,
+) => {
+	return values.some((item) => {
+		const name = collapseName(item.name);
+		return name.length > 0 && !isPlaceholder(name);
+	});
 };
 
 const cleanupLegacyRankStorage = () => {
@@ -315,11 +323,7 @@ const getAllocationState = () => {
 	}
 };
 
-export const decisionDefaults: Decision = {
-	title: "My Decision",
-	goal: "Choose the best option based on my priorities.",
-	notes: "",
-};
+export const decisionDefaults: Decision = { title: "", goal: "", notes: "" };
 
 const getDecision = (): Decision => {
 	return { ...decisionDefaults };
@@ -413,11 +417,11 @@ const cloneSetupStepMeta = (value: SetupStepMetaState) => {
 };
 
 const getDefaultAlternatives = (count: number, criteriaCount: number) => {
-	const safeCount = Math.max(1, count);
+	const safeCount = Math.max(0, count);
 	return Array.from({ length: safeCount }, (_, i) => {
 		return {
 			name: `Alternative #${i + 1}`,
-			scores: Array.from({ length: criteriaCount }, () => 5),
+			scores: Array.from({ length: criteriaCount }, () => 0),
 			pairwise: Array.from({ length: safeCount }, () => 0.5),
 		} satisfies Alternative;
 	});
@@ -435,6 +439,30 @@ const normalizeDecisionState = (
 		goal: typeof value.goal === "string" ? value.goal : fallback.goal,
 		notes: typeof value.notes === "string" ? value.notes : fallback.notes,
 	};
+};
+
+const getDecisionState = () => {
+	const defaults = getDecision();
+	if (typeof window === "undefined") {
+		return defaults;
+	}
+	try {
+		const storage = window.localStorage;
+		const current = storage.getItem("decision");
+		if (current != null) {
+			try {
+				return normalizeDecisionState(
+					JSON.parse(current) as Partial<Decision>,
+					defaults,
+				);
+			} catch {
+				return defaults;
+			}
+		}
+		return defaults;
+	} catch {
+		return defaults;
+	}
 };
 
 const normalizeCriteriaState = (
@@ -532,6 +560,55 @@ const normalizeAlternativesState = (
 	return next;
 };
 
+const getCriteriaState = () => {
+	const defaults = getCriteria();
+	if (typeof window === "undefined") {
+		return defaults;
+	}
+	try {
+		const storage = window.localStorage;
+		const current = storage.getItem("criteria");
+		if (current != null) {
+			try {
+				return normalizeCriteriaState(
+					JSON.parse(current) as Criteria[],
+					defaults,
+				);
+			} catch {
+				return defaults;
+			}
+		}
+		return defaults;
+	} catch {
+		return defaults;
+	}
+};
+
+const getAlternativesState = () => {
+	const defaults = getAlternatives();
+	if (typeof window === "undefined") {
+		return defaults;
+	}
+	try {
+		const storage = window.localStorage;
+		const current = storage.getItem("alternatives");
+		if (current != null) {
+			try {
+				return normalizeAlternativesState(
+					JSON.parse(current) as Alternative[],
+					getCriteriaState().length,
+					defaults.length,
+				);
+			} catch {
+				return defaults;
+			}
+		}
+		return defaults;
+	} catch {
+		return defaults;
+	}
+};
+
 const applyArray = <T>(target: T[], next: T[]) => {
 	target.splice(0, target.length, ...next);
 };
@@ -603,16 +680,16 @@ const normalizePercent = (values: number[], target = 100) => {
 const methodMeta = new PersistedState("methodMeta", getMethodMeta());
 const appMeta = new PersistedState("appMeta", getAppMeta());
 const setupStepMeta = new PersistedState("setupStepMeta", getSetupStepMeta());
-export const criteria = new PersistedState("criteria", getCriteria());
+export const criteria = new PersistedState("criteria", getCriteriaState());
 export const alternatives = new PersistedState(
 	"alternatives",
-	getAlternatives(),
+	getAlternativesState(),
 );
 export const allocation = new PersistedState(
 	"allocation",
 	getAllocationState(),
 );
-export const decision = new PersistedState("decision", getDecision());
+export const decision = new PersistedState("decision", getDecisionState());
 
 cleanupLegacyRankStorage();
 
@@ -984,6 +1061,32 @@ export const isMethodIncluded = (method: MethodKey) => {
 
 export const isSetupStepUsed = (step: SetupStepKey) => {
 	return syncSetupStepMeta()[step]?.used ?? false;
+};
+
+export const hasDecisionContent = (
+	value: Partial<Decision> | null | undefined,
+) => {
+	return hasText(value?.title) || hasText(value?.goal) || hasText(value?.notes);
+};
+
+export const hasAlternativesContent = (value: Alternative[]) => {
+	return hasNamedValue(value, isAlternativePlaceholder);
+};
+
+export const hasCriteriaContent = (value: Criteria[]) => {
+	return hasNamedValue(value, isCriteriaPlaceholder);
+};
+
+export const isSetupStepDone = (step: SetupStepKey) => {
+	if (step === "start") {
+		return hasDecisionContent(decision.current);
+	}
+
+	if (step === "alternatives") {
+		return hasAlternativesContent(alternatives.current);
+	}
+
+	return hasCriteriaContent(criteria.current);
 };
 
 export const reset = () => {

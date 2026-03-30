@@ -11,7 +11,6 @@
 	import {
 		type MethodKey,
 		alternatives,
-		appendCriteria,
 		criteria,
 		markMethodUsed,
 		normalizeCriteriaWeights,
@@ -115,7 +114,12 @@
 	};
 
 	const addCriteria = () => {
-		appendCriteria([`Criterion #${criteria.current.length + 1}`]);
+		criteria.current.push({ name: "", weight: 0 });
+		alternatives.current.forEach((item) => {
+			item.scores.push(0);
+		});
+		syncAllocation();
+		normalizeCriteriaWeights();
 		markUsed();
 	};
 
@@ -220,7 +224,13 @@
 		</Info>
 	</div>
 	<Tooltip.Provider>
-		{#if tableView}
+		{#if criteria.current.length === 0}
+			<div
+				class="mt-3 rounded-md border bg-muted/10 px-4 py-2 text-center text-sm text-muted-foreground"
+			>
+				Add criteria to get started.
+			</div>
+		{:else if tableView}
 			<ScrollArea
 				class="mt-3 w-full rounded-md border whitespace-nowrap"
 				orientation="horizontal"
@@ -289,34 +299,14 @@
 								{/if}
 								{#if manageList}
 									<Table.Cell>
-										<Tooltip.Root>
-											<Tooltip.Trigger>
-												{#snippet child({ props })}
-													<Button
-														{...props}
-														variant="secondary"
-														size="icon-sm"
-														aria-disabled={criteria.current.length < 2}
-														class={criteria.current.length < 2
-															? "aria-disabled:pointer-events-auto"
-															: undefined}
-														onclick={() => {
-															if (criteria.current.length >= 2) {
-																removeCriteria(i);
-															}
-														}}
-														aria-label={`Remove criteria ${i + 1}`}
-													>
-														<XIcon class="size-4" />
-													</Button>
-												{/snippet}
-											</Tooltip.Trigger>
-											{#if criteria.current.length < 2}
-												<Tooltip.Content sideOffset={8}>
-													At least two criteria are required.
-												</Tooltip.Content>
-											{/if}
-										</Tooltip.Root>
+										<Button
+											variant="secondary"
+											size="icon-sm"
+											onclick={() => removeCriteria(i)}
+											aria-label={`Remove criteria ${i + 1}`}
+										>
+											<XIcon class="size-4" />
+										</Button>
 									</Table.Cell>
 								{/if}
 							</Table.Row>
@@ -369,34 +359,14 @@
 									{toPercent(item.weight)}%
 								</p>
 								{#if manageList}
-									<Tooltip.Root>
-										<Tooltip.Trigger>
-											{#snippet child({ props })}
-												<Button
-													{...props}
-													variant="secondary"
-													size="icon-sm"
-													aria-disabled={criteria.current.length < 2}
-													class={criteria.current.length < 2
-														? "aria-disabled:pointer-events-auto"
-														: undefined}
-													onclick={() => {
-														if (criteria.current.length >= 2) {
-															removeCriteria(i);
-														}
-													}}
-													aria-label={`Remove criteria ${i + 1}`}
-												>
-													<XIcon class="size-4" />
-												</Button>
-											{/snippet}
-										</Tooltip.Trigger>
-										{#if criteria.current.length < 2}
-											<Tooltip.Content sideOffset={8}>
-												At least two criteria are required.
-											</Tooltip.Content>
-										{/if}
-									</Tooltip.Root>
+									<Button
+										variant="secondary"
+										size="icon-sm"
+										onclick={() => removeCriteria(i)}
+										aria-label={`Remove criteria ${i + 1}`}
+									>
+										<XIcon class="size-4" />
+									</Button>
 								{/if}
 							</div>
 						</div>
@@ -463,34 +433,14 @@
 							{/if}
 						</div>
 						{#if manageList}
-							<Tooltip.Root>
-								<Tooltip.Trigger>
-									{#snippet child({ props })}
-										<Button
-											{...props}
-											variant="secondary"
-											size="icon-sm"
-											aria-disabled={criteria.current.length < 2}
-											class={criteria.current.length < 2
-												? "aria-disabled:pointer-events-auto"
-												: undefined}
-											onclick={() => {
-												if (criteria.current.length >= 2) {
-													removeCriteria(i);
-												}
-											}}
-											aria-label={`Remove criteria ${i + 1}`}
-										>
-											<XIcon class="size-4" />
-										</Button>
-									{/snippet}
-								</Tooltip.Trigger>
-								{#if criteria.current.length < 2}
-									<Tooltip.Content sideOffset={8}>
-										At least two criteria are required.
-									</Tooltip.Content>
-								{/if}
-							</Tooltip.Root>
+							<Button
+								variant="secondary"
+								size="icon-sm"
+								onclick={() => removeCriteria(i)}
+								aria-label={`Remove criteria ${i + 1}`}
+							>
+								<XIcon class="size-4" />
+							</Button>
 						{/if}
 					</li>
 				{/each}

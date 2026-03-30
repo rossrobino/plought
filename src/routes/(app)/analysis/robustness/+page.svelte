@@ -1,7 +1,6 @@
 <script lang="ts">
 	import Head from "$lib/components/head.svelte";
 	import ScoreBars from "$lib/components/output/charts/score-bars.svelte";
-	import { Button } from "$lib/components/ui/button";
 	import * as Field from "$lib/components/ui/field";
 	import { Input } from "$lib/components/ui/input";
 	import { ScrollArea } from "$lib/components/ui/scroll-area";
@@ -140,18 +139,6 @@
 				How much each criterion weight can randomly move up or down per run.
 			</Field.Description>
 		</Field.Field>
-	</div>
-	<div class="mt-3 flex flex-wrap gap-2 border-t border-border/60 pt-3">
-		<Button href="/setup/criteria" size="sm" variant="outline">
-			Edit criteria
-		</Button>
-		<Button href="/setup/alternatives" size="sm" variant="outline">
-			Edit alternatives
-		</Button>
-		<Button href="/weigh" size="sm" variant="outline">Weigh criteria</Button>
-		<Button href="/score" size="sm" variant="outline">
-			Score alternatives
-		</Button>
 	</div>
 </section>
 

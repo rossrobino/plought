@@ -19,6 +19,7 @@
 	}
 
 	let { best, rows, worst }: Props = $props();
+	const hasData = $derived(rows.length > 0);
 
 	const config = $derived<ChartConfig>({
 		trend: { color: chartColors[1], label: "Trend" },
@@ -53,164 +54,172 @@
 	};
 </script>
 
-<div class="sr-only">
-	<table>
-		<caption>
-			TOPSIS closeness, distance to best, and distance to worst.
-		</caption>
-		<thead>
-			<tr>
-				<th scope="col">Alternative</th>
-				<th scope="col">Closeness</th>
-				<th scope="col">Distance to best</th>
-				<th scope="col">Distance to worst</th>
-			</tr>
-		</thead>
-		<tbody>
-			{#each data as item (item.key)}
-				<tr>
-					<th scope="row">{item.label}</th>
-					<td>{formatValue(item.closeness)}</td>
-					<td>{formatValue(item.best)}</td>
-					<td>{formatValue(item.worst)}</td>
-				</tr>
-			{/each}
-		</tbody>
-	</table>
-</div>
-
-<div aria-hidden="true">
-	<ChartContainer
-		{config}
-		class="aspect-auto flex-col items-stretch justify-start gap-2 rounded-lg border bg-muted/20 p-2 shadow-xs"
+{#if !hasData}
+	<div
+		class="rounded-lg border bg-muted/20 p-4 text-sm text-muted-foreground shadow-xs"
 	>
-		<div class="w-full" style={`height:${height}px;`}>
-			<LineChart
-				{data}
-				x={(d: Row) => d.closeness}
-				y={() => 0.5}
-				xDomain={[0, 10]}
-				{yDomain}
-				padding={chartPadding}
-				axis="x"
-				grid={false}
-				rule={false}
-				labels={false}
-				legend={false}
-				points={false}
-				highlight={false}
-				props={{
-					xAxis: {
-						format: (tick: number | string) => {
-							const value = Number(tick);
-							if (value === 0) {
-								return "Worst";
-							}
-							if (value === 10) {
-								return "Best";
-							}
-							return `${value}`;
-						},
-						ticks: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
-						tickMarks: false,
-						tickSpacing: 52,
-					},
-				}}
-			>
-				{#snippet marks({ context })}
-					{@const axisY = Number(context.yScale(0.5))}
-					{@const axisStart = Math.min(
-						Number(context.xRange[0] ?? 0),
-						Number(context.xRange[1] ?? 0),
-					)}
-					{@const axisEnd = Math.max(
-						Number(context.xRange[0] ?? 0),
-						Number(context.xRange[1] ?? 0),
-					)}
-					{@const capHeight = 18}
-					<line
-						x1={axisStart}
-						y1={axisY}
-						x2={axisEnd}
-						y2={axisY}
-						stroke={chartColors[1]}
-						stroke-linecap="round"
-						stroke-opacity="0.45"
-						stroke-width="4"
-					/>
-					<rect
-						x={axisStart - 1.5}
-						y={axisY - capHeight / 2}
-						width={3}
-						height={capHeight}
-						rx={1.5}
-						fill={chartColors[1]}
-						fill-opacity="0.38"
-					/>
-					<rect
-						x={axisEnd - 1.5}
-						y={axisY - capHeight / 2}
-						width={3}
-						height={capHeight}
-						rx={1.5}
-						fill={chartColors[1]}
-						fill-opacity="0.38"
-					/>
-					{#each data as item (item.key)}
-						<Circle
-							cx={Number(context.xScale(item.closeness))}
-							cy={axisY}
-							r={8}
-							fill={item.color}
-							stroke="var(--background)"
-							strokeWidth={2}
-						/>
-					{/each}
-				{/snippet}
-				{#snippet tooltip({ context })}
-					<Tooltip.Root {context} variant="none">
-						{#snippet children({ data: item })}
-							<div
-								class="grid min-w-[12rem] items-start gap-1.5 rounded-lg border border-border/50 bg-background px-2.5 py-1.5 text-xs shadow-xl"
-							>
-								<div class="font-medium text-foreground">{item.label}</div>
-								<div class="flex items-center justify-between gap-4">
-									<span class="text-muted-foreground">Closeness</span>
-									<span class="font-mono font-medium tabular-nums">
-										{formatValue(item.closeness)}
-									</span>
-								</div>
-								<div class="flex items-center justify-between gap-4">
-									<span class="text-muted-foreground">Distance to best</span>
-									<span class="font-mono tabular-nums">
-										{formatValue(item.best)}
-									</span>
-								</div>
-								<div class="flex items-center justify-between gap-4">
-									<span class="text-muted-foreground">Distance to worst</span>
-									<span class="font-mono tabular-nums">
-										{formatValue(item.worst)}
-									</span>
-								</div>
-							</div>
-						{/snippet}
-					</Tooltip.Root>
-				{/snippet}
-			</LineChart>
-		</div>
+		Not enough data to display this chart yet.
+	</div>
+{:else}
+	<div class="sr-only">
+		<table>
+			<caption>
+				TOPSIS closeness, distance to best, and distance to worst.
+			</caption>
+			<thead>
+				<tr>
+					<th scope="col">Alternative</th>
+					<th scope="col">Closeness</th>
+					<th scope="col">Distance to best</th>
+					<th scope="col">Distance to worst</th>
+				</tr>
+			</thead>
+			<tbody>
+				{#each data as item (item.key)}
+					<tr>
+						<th scope="row">{item.label}</th>
+						<td>{formatValue(item.closeness)}</td>
+						<td>{formatValue(item.best)}</td>
+						<td>{formatValue(item.worst)}</td>
+					</tr>
+				{/each}
+			</tbody>
+		</table>
+	</div>
 
-		<div
-			class="flex flex-wrap items-center justify-center gap-x-4 gap-y-1 px-2 pt-1 pb-0 text-xs"
+	<div aria-hidden="true">
+		<ChartContainer
+			{config}
+			class="aspect-auto flex-col items-stretch justify-start gap-2 rounded-lg border bg-muted/20 p-2 shadow-xs"
 		>
-			{#each data as item (item.key)}
-				<div class="flex items-center gap-1.5 text-muted-foreground">
-					<span
-						class="inline-block size-2.5 rounded-none"
-						style={`background-color:${item.color};`}
-					></span>
-					<span>{item.label}</span>
-				</div>
-			{/each}
-		</div>
-	</ChartContainer>
-</div>
+			<div class="w-full" style={`height:${height}px;`}>
+				<LineChart
+					{data}
+					x={(d: Row) => d.closeness}
+					y={() => 0.5}
+					xDomain={[0, 10]}
+					{yDomain}
+					padding={chartPadding}
+					axis="x"
+					grid={false}
+					rule={false}
+					labels={false}
+					legend={false}
+					points={false}
+					highlight={false}
+					props={{
+						xAxis: {
+							format: (tick: number | string) => {
+								const value = Number(tick);
+								if (value === 0) {
+									return "Worst";
+								}
+								if (value === 10) {
+									return "Best";
+								}
+								return `${value}`;
+							},
+							ticks: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+							tickMarks: false,
+							tickSpacing: 52,
+						},
+					}}
+				>
+					{#snippet marks({ context })}
+						{@const axisY = Number(context.yScale(0.5))}
+						{@const axisStart = Math.min(
+							Number(context.xRange[0] ?? 0),
+							Number(context.xRange[1] ?? 0),
+						)}
+						{@const axisEnd = Math.max(
+							Number(context.xRange[0] ?? 0),
+							Number(context.xRange[1] ?? 0),
+						)}
+						{@const capHeight = 18}
+						<line
+							x1={axisStart}
+							y1={axisY}
+							x2={axisEnd}
+							y2={axisY}
+							stroke={chartColors[1]}
+							stroke-linecap="round"
+							stroke-opacity="0.45"
+							stroke-width="4"
+						/>
+						<rect
+							x={axisStart - 1.5}
+							y={axisY - capHeight / 2}
+							width={3}
+							height={capHeight}
+							rx={1.5}
+							fill={chartColors[1]}
+							fill-opacity="0.38"
+						/>
+						<rect
+							x={axisEnd - 1.5}
+							y={axisY - capHeight / 2}
+							width={3}
+							height={capHeight}
+							rx={1.5}
+							fill={chartColors[1]}
+							fill-opacity="0.38"
+						/>
+						{#each data as item (item.key)}
+							<Circle
+								cx={Number(context.xScale(item.closeness))}
+								cy={axisY}
+								r={8}
+								fill={item.color}
+								stroke="var(--background)"
+								strokeWidth={2}
+							/>
+						{/each}
+					{/snippet}
+					{#snippet tooltip({ context })}
+						<Tooltip.Root {context} variant="none">
+							{#snippet children({ data: item })}
+								<div
+									class="grid min-w-[12rem] items-start gap-1.5 rounded-lg border border-border/50 bg-background px-2.5 py-1.5 text-xs shadow-xl"
+								>
+									<div class="font-medium text-foreground">{item.label}</div>
+									<div class="flex items-center justify-between gap-4">
+										<span class="text-muted-foreground">Closeness</span>
+										<span class="font-mono font-medium tabular-nums">
+											{formatValue(item.closeness)}
+										</span>
+									</div>
+									<div class="flex items-center justify-between gap-4">
+										<span class="text-muted-foreground">Distance to best</span>
+										<span class="font-mono tabular-nums">
+											{formatValue(item.best)}
+										</span>
+									</div>
+									<div class="flex items-center justify-between gap-4">
+										<span class="text-muted-foreground">Distance to worst</span>
+										<span class="font-mono tabular-nums">
+											{formatValue(item.worst)}
+										</span>
+									</div>
+								</div>
+							{/snippet}
+						</Tooltip.Root>
+					{/snippet}
+				</LineChart>
+			</div>
+
+			<div
+				class="flex flex-wrap items-center justify-center gap-x-4 gap-y-1 px-2 pt-1 pb-0 text-xs"
+			>
+				{#each data as item (item.key)}
+					<div class="flex items-center gap-1.5 text-muted-foreground">
+						<span
+							class="inline-block size-2.5 rounded-none"
+							style={`background-color:${item.color};`}
+						></span>
+						<span>{item.label}</span>
+					</div>
+				{/each}
+			</div>
+		</ChartContainer>
+	</div>
+{/if}

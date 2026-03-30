@@ -3,7 +3,6 @@
 	import ScoreBars from "$lib/components/output/charts/score-bars.svelte";
 	import StackedBars from "$lib/components/output/charts/stacked-bars.svelte";
 	import Scores from "$lib/components/scores/scores.svelte";
-	import { Button } from "$lib/components/ui/button";
 	import SectionHeader from "$lib/components/ui/section-header.svelte";
 	import { allocation, alternatives, criteria } from "$lib/state";
 	import {
@@ -69,17 +68,6 @@
 			Final score for each alternative is:
 			<code>Σ(weight × points/10) ÷ Σ(weights)</code>
 		</p>
-	</div>
-	<div class="mt-3 flex flex-wrap gap-2 border-t border-border/60 pt-3">
-		<Button href="/setup/criteria" size="sm" variant="outline">
-			Edit criteria
-		</Button>
-		<Button href="/setup/alternatives" size="sm" variant="outline">
-			Edit alternatives
-		</Button>
-		<Button href="/allocate" size="sm" variant="outline">
-			Edit allocations
-		</Button>
 	</div>
 </section>
 

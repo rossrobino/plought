@@ -81,13 +81,38 @@ describe("state", () => {
 		expect(state.isSetupStepUsed("criteria")).toBe(true);
 	});
 
+	it("starts with blank setup state and incomplete setup steps", () => {
+		expect(state.decision.current).toEqual(state.decisionDefaults);
+		expect(state.criteria.current).toEqual([]);
+		expect(state.alternatives.current).toEqual([]);
+		expect(state.allocation.current).toEqual([]);
+		expect(state.isSetupStepDone("start")).toBe(false);
+		expect(state.isSetupStepDone("alternatives")).toBe(false);
+		expect(state.isSetupStepDone("criteria")).toBe(false);
+	});
+
+	it("marks setup steps as done only when meaningful content exists", () => {
+		state.markSetupStepUsed("start");
+		expect(state.isSetupStepUsed("start")).toBe(true);
+		expect(state.isSetupStepDone("start")).toBe(false);
+
+		state.decision.current.notes = "Need room for a family of four.";
+		expect(state.isSetupStepDone("start")).toBe(true);
+
+		state.appendAlternatives(["Alternative #1"]);
+		expect(state.isSetupStepDone("alternatives")).toBe(false);
+		state.alternatives.current[0].name = "Train";
+		expect(state.isSetupStepDone("alternatives")).toBe(true);
+
+		state.appendCriteria(["Criterion #1"]);
+		expect(state.isSetupStepDone("criteria")).toBe(false);
+		state.criteria.current[0].name = "Budget";
+		expect(state.isSetupStepDone("criteria")).toBe(true);
+	});
+
 	it("syncs allocation matrix when criteria and alternatives change", () => {
-		state.criteria.current.push({ name: "Criterion #3", weight: 0.1 });
-		state.alternatives.current.push({
-			name: "Alternative #3",
-			scores: [0, 0, 0],
-			pairwise: [0.5, 0.5, 0.5],
-		});
+		state.appendCriteria(["Cost", "Reliability", "Speed"]);
+		state.appendAlternatives(["Train", "Car", "Plane"]);
 
 		const matrix = state.syncAllocation();
 
@@ -101,12 +126,11 @@ describe("state", () => {
 	});
 
 	it("appends alternatives and updates dependent state", () => {
+		state.appendCriteria(["Cost", "Weather"]);
 		const added = state.appendAlternatives(["Seattle", "Portland"]);
 
 		expect(added).toEqual(["Seattle", "Portland"]);
 		expect(state.alternatives.current.map((item) => item.name)).toEqual([
-			"Alternative #1",
-			"Alternative #2",
 			"Seattle",
 			"Portland",
 		]);
@@ -114,15 +138,15 @@ describe("state", () => {
 			state.alternatives.current.every((item) => item.scores.length === 2),
 		).toBe(true);
 		expect(
-			state.alternatives.current.every((item) => item.pairwise.length === 4),
+			state.alternatives.current.every((item) => item.pairwise.length === 2),
 		).toBe(true);
 		expect(state.allocation.current.length).toBe(2);
-		expect(state.allocation.current.every((row) => row.length === 4)).toBe(
+		expect(state.allocation.current.every((row) => row.length === 2)).toBe(
 			true,
 		);
 	});
 
-	it("replaces untouched alternative defaults before appending AI suggestions", () => {
+	it("adds alternative suggestions into a blank state", () => {
 		const added = state.insertAlternativeSuggestions([
 			"Seattle",
 			"Portland",
@@ -136,39 +160,37 @@ describe("state", () => {
 			"San Diego",
 		]);
 		expect(
-			state.alternatives.current.every((item) => item.scores.length === 2),
+			state.alternatives.current.every((item) => item.scores.length === 0),
 		).toBe(true);
 		expect(
 			state.alternatives.current.every((item) => item.pairwise.length === 3),
 		).toBe(true);
-		expect(state.allocation.current.every((row) => row.length === 3)).toBe(
-			true,
-		);
+		expect(state.allocation.current).toEqual([]);
 	});
 
 	it("appends criteria and updates scores, allocation, and weights", () => {
+		state.appendAlternatives(["Seattle", "Portland"]);
 		const added = state.appendCriteria(["Schools", "Weather"]);
 
 		expect(added).toEqual(["Schools", "Weather"]);
 		expect(state.criteria.current.map((item) => item.name)).toEqual([
-			"Criterion #1",
-			"Criterion #2",
 			"Schools",
 			"Weather",
 		]);
 		expect(
-			state.alternatives.current.every((item) => item.scores.length === 4),
+			state.alternatives.current.every((item) => item.scores.length === 2),
 		).toBe(true);
-		expect(state.allocation.current.length).toBe(4);
+		expect(state.allocation.current.length).toBe(2);
 		expect(state.allocation.current.every((row) => row.length === 2)).toBe(
 			true,
 		);
 		expect(state.criteria.current.map((item) => item.weight)).toEqual([
-			0.5, 0.5, 0, 0,
+			0.5, 0.5,
 		]);
 	});
 
-	it("replaces untouched criteria defaults before appending AI suggestions", () => {
+	it("adds criteria suggestions into a blank state", () => {
+		state.appendAlternatives(["Seattle", "Portland"]);
 		const added = state.insertCriteriaSuggestions([
 			"Cost",
 			"Risk",
@@ -188,9 +210,9 @@ describe("state", () => {
 		expect(state.allocation.current.every((row) => row.length === 2)).toBe(
 			true,
 		);
-		expect(state.criteria.current.map((item) => item.weight)).toEqual([
-			0.5, 0.5, 0,
-		]);
+		expect(state.criteria.current[0].weight).toBeCloseTo(1 / 3, 5);
+		expect(state.criteria.current[1].weight).toBeCloseTo(1 / 3, 5);
+		expect(state.criteria.current[2].weight).toBeCloseTo(1 / 3, 5);
 	});
 
 	it("exports snapshot state with all expected keys", () => {
@@ -224,9 +246,9 @@ describe("state", () => {
 			goal: "Imported goal",
 			notes: "",
 		});
-		expect(state.criteria.current.length).toBe(2);
-		expect(state.alternatives.current.length).toBe(2);
-		expect(state.allocation.current.length).toBe(2);
+		expect(state.criteria.current).toEqual([]);
+		expect(state.alternatives.current).toEqual([]);
+		expect(state.allocation.current).toEqual([]);
 		expect(state.isAppUsed("weigh")).toBe(false);
 		expect(state.isMethodUsed("pairwise")).toBe(false);
 		expect(state.isSetupStepUsed("criteria")).toBe(false);
@@ -313,7 +335,7 @@ describe("state", () => {
 			{ name: "Budget", weight: 1 },
 		]);
 		expect(state.alternatives.current).toEqual([
-			{ name: "Alternative #1", scores: [10, 5], pairwise: [0.5, 1] },
+			{ name: "Alternative #1", scores: [10, 0], pairwise: [0.5, 1] },
 			{ name: "Train", scores: [0, 8], pairwise: [0, 0.5] },
 		]);
 		expect(state.allocation.current).toHaveLength(2);

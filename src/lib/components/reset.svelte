@@ -50,7 +50,7 @@
 		<AlertDialog.Footer>
 			<AlertDialog.Cancel class="h-8 px-3 text-sm">Cancel</AlertDialog.Cancel>
 			<AlertDialog.Action
-				class="h-8 border-destructive/70 bg-destructive px-3 text-sm text-white hover:bg-destructive/90 hover:text-white focus-visible:outline-destructive"
+				class="h-8 border-destructive/70 bg-destructive px-3 text-sm text-foreground hover:bg-destructive/90 focus-visible:outline-destructive"
 				onclick={handleReset}
 			>
 				<RotateCcwIcon />

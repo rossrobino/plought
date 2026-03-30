@@ -3,7 +3,6 @@
 	import ScoreBars from "$lib/components/output/charts/score-bars.svelte";
 	import StackedBars from "$lib/components/output/charts/stacked-bars.svelte";
 	import Scores from "$lib/components/scores/scores.svelte";
-	import { Button } from "$lib/components/ui/button";
 	import SectionHeader from "$lib/components/ui/section-header.svelte";
 	import { alternatives, criteria } from "$lib/state";
 	import { getGuidanceCopy, getMethodScores } from "$lib/util/analysis";
@@ -53,14 +52,6 @@
 	<SectionHeader title="Pairwise Comparison" desc={guidance.summary} />
 	<p class="mt-3 mb-0 text-sm text-muted-foreground">{guidance.comparison}</p>
 	<p class="mt-2 mb-0 text-sm text-muted-foreground">{guidance.caveat}</p>
-	<div class="mt-3 flex flex-wrap gap-2 border-t border-border/60 pt-3">
-		<Button href="/setup/alternatives" size="sm" variant="outline">
-			Edit alternatives
-		</Button>
-		<Button href="/compare" size="sm" variant="outline">
-			Edit pairwise inputs
-		</Button>
-	</div>
 </section>
 
 <section>

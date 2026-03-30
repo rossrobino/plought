@@ -23,6 +23,7 @@
 	}
 
 	let { methods, rows, xLabel, yLabel }: Props = $props();
+	const hasData = $derived(rows.length > 0 && methods.length > 0);
 
 	const config = $derived.by(() => {
 		const next: ChartConfig = {};
@@ -85,81 +86,89 @@
 	};
 </script>
 
-<div class="sr-only">
-	<table>
-		<caption>
-			{resolvedYLabel} values by {resolvedXLabel} and method.
-		</caption>
-		<thead>
-			<tr>
-				<th scope="col">{resolvedXLabel}</th>
-				{#each methods as item (item.key)}
-					<th scope="col">{item.label}</th>
-				{/each}
-			</tr>
-		</thead>
-		<tbody>
-			{#each rows as row, i (`${row}-${i}`)}
+{#if !hasData}
+	<div
+		class="rounded-lg border bg-muted/20 p-4 text-sm text-muted-foreground shadow-xs"
+	>
+		Not enough data to display this chart yet.
+	</div>
+{:else}
+	<div class="sr-only">
+		<table>
+			<caption>
+				{resolvedYLabel} values by {resolvedXLabel} and method.
+			</caption>
+			<thead>
 				<tr>
-					<th scope="row">{row}</th>
+					<th scope="col">{resolvedXLabel}</th>
 					{#each methods as item (item.key)}
-						<td>{formatValue(item.values[i] ?? 0)}</td>
+						<th scope="col">{item.label}</th>
 					{/each}
 				</tr>
-			{/each}
-		</tbody>
-	</table>
-</div>
+			</thead>
+			<tbody>
+				{#each rows as row, i (`${row}-${i}`)}
+					<tr>
+						<th scope="row">{row}</th>
+						{#each methods as item (item.key)}
+							<td>{formatValue(item.values[i] ?? 0)}</td>
+						{/each}
+					</tr>
+				{/each}
+			</tbody>
+		</table>
+	</div>
 
-<div aria-hidden="true">
-	<ChartContainer
-		{config}
-		class="aspect-auto flex-col items-stretch justify-start gap-2 rounded-lg border bg-muted/20 p-2 shadow-xs"
-	>
-		<div class="w-full" style={`height:${height}px;`}>
-			<BarChart
-				data={chartRows}
-				x={(d: ChartRow) => String(d.label ?? "")}
-				y={maxValue}
-				yDomain={[0, 10]}
-				padding={chartPadding}
-				series={chartSeries}
-				seriesLayout="group"
-				axis={true}
-				rule={false}
-				grid={false}
-				legend={false}
-				props={{
-					bars: { radius: 0, rounded: "none", strokeWidth: 0 },
-					xAxis: {
-						label: resolvedXLabel,
-						labelProps: { dy: 12 },
-						tickMarks: false,
-					},
-					yAxis: {
-						label: resolvedYLabel,
-						labelProps: { dx: 4 },
-						tickMarks: false,
-						tickSpacing: 56,
-					},
-				}}
-			>
-				{#snippet tooltip()}
-					<ChartTooltip />
-				{/snippet}
-			</BarChart>
-		</div>
+	<div aria-hidden="true">
+		<ChartContainer
+			{config}
+			class="aspect-auto flex-col items-stretch justify-start gap-2 rounded-lg border bg-muted/20 p-2 shadow-xs"
+		>
+			<div class="w-full" style={`height:${height}px;`}>
+				<BarChart
+					data={chartRows}
+					x={(d: ChartRow) => String(d.label ?? "")}
+					y={maxValue}
+					yDomain={[0, 10]}
+					padding={chartPadding}
+					series={chartSeries}
+					seriesLayout="group"
+					axis={true}
+					rule={false}
+					grid={false}
+					legend={false}
+					props={{
+						bars: { radius: 0, rounded: "none", strokeWidth: 0 },
+						xAxis: {
+							label: resolvedXLabel,
+							labelProps: { dy: 12 },
+							tickMarks: false,
+						},
+						yAxis: {
+							label: resolvedYLabel,
+							labelProps: { dx: 4 },
+							tickMarks: false,
+							tickSpacing: 56,
+						},
+					}}
+				>
+					{#snippet tooltip()}
+						<ChartTooltip />
+					{/snippet}
+				</BarChart>
+			</div>
 
-		<div class="flex flex-wrap gap-x-3 gap-y-1 px-2 pt-1 pb-0 text-xs">
-			{#each methods as item (item.key)}
-				<div class="flex items-center gap-1.5 text-muted-foreground">
-					<span
-						class="size-2.5 rounded-none"
-						style={`background-color:${item.color};`}
-					></span>
-					<span>{item.label}</span>
-				</div>
-			{/each}
-		</div>
-	</ChartContainer>
-</div>
+			<div class="flex flex-wrap gap-x-3 gap-y-1 px-2 pt-1 pb-0 text-xs">
+				{#each methods as item (item.key)}
+					<div class="flex items-center gap-1.5 text-muted-foreground">
+						<span
+							class="size-2.5 rounded-none"
+							style={`background-color:${item.color};`}
+						></span>
+						<span>{item.label}</span>
+					</div>
+				{/each}
+			</div>
+		</ChartContainer>
+	</div>
+{/if}

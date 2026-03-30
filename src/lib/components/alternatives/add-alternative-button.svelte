@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { Button } from "$lib/components/ui/button";
-	import { alternatives, appendAlternatives } from "$lib/state";
+	import { alternatives, criteria, syncAllocation } from "$lib/state";
 	import PlusIcon from "@lucide/svelte/icons/plus";
 
 	interface Props {
@@ -10,7 +10,18 @@
 	let { onChange }: Props = $props();
 
 	export const addAlternative = () => {
-		appendAlternatives([`Alternative #${alternatives.current.length + 1}`]);
+		alternatives.current.forEach((item) => {
+			item.pairwise.push(0.5);
+		});
+		alternatives.current.push({
+			name: "",
+			scores: Array.from({ length: criteria.current.length }, () => 0),
+			pairwise: Array.from(
+				{ length: alternatives.current.length + 1 },
+				() => 0.5,
+			),
+		});
+		syncAllocation();
 	};
 </script>
 

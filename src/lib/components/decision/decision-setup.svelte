@@ -3,7 +3,7 @@
 	import { Input } from "$lib/components/ui/input";
 	import SectionHeader from "$lib/components/ui/section-header.svelte";
 	import { Textarea } from "$lib/components/ui/textarea";
-	import { decision, decisionDefaults, markSetupStepUsed } from "$lib/state";
+	import { decision, markSetupStepUsed } from "$lib/state";
 
 	const markUsed = () => {
 		markSetupStepUsed("start");
@@ -25,7 +25,7 @@
 				name="decision-title"
 				bind:value={decision.current.title}
 				oninput={markUsed}
-				placeholder={decisionDefaults.title}
+				placeholder="Choose a car"
 			/>
 			<Field.Description>
 				A short name for this decision, like “Choose a car” or “Pick a city”.
@@ -39,7 +39,7 @@
 				bind:value={decision.current.goal}
 				oninput={markUsed}
 				rows={4}
-				placeholder={decisionDefaults.goal}
+				placeholder="Choose the best option based on my priorities."
 			/>
 			<Field.Description>
 				Describe what outcome you want, so criteria and method results stay

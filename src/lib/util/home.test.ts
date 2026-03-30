@@ -89,7 +89,7 @@ describe("home utilities", () => {
 			criteria: [],
 			alternatives: [{ name: "A", scores: [], pairwise: [0.5] }],
 			allocation: [],
-			setupUsed: getSetupUsed(),
+			setupDone: getSetupUsed(),
 			appUsed: getAppUsed(),
 			includedMethods: [],
 		});
@@ -105,7 +105,7 @@ describe("home utilities", () => {
 			criteria,
 			alternatives,
 			allocation,
-			setupUsed: getSetupUsed({
+			setupDone: getSetupUsed({
 				start: true,
 				alternatives: true,
 				criteria: true,
@@ -126,7 +126,7 @@ describe("home utilities", () => {
 			criteria,
 			alternatives,
 			allocation,
-			setupUsed: getSetupUsed({ start: true }),
+			setupDone: getSetupUsed({ start: true }),
 			appUsed: getAppUsed(),
 			includedMethods: [],
 		});

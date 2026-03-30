@@ -5,7 +5,7 @@
 	import HeaderFlowNav from "$lib/components/header-flow-nav.svelte";
 	import * as Sidebar from "$lib/components/ui/sidebar";
 	import { apps, info } from "$lib/info";
-	import { decision, decisionDefaults } from "$lib/state";
+	import { decision } from "$lib/state";
 
 	let open = $state(true);
 	let { children } = $props();
@@ -60,8 +60,7 @@
 	});
 
 	const decisionTitle = $derived.by(() => {
-		const value = decision.current.title?.trim() ?? "";
-		return value.length ? value : decisionDefaults.title;
+		return decision.current.title?.trim() ?? "";
 	});
 
 	const title = $derived.by(() => {
@@ -69,7 +68,9 @@
 			return pageTitle;
 		}
 
-		return `${decisionTitle} · ${pageTitle}`;
+		return decisionTitle.length > 0
+			? `${decisionTitle} · ${pageTitle}`
+			: pageTitle;
 	});
 
 	const flowNav = $derived.by(() => {

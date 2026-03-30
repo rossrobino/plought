@@ -137,60 +137,68 @@
 			</div>
 		</Info>
 	</div>
-	<ScrollArea
-		class="mt-3 w-full rounded-md border whitespace-nowrap"
-		orientation="horizontal"
-	>
-		<Table.Root class="min-w-full">
-			<caption class="sr-only">Method scores for each alternative.</caption>
-			<Table.Header>
-				<Table.Row
-					class="hover:[&,&>svelte-css-wrapper]:[&>th,td]:bg-transparent"
-				>
-					<Table.Head>Alternative</Table.Head>
-					{#if weightedSum}
-						<Table.Head>Weighted Sum</Table.Head>
-					{/if}
-					{#if pairwise}
-						<Table.Head>Pairwise</Table.Head>
-					{/if}
-					{#if allocate}
-						<Table.Head>Allocate</Table.Head>
-					{/if}
-					{#if topsis}
-						<Table.Head>TOPSIS</Table.Head>
-					{/if}
-				</Table.Row>
-			</Table.Header>
-			<Table.Body>
-				{#each sortedAlternatives as item (`${item.i}-${item.alt.name}`)}
-					<Table.Row>
-						<Table.Head scope="row" class="font-semibold">
-							{item.alt.name}
-						</Table.Head>
+	{#if sortedAlternatives.length === 0}
+		<div
+			class="mt-3 rounded-lg border bg-muted/20 p-4 text-sm text-muted-foreground shadow-xs"
+		>
+			Add alternatives to see scores.
+		</div>
+	{:else}
+		<ScrollArea
+			class="mt-3 w-full rounded-md border whitespace-nowrap"
+			orientation="horizontal"
+		>
+			<Table.Root class="min-w-full">
+				<caption class="sr-only">Method scores for each alternative.</caption>
+				<Table.Header>
+					<Table.Row
+						class="hover:[&,&>svelte-css-wrapper]:[&>th,td]:bg-transparent"
+					>
+						<Table.Head>Alternative</Table.Head>
 						{#if weightedSum}
-							<Table.Cell class="font-semibold">
-								{weightedSumScoreByAlternativeIndex[item.i] ?? 0}
-							</Table.Cell>
+							<Table.Head>Weighted Sum</Table.Head>
 						{/if}
 						{#if pairwise}
-							<Table.Cell class="font-semibold">
-								{pairwiseScoreByAlternativeIndex[item.i] ?? 0}
-							</Table.Cell>
+							<Table.Head>Pairwise</Table.Head>
 						{/if}
 						{#if allocate}
-							<Table.Cell class="font-semibold">
-								{allocateScoreByAlternativeIndex[item.i] ?? 0}
-							</Table.Cell>
+							<Table.Head>Allocate</Table.Head>
 						{/if}
 						{#if topsis}
-							<Table.Cell class="font-semibold">
-								{topsisScoreByAlternativeIndex[item.i] ?? 0}
-							</Table.Cell>
+							<Table.Head>TOPSIS</Table.Head>
 						{/if}
 					</Table.Row>
-				{/each}
-			</Table.Body>
-		</Table.Root>
-	</ScrollArea>
+				</Table.Header>
+				<Table.Body>
+					{#each sortedAlternatives as item (`${item.i}-${item.alt.name}`)}
+						<Table.Row>
+							<Table.Head scope="row" class="font-semibold">
+								{item.alt.name}
+							</Table.Head>
+							{#if weightedSum}
+								<Table.Cell class="font-semibold">
+									{weightedSumScoreByAlternativeIndex[item.i] ?? 0}
+								</Table.Cell>
+							{/if}
+							{#if pairwise}
+								<Table.Cell class="font-semibold">
+									{pairwiseScoreByAlternativeIndex[item.i] ?? 0}
+								</Table.Cell>
+							{/if}
+							{#if allocate}
+								<Table.Cell class="font-semibold">
+									{allocateScoreByAlternativeIndex[item.i] ?? 0}
+								</Table.Cell>
+							{/if}
+							{#if topsis}
+								<Table.Cell class="font-semibold">
+									{topsisScoreByAlternativeIndex[item.i] ?? 0}
+								</Table.Cell>
+							{/if}
+						</Table.Row>
+					{/each}
+				</Table.Body>
+			</Table.Root>
+		</ScrollArea>
+	{/if}
 </section>

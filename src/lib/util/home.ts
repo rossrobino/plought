@@ -2,7 +2,9 @@ import {
 	type AppKey,
 	type MethodKey,
 	type SetupStepKey,
-	decisionDefaults,
+	hasAlternativesContent,
+	hasCriteriaContent,
+	hasDecisionContent,
 } from "$lib/state";
 import type { Alternative, Criteria, Decision } from "$lib/types";
 import {
@@ -47,7 +49,7 @@ interface HomePreviewInput {
 	criteria: Criteria[];
 	alternatives: Alternative[];
 	allocation: number[][];
-	setupUsed: HomeSetupState;
+	setupDone: HomeSetupState;
 	appUsed: HomeAppState;
 	includedMethods: MethodKey[];
 }
@@ -138,56 +140,32 @@ const hasMeaningfulProgress = ({
 	decision,
 	criteria,
 	alternatives,
-	setupUsed,
+	setupDone,
 	appUsed,
 }: Pick<
 	HomePreviewInput,
-	"decision" | "criteria" | "alternatives" | "setupUsed" | "appUsed"
+	"decision" | "criteria" | "alternatives" | "setupDone" | "appUsed"
 >) => {
 	if (
-		Object.values(setupUsed).some(Boolean) ||
+		Object.values(setupDone).some(Boolean) ||
 		Object.values(appUsed).some(Boolean)
 	) {
 		return true;
 	}
 
-	if (
-		decision.title.trim() !== decisionDefaults.title ||
-		decision.goal.trim() !== decisionDefaults.goal
-	) {
-		return true;
-	}
-
-	if (criteria.length !== 2 || alternatives.length !== 2) {
-		return true;
-	}
-
-	if (
-		criteria.some((item, i) => {
-			return (
-				item.name !== `Criterion #${i + 1}` ||
-				Math.abs((item.weight ?? 0) - 0.5) > 0.000001
-			);
-		})
-	) {
-		return true;
-	}
-
-	return alternatives.some((item, i) => {
-		return (
-			item.name !== `Alternative #${i + 1}` ||
-			item.scores.some((score) => score !== 5) ||
-			item.pairwise.some((value) => value !== 0.5)
-		);
-	});
+	return (
+		hasDecisionContent(decision) ||
+		hasCriteriaContent(criteria) ||
+		hasAlternativesContent(alternatives)
+	);
 };
 
 export const getHomeNextStep = (
-	setupUsed: HomeSetupState,
+	setupDone: HomeSetupState,
 	appUsed: HomeAppState,
 ): HomeNextStep => {
 	for (const item of homeSetupItems) {
-		if (!setupUsed[item.key]) {
+		if (!setupDone[item.key]) {
 			return {
 				href: item.href,
 				label:
@@ -217,17 +195,15 @@ export const getHomePreview = ({
 	criteria,
 	alternatives,
 	allocation,
-	setupUsed,
+	setupDone,
 	appUsed,
 	includedMethods,
 }: HomePreviewInput): HomePreview => {
 	const preview: HomePreview = {
 		decisionTitle:
-			decision.title.trim().length > 0
-				? decision.title
-				: decisionDefaults.title,
+			decision.title.trim().length > 0 ? decision.title : "Untitled decision",
 		setupProgress: getProgress(
-			homeSetupItems.map((item) => setupUsed[item.key]),
+			homeSetupItems.map((item) => setupDone[item.key]),
 		),
 		appProgress: getProgress(homeAppSteps.map((item) => appUsed[item.key])),
 		alternativesCount: alternatives.length,
@@ -241,7 +217,7 @@ export const getHomePreview = ({
 			decision,
 			criteria,
 			alternatives,
-			setupUsed,
+			setupDone,
 			appUsed,
 		}),
 	};

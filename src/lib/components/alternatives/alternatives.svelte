@@ -87,7 +87,13 @@
 			<p>Examples: Ford F-150, Aston Martin DB9, Volvo XC60.</p>
 		</Info>
 	</div>
-	{#if showCriteria}
+	{#if alternatives.current.length === 0}
+		<div
+			class="mt-3 rounded-md border bg-muted/10 px-4 py-2 text-center text-sm text-muted-foreground"
+		>
+			Add alternatives to get started.
+		</div>
+	{:else if showCriteria}
 		<Tooltip.Provider>
 			<ScrollArea
 				class="mt-3 w-full rounded-md border whitespace-nowrap"

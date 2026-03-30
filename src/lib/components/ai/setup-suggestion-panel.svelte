@@ -72,8 +72,8 @@
 	});
 	const message = $derived(
 		kind === "alternatives"
-			? "Add a title, goal, preferences, or real alternatives first."
-			: "Add a title, goal, preferences, or real decision details first.",
+			? "Add a title, goal, preferences, or alternative ideas first."
+			: "Add a title, goal, preferences, or decision details first.",
 	);
 	const title = $derived(
 		kind === "alternatives"

@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { ScrollArea } from "$lib/components/ui/scroll-area";
-	import { type WithElementRef, cn } from "$lib/utils.js";
+	import { type WithElementRef } from "$lib/utils.js";
 	import type { HTMLAttributes } from "svelte/elements";
 
 	let {
@@ -15,10 +15,10 @@
 	bind:this={ref}
 	data-slot="sidebar-content"
 	data-sidebar="content"
-	class={cn(
+	class={[
 		"flex min-h-0 flex-1 flex-col group-data-[collapsible=icon]:overflow-hidden",
 		className,
-	)}
+	]}
 	{...restProps}
 >
 	<ScrollArea class="h-full min-h-0 flex-1" orientation="vertical">

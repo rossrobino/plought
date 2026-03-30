@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { buttonVariants } from "$lib/components/ui/button";
-	import { cn } from "$lib/utils.js";
 	import { AlertDialog as AlertDialogPrimitive } from "bits-ui";
 
 	let {
@@ -13,6 +12,6 @@
 <AlertDialogPrimitive.Cancel
 	bind:ref
 	data-slot="alert-dialog-cancel"
-	class={cn(buttonVariants({ variant: "outline" }), className)}
+	class={[buttonVariants({ variant: "outline" }), className]}
 	{...restProps}
 />

@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { cn } from "$lib/utils.js";
 	import { Dialog as SheetPrimitive } from "bits-ui";
 
 	let {
@@ -12,6 +11,6 @@
 <SheetPrimitive.Title
 	bind:ref
 	data-slot="sheet-title"
-	class={cn("font-semibold text-foreground", className)}
+	class={["font-semibold text-foreground", className]}
 	{...restProps}
 />

@@ -4,4 +4,5 @@ import adapter from "@sveltejs/adapter-vercel";
 export default {
 	kit: { adapter: adapter(), experimental: { remoteFunctions: true } },
 	compilerOptions: { experimental: { async: true } },
+	vitePlugin: { inspector: true },
 };

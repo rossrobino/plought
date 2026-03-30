@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { type WithElementRef, cn } from "$lib/utils.js";
+	import { type WithElementRef } from "$lib/utils.js";
 	import ChartStyle from "./chart-style.svelte";
 	import { type ChartConfig, setChartContext } from "./chart-utils.js";
 	import type { HTMLAttributes } from "svelte/elements";
@@ -32,7 +32,7 @@
 	bind:this={ref}
 	data-chart={chartId}
 	data-slot="chart"
-	class={cn(
+	class={[
 		"flex aspect-video justify-center overflow-visible text-xs",
 		// Overrides
 		//
@@ -74,7 +74,7 @@
 		"[&_.lc-layout-svg-g]:fill-transparent",
 		"[&_.lc-root-container]:w-full",
 		className,
-	)}
+	]}
 	{...restProps}
 >
 	<ChartStyle id={chartId} {config} />

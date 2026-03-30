@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { cn } from "$lib/utils.js";
 	import { AlertDialog as AlertDialogPrimitive } from "bits-ui";
 
 	let {
@@ -12,6 +11,6 @@
 <AlertDialogPrimitive.Description
 	bind:ref
 	data-slot="alert-dialog-description"
-	class={cn("text-sm text-muted-foreground", className)}
+	class={["text-sm text-muted-foreground", className]}
 	{...restProps}
 />

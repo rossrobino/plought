@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { type WithoutChild, cn } from "$lib/utils.js";
+	import { type WithoutChild } from "$lib/utils.js";
 	import { ScrollArea as ScrollAreaPrimitive } from "bits-ui";
 
 	let {
@@ -15,13 +15,13 @@
 	bind:ref
 	data-slot="scroll-area-scrollbar"
 	{orientation}
-	class={cn(
+	class={[
 		"flex touch-none p-px transition-colors select-none",
 		orientation === "vertical" && "h-full w-2.5 border-s border-s-transparent",
 		orientation === "horizontal" &&
 			"h-2.5 flex-col border-t border-t-transparent",
 		className,
-	)}
+	]}
 	{...restProps}
 >
 	{@render children?.()}

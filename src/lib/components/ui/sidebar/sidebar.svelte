@@ -1,6 +1,6 @@
 <script lang="ts">
 	import * as Sheet from "$lib/components/ui/sheet";
-	import { type WithElementRef, cn } from "$lib/utils.js";
+	import { type WithElementRef } from "$lib/utils.js";
 	import { SIDEBAR_WIDTH_MOBILE } from "./constants.js";
 	import { useSidebar } from "./context.svelte.js";
 	import type { HTMLAttributes } from "svelte/elements";
@@ -24,10 +24,10 @@
 
 {#if collapsible === "none"}
 	<div
-		class={cn(
+		class={[
 			"flex h-full w-(--sidebar-width) flex-col bg-sidebar text-sidebar-foreground",
 			className,
-		)}
+		]}
 		bind:this={ref}
 		{...restProps}
 	>
@@ -68,18 +68,18 @@
 		<!-- This is what handles the sidebar gap on desktop -->
 		<div
 			data-slot="sidebar-gap"
-			class={cn(
+			class={[
 				"relative w-(--sidebar-width) bg-transparent transition-[width] duration-200 ease-linear",
 				"group-data-[collapsible=offcanvas]:w-0",
 				"group-data-[side=right]:rotate-180",
 				variant === "floating" || variant === "inset"
 					? "group-data-[collapsible=icon]:w-[calc(var(--sidebar-width-icon)+(--spacing(4))+2px)]"
 					: "group-data-[collapsible=icon]:w-(--sidebar-width-icon)",
-			)}
+			]}
 		></div>
 		<div
 			data-slot="sidebar-container"
-			class={cn(
+			class={[
 				"fixed inset-y-0 z-10 hidden h-svh w-(--sidebar-width) transition-[left,right,width] duration-200 ease-linear md:flex",
 				side === "left"
 					? "start-0 group-data-[collapsible=offcanvas]:start-[calc(var(--sidebar-width)*-1)]"
@@ -93,7 +93,7 @@
 							: "py-2 ps-0 pe-2 group-data-[collapsible=icon]:w-[calc(var(--sidebar-width-icon)+(--spacing(4))+2px)]"
 						: "group-data-[collapsible=icon]:w-(--sidebar-width-icon) group-data-[side=left]:border-e group-data-[side=right]:border-s",
 				className,
-			)}
+			]}
 			{...restProps}
 		>
 			<div

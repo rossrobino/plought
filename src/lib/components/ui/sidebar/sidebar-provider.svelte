@@ -1,6 +1,6 @@
 <script lang="ts">
 	import * as Tooltip from "$lib/components/ui/tooltip";
-	import { type WithElementRef, cn } from "$lib/utils.js";
+	import { type WithElementRef } from "$lib/utils.js";
 	import {
 		SIDEBAR_COOKIE_MAX_AGE,
 		SIDEBAR_COOKIE_NAME,
@@ -41,10 +41,10 @@
 	<div
 		data-slot="sidebar-wrapper"
 		style="--sidebar-width: {SIDEBAR_WIDTH}; --sidebar-width-icon: {SIDEBAR_WIDTH_ICON}; {style}"
-		class={cn(
+		class={[
 			"group/sidebar-wrapper flex min-h-svh w-full has-data-[variant=inset]:bg-sidebar",
 			className,
-		)}
+		]}
 		bind:this={ref}
 		{...restProps}
 	>

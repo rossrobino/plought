@@ -1,15 +1,15 @@
 <script lang="ts">
 	import Eyebrow from "$lib/components/ui/eyebrow.svelte";
-	import { cn } from "$lib/utils";
 	import type { Snippet } from "svelte";
+	import type { ClassValue } from "svelte/elements";
 
 	type EyebrowVariant = "default" | "compact" | "subtle";
 	type Props = {
 		children?: Snippet;
-		class?: string;
+		class?: ClassValue;
 		eyebrowVariant?: EyebrowVariant;
 		label: string;
-		labelClass?: string;
+		labelClass?: ClassValue;
 	};
 
 	let {
@@ -21,8 +21,8 @@
 	}: Props = $props();
 </script>
 
-<div class={cn("rounded-lg border p-3 shadow-xs", className)}>
-	<Eyebrow variant={eyebrowVariant} class={cn("mb-0", labelClass)}>
+<div class={["rounded-lg border p-3 shadow-xs", className]}>
+	<Eyebrow variant={eyebrowVariant} class={["mb-0", labelClass]}>
 		{label}
 	</Eyebrow>
 	{@render children?.()}

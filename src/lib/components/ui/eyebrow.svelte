@@ -1,12 +1,12 @@
 <script lang="ts">
-	import { cn } from "$lib/utils";
 	import type { Snippet } from "svelte";
+	import type { ClassValue } from "svelte/elements";
 
 	type Variant = "default" | "compact" | "subtle";
 	type Props = {
 		as?: string;
 		children?: Snippet;
-		class?: string;
+		class?: ClassValue;
 		variant?: Variant;
 	};
 
@@ -27,7 +27,7 @@
 
 <svelte:element
 	this={as}
-	class={cn("truncate text-muted-foreground uppercase", classes, className)}
+	class={["truncate text-muted-foreground uppercase", classes, className]}
 >
 	{@render children?.()}
 </svelte:element>

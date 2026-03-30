@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { cn } from "$lib/utils.js";
 	import { Slider as SliderPrimitive } from "bits-ui";
 
 	type Props = Omit<
@@ -67,11 +66,11 @@
 	onpointerdown={start}
 	onkeydown={start}
 	data-slot="slider"
-	class={cn(
+	class={[
 		"relative flex w-full touch-none items-center select-none",
 		"data-[orientation=vertical]:h-full data-[orientation=vertical]:w-2 data-[orientation=vertical]:flex-col",
 		className,
-	)}
+	]}
 >
 	<span
 		data-slot="slider-track"
@@ -87,10 +86,10 @@
 		index={0}
 		aria-label={label}
 		aria-valuetext={text}
-		class={cn(
+		class={[
 			"block size-4 rounded-[2px] border border-primary/50 bg-background shadow-sm transition-[color,box-shadow] outline-none",
 			"focus-visible:ring-2 focus-visible:ring-ring/50 focus-visible:outline-1 focus-visible:outline-ring",
 			"disabled:pointer-events-none disabled:opacity-50",
-		)}
+		]}
 	/>
 </SliderPrimitive.Root>

@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { cn } from "$lib/utils.js";
 	import { Separator as SeparatorPrimitive } from "bits-ui";
 
 	let {
@@ -13,9 +12,9 @@
 <SeparatorPrimitive.Root
 	bind:ref
 	data-slot={dataSlot}
-	class={cn(
+	class={[
 		"shrink-0 bg-border data-[orientation=horizontal]:h-px data-[orientation=horizontal]:w-full data-[orientation=vertical]:min-h-full data-[orientation=vertical]:w-px",
 		className,
-	)}
+	]}
 	{...restProps}
 />

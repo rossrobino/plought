@@ -27,7 +27,7 @@
 </script>
 
 <script lang="ts">
-	import { type WithElementRef, cn } from "$lib/utils.js";
+	import { type WithElementRef } from "$lib/utils.js";
 	import type { HTMLAttributes } from "svelte/elements";
 
 	let {
@@ -46,7 +46,7 @@
 	role="group"
 	data-slot="field"
 	data-orientation={orientation}
-	class={cn(fieldVariants({ orientation }), className)}
+	class={[fieldVariants({ orientation }), className]}
 	{...restProps}
 >
 	{@render children?.()}

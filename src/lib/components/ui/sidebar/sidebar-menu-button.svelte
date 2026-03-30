@@ -31,7 +31,6 @@
 	import {
 		type WithElementRef,
 		type WithoutChildrenOrChild,
-		cn,
 	} from "$lib/utils.js";
 	import { useSidebar } from "./context.svelte.js";
 	import { mergeProps } from "bits-ui";
@@ -63,7 +62,7 @@
 	const sidebar = useSidebar();
 
 	const buttonProps = $derived({
-		class: cn(sidebarMenuButtonVariants({ variant, size }), className),
+		class: [sidebarMenuButtonVariants({ variant, size }), className],
 		"data-slot": "sidebar-menu-button",
 		"data-sidebar": "menu-button",
 		"data-size": size,

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { type WithElementRef, cn } from "$lib/utils.js";
+	import { type WithElementRef } from "$lib/utils.js";
 	import type { HTMLTableAttributes } from "svelte/elements";
 
 	let {
@@ -126,7 +126,7 @@
 	<table
 		bind:this={ref}
 		data-slot="table"
-		class={cn("w-full caption-bottom text-sm", className)}
+		class={["w-full caption-bottom text-sm", className]}
 		onpointerover={handlePointerOver}
 		onpointerleave={handlePointerLeave}
 		onfocusin={handleFocusIn}

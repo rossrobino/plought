@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { type WithoutChild, cn } from "$lib/utils.js";
+	import { type WithoutChild } from "$lib/utils.js";
 	import { Scrollbar } from ".";
 	import { ScrollArea as ScrollAreaPrimitive } from "bits-ui";
 
@@ -23,7 +23,7 @@
 <ScrollAreaPrimitive.Root
 	bind:ref
 	data-slot="scroll-area"
-	class={cn("relative", className)}
+	class={["relative", className]}
 	{...restProps}
 >
 	<ScrollAreaPrimitive.Viewport

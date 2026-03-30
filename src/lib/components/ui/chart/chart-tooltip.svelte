@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { type WithElementRef, type WithoutChildren, cn } from "$lib/utils.js";
+	import { type WithElementRef, type WithoutChildren } from "$lib/utils.js";
 	import {
 		type TooltipPayload,
 		getPayloadConfigFromPayload,
@@ -7,7 +7,7 @@
 	} from "./chart-utils.js";
 	import { Tooltip as TooltipPrimitive, getTooltipContext } from "layerchart";
 	import type { Snippet } from "svelte";
-	import type { HTMLAttributes } from "svelte/elements";
+	import type { ClassValue, HTMLAttributes } from "svelte/elements";
 
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	function defaultFormatter(value: any, _payload: TooltipPayload[]) {
@@ -35,7 +35,7 @@
 		nameKey?: string;
 		labelKey?: string;
 		hideIndicator?: boolean;
-		labelClassName?: string;
+		labelClassName?: ClassValue;
 		labelFormatter?: // eslint-disable-next-line @typescript-eslint/no-explicit-any
 			| ((value: any, payload: TooltipPayload[]) => string | number | Snippet)
 			| null;
@@ -80,7 +80,7 @@
 
 {#snippet TooltipLabel()}
 	{#if formattedLabel}
-		<div class={cn("font-medium", labelClassName)}>
+		<div class={["font-medium", labelClassName]}>
 			{#if typeof formattedLabel === "function"}
 				{@render formattedLabel()}
 			{:else}
@@ -92,10 +92,10 @@
 
 <TooltipPrimitive.Root variant="none">
 	<div
-		class={cn(
+		class={[
 			"grid min-w-[9rem] items-start gap-1.5 rounded-lg border border-border/50 bg-background px-2.5 py-1.5 text-xs shadow-xl",
 			className,
-		)}
+		]}
 		{...restProps}
 	>
 		{#if !nestLabel}
@@ -111,10 +111,10 @@
 				)}
 				{@const indicatorColor = color || item.payload?.color || item.color}
 				<div
-					class={cn(
+					class={[
 						"flex w-full flex-wrap items-stretch gap-2 [&>svg]:size-2.5 [&>svg]:text-muted-foreground",
 						indicator === "dot" && "items-center",
-					)}
+					]}
 				>
 					{#if formatter && item.value !== undefined && item.name}
 						{@render formatter({
@@ -130,7 +130,7 @@
 						{:else if !hideIndicator}
 							<div
 								style="--color-bg: {indicatorColor}; --color-border: {indicatorColor};"
-								class={cn(
+								class={[
 									"shrink-0 rounded-[2px] border-(--color-border) bg-(--color-bg)",
 									{
 										"size-2.5": indicator === "dot",
@@ -139,14 +139,14 @@
 											indicator === "dashed",
 										"my-0.5": nestLabel && indicator === "dashed",
 									},
-								)}
+								]}
 							></div>
 						{/if}
 						<div
-							class={cn(
+							class={[
 								"flex flex-1 shrink-0 justify-between leading-none",
 								nestLabel ? "items-end" : "items-center",
-							)}
+							]}
 						>
 							<div class="grid gap-1.5">
 								{#if nestLabel}

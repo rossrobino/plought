@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { Button } from "$lib/components/ui/button";
-	import { cn } from "$lib/utils.js";
 	import ChevronLeftIcon from "@lucide/svelte/icons/chevron-left";
 	import ChevronRightIcon from "@lucide/svelte/icons/chevron-right";
+	import type { ClassValue } from "svelte/elements";
 
 	interface FlowLink {
 		href: string;
@@ -12,7 +12,7 @@
 	interface Props {
 		prev?: FlowLink | null;
 		next?: FlowLink | null;
-		className?: string;
+		className?: ClassValue;
 	}
 
 	let { prev = null, next = null, className = "" }: Props = $props();
@@ -20,7 +20,7 @@
 
 <nav
 	aria-label="Workflow navigation"
-	class={cn("ms-auto flex items-center gap-1", className)}
+	class={["ms-auto flex items-center gap-1", className]}
 >
 	{#if prev != null}
 		<Button

@@ -1,5 +1,5 @@
 <script lang="ts" module>
-	import { type WithElementRef, cn } from "$lib/utils.js";
+	import { type WithElementRef } from "$lib/utils.js";
 	import type {
 		HTMLAnchorAttributes,
 		HTMLButtonAttributes,
@@ -62,7 +62,7 @@
 	<a
 		bind:this={ref}
 		data-slot="button"
-		class={cn(buttonVariants({ variant, size }), className)}
+		class={[buttonVariants({ variant, size }), className]}
 		href={disabled ? undefined : href}
 		aria-disabled={disabled}
 		role={disabled ? "link" : undefined}
@@ -75,7 +75,7 @@
 	<button
 		bind:this={ref}
 		data-slot="button"
-		class={cn(buttonVariants({ variant, size }), className)}
+		class={[buttonVariants({ variant, size }), className]}
 		{type}
 		{disabled}
 		{...restProps}

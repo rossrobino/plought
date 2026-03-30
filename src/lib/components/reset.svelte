@@ -4,6 +4,7 @@
 	import { Button } from "$lib/components/ui/button";
 	import { reset } from "$lib/state";
 	import RotateCcwIcon from "@lucide/svelte/icons/rotate-ccw";
+	import type { ClassValue } from "svelte/elements";
 
 	type ResetVariant =
 		| "default"
@@ -14,7 +15,7 @@
 		| "link";
 
 	interface Props {
-		className?: string;
+		className?: ClassValue;
 		variant?: ResetVariant;
 	}
 

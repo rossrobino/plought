@@ -56,7 +56,7 @@
 				bind:value={decision.current.notes}
 				oninput={markUsed}
 				rows={3}
-				placeholder="Optional details that should inform suggestions and research across the app."
+				placeholder="I currently live in NYC..."
 			/>
 			<Field.Description>
 				Optional details that should inform suggestions and research across the

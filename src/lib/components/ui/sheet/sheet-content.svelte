@@ -20,7 +20,7 @@
 </script>
 
 <script lang="ts">
-	import { type WithoutChildrenOrChild, cn } from "$lib/utils.js";
+	import { type WithoutChildrenOrChild } from "$lib/utils.js";
 	import SheetOverlay from "./sheet-overlay.svelte";
 	import SheetPortal from "./sheet-portal.svelte";
 	import XIcon from "@lucide/svelte/icons/x";
@@ -47,7 +47,7 @@
 	<SheetPrimitive.Content
 		bind:ref
 		data-slot="sheet-content"
-		class={cn(sheetVariants({ side }), className)}
+		class={[sheetVariants({ side }), className]}
 		{...restProps}
 	>
 		{@render children?.()}

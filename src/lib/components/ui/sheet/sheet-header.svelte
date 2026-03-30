@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { type WithElementRef, cn } from "$lib/utils.js";
+	import { type WithElementRef } from "$lib/utils.js";
 	import type { HTMLAttributes } from "svelte/elements";
 
 	let {
@@ -13,7 +13,7 @@
 <div
 	bind:this={ref}
 	data-slot="sheet-header"
-	class={cn("flex flex-col gap-1.5 p-4", className)}
+	class={["flex flex-col gap-1.5 p-4", className]}
 	{...restProps}
 >
 	{@render children?.()}

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { type WithElementRef, cn } from "$lib/utils.js";
+	import { type WithElementRef } from "$lib/utils.js";
 	import type {
 		HTMLInputAttributes,
 		HTMLInputTypeAttribute,
@@ -30,12 +30,12 @@
 	<input
 		bind:this={ref}
 		data-slot={dataSlot}
-		class={cn(
-			"flex h-9 w-full min-w-0 rounded-md border border-input bg-transparent px-3 pt-1.5 text-sm font-medium shadow-xs ring-offset-background transition-[color,box-shadow] outline-none selection:bg-foreground selection:text-background placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50 dark:bg-input/30",
+		class={[
+			"flex h-9 w-full min-w-0 rounded-md border border-input bg-transparent px-3 pt-1.5 text-sm font-medium shadow-xs ring-offset-background transition-[color,box-shadow] outline-none selection:bg-foreground selection:text-background placeholder:text-muted-foreground/70 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-input/30",
 			"focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50",
 			"aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40",
 			className,
-		)}
+		]}
 		type="file"
 		bind:files
 		bind:value
@@ -45,12 +45,12 @@
 	<input
 		bind:this={ref}
 		data-slot={dataSlot}
-		class={cn(
-			"flex h-9 w-full min-w-0 rounded-md border border-input bg-background px-3 py-1 text-base shadow-xs ring-offset-background transition-[color,box-shadow] outline-none selection:bg-foreground selection:text-background placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50 md:text-sm dark:bg-input/30",
+		class={[
+			"flex h-9 w-full min-w-0 rounded-md border border-input bg-background px-3 py-1 text-base shadow-xs ring-offset-background transition-[color,box-shadow] outline-none selection:bg-foreground selection:text-background placeholder:text-muted-foreground/70 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm dark:bg-input/30",
 			"focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50",
 			"aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40",
 			className,
-		)}
+		]}
 		{type}
 		bind:value
 		{...restProps}

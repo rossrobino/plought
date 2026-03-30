@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { cn } from "$lib/utils.js";
 	import { Dialog as SheetPrimitive } from "bits-ui";
 
 	let {
@@ -12,6 +11,6 @@
 <SheetPrimitive.Description
 	bind:ref
 	data-slot="sheet-description"
-	class={cn("text-sm text-muted-foreground", className)}
+	class={["text-sm text-muted-foreground", className]}
 	{...restProps}
 />

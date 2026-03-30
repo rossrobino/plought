@@ -1,18 +1,18 @@
 <script lang="ts">
 	import Eyebrow from "$lib/components/ui/eyebrow.svelte";
-	import { cn } from "$lib/utils";
 	import type { Snippet } from "svelte";
+	import type { ClassValue } from "svelte/elements";
 
 	type Props = {
 		as?: string;
 		children?: Snippet;
-		class?: string;
+		class?: ClassValue;
 		desc?: string;
-		descClass?: string;
+		descClass?: ClassValue;
 		eyebrow?: string;
-		eyebrowClass?: string;
+		eyebrowClass?: ClassValue;
 		title: string;
-		titleClass?: string;
+		titleClass?: ClassValue;
 	};
 
 	let {
@@ -33,18 +33,14 @@
 
 <div class={className}>
 	{#if hasEyebrow}
-		<Eyebrow class={cn("mb-2", eyebrowClass)}>{eyebrow}</Eyebrow>
+		<Eyebrow class={["mb-2", eyebrowClass]}>{eyebrow}</Eyebrow>
 	{/if}
-	<svelte:element this={as} class={cn("mb-0", titleClass)}>
+	<svelte:element this={as} class={["mb-0", titleClass]}>
 		{title}
 	</svelte:element>
 	{#if hasDesc}
 		<p
-			class={cn(
-				hasEyebrow ? "mt-2" : "mt-1",
-				"text-muted-foreground",
-				descClass,
-			)}
+			class={[hasEyebrow ? "mt-2" : "mt-1", "text-muted-foreground", descClass]}
 		>
 			{desc}
 		</p>

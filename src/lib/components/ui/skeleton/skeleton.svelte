@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { type WithElementRef, cn } from "$lib/utils.js";
+	import { type WithElementRef } from "$lib/utils.js";
 	import type { HTMLAttributes } from "svelte/elements";
 
 	type Props = WithElementRef<HTMLAttributes<HTMLDivElement>, HTMLDivElement>;
@@ -15,6 +15,6 @@
 <div
 	bind:this={ref}
 	data-slot={dataSlot}
-	class={cn("rounded-md bg-muted/60 motion-safe:animate-pulse", className)}
+	class={["rounded-md bg-muted/60 motion-safe:animate-pulse", className]}
 	{...restProps}
 ></div>

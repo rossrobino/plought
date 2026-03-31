@@ -30,6 +30,12 @@ export const seoByPath: Record<string, SeoMeta> = {
 		changefreq: "weekly",
 		priority: 1,
 	},
+	"/blog": {
+		title: "Blog",
+		desc: "Notes on structured decision making, ranking methods, and practical evaluation workflows.",
+		changefreq: "weekly",
+		priority: 0.7,
+	},
 	"/setup": {
 		title: "Start",
 		desc: "Set your decision title and goal so every criterion and comparison stays aligned.",

@@ -47,7 +47,6 @@
 	<title>{headTitle}</title>
 	<link rel="canonical" href={canonicalUrl} />
 	<meta name="description" content={headDesc} />
-	<meta name="keywords" content="decision, making, weighted, sum" />
 	<meta property="og:type" content="website" />
 	<meta property="og:site_name" content={info.name} />
 	<meta property="og:title" content={headTitle} />

@@ -134,6 +134,9 @@
 								class="size-4 transition-transform group-hover:translate-x-0.5 group-focus-visible:translate-x-0.5"
 							/>
 						</Button>
+						<Button href="/blog" variant="outline" class="h-11 px-5 text-sm">
+							Read the blog
+						</Button>
 					</div>
 					<p class="mt-4 max-w-xl text-sm leading-6 text-muted-foreground">
 						If you need help, Plought can suggest alternatives, criteria, and

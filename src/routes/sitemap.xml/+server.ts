@@ -1,5 +1,6 @@
 import { info } from "$lib/info";
 import { seoByPath, seoPaths } from "$lib/seo";
+import { getAllPostsMeta } from "$lib/server/blog";
 import type { RequestHandler } from "./$types";
 
 const normalizeBase = (value: string) => {
@@ -26,17 +27,29 @@ const getBaseUrl = (origin: string) => {
 	return normalizeBase(origin);
 };
 
-export const GET: RequestHandler = ({ url }) => {
+const renderUrl = (
+	base: string,
+	path: string,
+	lastmod: string,
+	changefreq?: string,
+	priority?: number,
+) => {
+	const loc = new URL(path, `${base}/`).toString();
+	return `<url><loc>${escapeXml(loc)}</loc><lastmod>${lastmod}</lastmod>${changefreq == null ? "" : `<changefreq>${changefreq}</changefreq>`}${priority == null ? "" : `<priority>${priority.toFixed(1)}</priority>`}</url>`;
+};
+
+export const GET: RequestHandler = async ({ url }) => {
 	const base = getBaseUrl(url.origin);
 	const lastmod = new Date().toISOString();
+	const posts = await getAllPostsMeta();
 
-	const urls = seoPaths
-		.map((path) => {
+	const urls = [
+		...seoPaths.map((path) => {
 			const meta = seoByPath[path];
-			const loc = new URL(path, `${base}/`).toString();
-			return `<url><loc>${escapeXml(loc)}</loc><lastmod>${lastmod}</lastmod>${meta.changefreq == null ? "" : `<changefreq>${meta.changefreq}</changefreq>`}${meta.priority == null ? "" : `<priority>${meta.priority.toFixed(1)}</priority>`}</url>`;
-		})
-		.join("");
+			return renderUrl(base, path, lastmod, meta.changefreq, meta.priority);
+		}),
+		...posts.map((post) => renderUrl(base, `/blog/${post.slug}`, post.date)),
+	].join("");
 
 	const body = `<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${urls}</urlset>`;
 

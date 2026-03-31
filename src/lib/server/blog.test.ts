@@ -1,15 +1,10 @@
 import {
 	getAllPostSlugs,
-	getAllPostsMeta,
 	getPostBySlug,
 	parseBlogSource,
+	sortAndFilterPosts,
 } from "$lib/server/blog";
-import { randomUUID } from "node:crypto";
-import { rm, writeFile } from "node:fs/promises";
-import { join } from "node:path";
 import { describe, expect, it } from "vitest";
-
-const blogDir = join(process.cwd(), "src", "content", "blog");
 
 describe("blog loader", () => {
 	it("parses valid markdown with YAML frontmatter", () => {
@@ -116,80 +111,78 @@ describe("blog loader", () => {
 	});
 
 	it("filters draft posts from production-style queries", async () => {
-		const id = randomUUID();
-		const slug = `zz-test-${id}-draft`;
+		const visible = parseBlogSource(
+			[
+				"---",
+				"title: Visible Post",
+				"description: Always visible.",
+				"author: Test Author",
+				"date: 2026-03-01",
+				"---",
+			].join("\n"),
+			"visible-post.md",
+			"visible-post",
+		);
+		const draft = parseBlogSource(
+			[
+				"---",
+				"title: Draft Post",
+				"description: Hidden in production.",
+				"author: Test Author",
+				"date: 2026-04-01",
+				"draft: true",
+				"---",
+			].join("\n"),
+			"draft-post.md",
+			"draft-post",
+		);
 
-		try {
-			await writeFile(
-				join(blogDir, `${slug}.md`),
-				[
-					"---",
-					"title: Draft Post",
-					"description: Hidden in production.",
-					"author: Test Author",
-					"date: 2026-04-01",
-					"draft: true",
-					"---",
-					"",
-					"Draft body.",
-				].join("\n"),
-			);
-
-			expect(
-				(await getAllPostsMeta({ includeDrafts: false })).some(
-					(post) => post.slug === slug,
-				),
-			).toBe(false);
-			expect(await getPostBySlug(slug, { includeDrafts: false })).toBeNull();
-			expect(await getAllPostSlugs({ includeDrafts: false })).not.toContain(
-				slug,
-			);
-			expect(await getPostBySlug(slug, { includeDrafts: true })).toMatchObject({
-				slug,
-				draft: true,
-			});
-		} finally {
-			await rm(join(blogDir, `${slug}.md`), { force: true });
-		}
+		expect(
+			sortAndFilterPosts(
+				[visible, draft].map(({ html, ...post }) => post),
+				{ includeDrafts: false },
+			),
+		).toEqual([
+			expect.objectContaining({ slug: "visible-post", draft: false }),
+		]);
+		expect(
+			sortAndFilterPosts(
+				[visible, draft].map(({ html, ...post }) => post),
+				{ includeDrafts: true },
+			).map((post) => post.slug),
+		).toEqual(["draft-post", "visible-post"]);
 	});
 
 	it("sorts post metadata newest first", async () => {
-		const id = randomUUID();
-		const newer = `zz-test-${id}-newer`;
-		const older = `zz-test-${id}-older`;
+		const older = parseBlogSource(
+			[
+				"---",
+				"title: Older",
+				"description: Older test post.",
+				"author: Test Author",
+				"date: 2026-01-01",
+				"---",
+			].join("\n"),
+			"older.md",
+			"older",
+		);
+		const newer = parseBlogSource(
+			[
+				"---",
+				"title: Newer",
+				"description: Newer test post.",
+				"author: Test Author",
+				"date: 2026-02-01",
+				"---",
+			].join("\n"),
+			"newer.md",
+			"newer",
+		);
 
-		try {
-			await writeFile(
-				join(blogDir, `${older}.md`),
-				[
-					"---",
-					"title: Older",
-					"description: Older test post.",
-					"author: Test Author",
-					"date: 2026-01-01",
-					"---",
-				].join("\n"),
-			);
-			await writeFile(
-				join(blogDir, `${newer}.md`),
-				[
-					"---",
-					"title: Newer",
-					"description: Newer test post.",
-					"author: Test Author",
-					"date: 2026-02-01",
-					"---",
-				].join("\n"),
-			);
-
-			expect(
-				(await getAllPostsMeta())
-					.filter((post) => post.slug === newer || post.slug === older)
-					.map((post) => post.slug),
-			).toEqual([newer, older]);
-		} finally {
-			await rm(join(blogDir, `${older}.md`), { force: true });
-			await rm(join(blogDir, `${newer}.md`), { force: true });
-		}
+		expect(
+			sortAndFilterPosts([older, newer].map(({ html, ...post }) => post)).map(
+				(post) => post.slug,
+			),
+		).toEqual(["newer", "older"]);
 	});
 });

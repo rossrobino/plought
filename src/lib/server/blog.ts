@@ -1,13 +1,32 @@
 import { dev } from "$app/environment";
+import { read } from "$app/server";
 import { load } from "js-yaml";
 import { marked } from "marked";
-import { readFile, readdir } from "node:fs/promises";
-import { join } from "node:path";
 import * as v from "valibot";
 
-const blogDir = join(process.cwd(), "src", "content", "blog");
 const postExt = ".md";
 const frontmatterPattern = /^---\r?\n([\s\S]*?)\r?\n---\r?\n?([\s\S]*)$/;
+const postAssets = Object.fromEntries(
+	Object.entries(
+		import.meta.glob("/src/content/blog/*.md", {
+			eager: true,
+			import: "default",
+			query: "?url",
+		}),
+	).map(([path, asset]) => [path.split("/").at(-1) ?? path, asset]),
+) as Record<string, string>;
+const postSources =
+	process.env.TEST === "true"
+		? (Object.fromEntries(
+				Object.entries(
+					import.meta.glob("/src/content/blog/*.md", {
+						eager: true,
+						import: "default",
+						query: "?raw",
+					}),
+				).map(([path, source]) => [path.split("/").at(-1) ?? path, source]),
+			) as Record<string, string>)
+		: {};
 
 const frontmatterSchema = v.strictObject({
 	title: v.pipe(v.string(), v.nonEmpty(), v.maxLength(120)),
@@ -54,21 +73,7 @@ const normalizeFrontmatter = (value: unknown) => {
 	return value;
 };
 
-const listPostFiles = async () => {
-	return (await readdir(blogDir, { withFileTypes: true }))
-		.filter((entry) => entry.isFile() && entry.name.endsWith(postExt))
-		.map((entry) => entry.name)
-		.sort();
-};
-
-const isMissingFile = (value: unknown) => {
-	return (
-		typeof value === "object" &&
-		value != null &&
-		"code" in value &&
-		value.code === "ENOENT"
-	);
-};
+const listPostFiles = () => Object.keys(postAssets).sort();
 
 export const parseBlogSource = (
 	source: string,
@@ -110,7 +115,7 @@ export const parseBlogSource = (
 
 const readPost = async (file: string, slug: string) => {
 	return parseBlogSource(
-		await readFile(join(blogDir, file), "utf8"),
+		postSources[file] ?? (await read(postAssets[file]).text()),
 		file,
 		slug,
 	);
@@ -125,19 +130,26 @@ const shouldShowPost = (post: BlogPostMeta, includeDrafts: boolean) => {
 };
 
 const resolveIncludeDrafts = (includeDrafts = dev) => includeDrafts;
+export const sortAndFilterPosts = (
+	posts: BlogPostMeta[],
+	{ includeDrafts }: BlogOptions = {},
+) => {
+	return posts
+		.filter((post) => shouldShowPost(post, resolveIncludeDrafts(includeDrafts)))
+		.toSorted(comparePosts);
+};
 
 export const getAllPostsMeta = async ({ includeDrafts }: BlogOptions = {}) => {
-	return (
+	return sortAndFilterPosts(
 		await Promise.all(
-			(await listPostFiles()).map(async (file) => {
+			listPostFiles().map(async (file) => {
 				const slug = file.slice(0, -postExt.length);
 				const { html, ...post } = await readPost(file, slug);
 				return post;
 			}),
-		)
-	)
-		.filter((post) => shouldShowPost(post, resolveIncludeDrafts(includeDrafts)))
-		.toSorted(comparePosts);
+		),
+		{ includeDrafts },
+	);
 };
 
 export const getPostBySlug = async (
@@ -148,17 +160,15 @@ export const getPostBySlug = async (
 		return null;
 	}
 
-	try {
-		const post = await readPost(`${slug}${postExt}`, slug);
-		return shouldShowPost(post, resolveIncludeDrafts(includeDrafts))
-			? post
-			: null;
-	} catch (cause) {
-		if (isMissingFile(cause)) {
-			return null;
-		}
-		throw cause;
+	const file = `${slug}${postExt}`;
+	if (!(file in postAssets)) {
+		return null;
 	}
+
+	const post = await readPost(file, slug);
+	return shouldShowPost(post, resolveIncludeDrafts(includeDrafts))
+		? post
+		: null;
 };
 
 export const getAllPostSlugs = async (options: BlogOptions = {}) => {

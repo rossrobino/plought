@@ -14,7 +14,7 @@
 	bind:this={ref}
 	data-slot="table-cell"
 	class={[
-		"bg-clip-padding p-2 align-middle whitespace-nowrap transition-colors data-[cell-active=true]:bg-[var(--table-cell-active)] data-[cell-active=true]:shadow-[inset_0_0_0_1px_var(--color-border)] data-[col-active=true]:bg-[var(--table-col-active)] [&:has([role=checkbox])]:pe-0",
+		"bg-clip-padding p-2 align-middle whitespace-nowrap transition-colors data-[cell-active=true]:bg-(--table-cell-active) data-[cell-active=true]:shadow-[inset_0_0_0_1px_var(--color-border)] data-[col-active=true]:bg-(--table-col-active) [&:has([role=checkbox])]:pe-0",
 		className,
 	]}
 	{...restProps}

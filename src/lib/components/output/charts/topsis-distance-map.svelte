@@ -179,7 +179,7 @@
 						<Tooltip.Root {context} variant="none">
 							{#snippet children({ data: item })}
 								<div
-									class="grid min-w-[12rem] items-start gap-1.5 rounded-lg border border-border/50 bg-background px-2.5 py-1.5 text-xs shadow-xl"
+									class="grid min-w-48 items-start gap-1.5 rounded-lg border border-border/50 bg-background px-2.5 py-1.5 text-xs shadow-xl"
 								>
 									<div class="font-medium text-foreground">{item.label}</div>
 									<div class="flex items-center justify-between gap-4">

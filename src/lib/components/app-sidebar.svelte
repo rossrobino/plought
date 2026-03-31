@@ -11,7 +11,7 @@
 	import FlagIcon from "@lucide/svelte/icons/flag";
 	import GitCompareIcon from "@lucide/svelte/icons/git-compare";
 	import GitForkIcon from "@lucide/svelte/icons/git-fork";
-	import GithubIcon from "@lucide/svelte/icons/github";
+	import GithubIcon from "@lucide/svelte/icons/git-pull-request";
 	import HandCoinsIcon from "@lucide/svelte/icons/hand-coins";
 	import ListChecksIcon from "@lucide/svelte/icons/list-checks";
 	import ScaleIcon from "@lucide/svelte/icons/scale";

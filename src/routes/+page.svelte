@@ -122,7 +122,7 @@
 						as="h1"
 						eyebrow={info.name}
 						eyebrowClass="mb-3"
-						title="Make better decisions before you commit."
+						title={info.tagline}
 						titleClass="max-w-[12ch] text-4xl leading-none font-semibold tracking-tight text-balance sm:text-5xl"
 						desc={`${info.name} separates setup from evaluation so you can weigh priorities, work through the tools, and review the tradeoffs before you choose an option.`}
 						descClass="mt-4 max-w-xl text-base leading-7"

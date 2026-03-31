@@ -59,14 +59,6 @@
 		});
 	});
 
-	const totalValue = (row: ChartRow) => {
-		let total = 0;
-		for (const item of series) {
-			total += Number(row[item.key] ?? 0);
-		}
-		return total;
-	};
-
 	const maxTotal = $derived(Math.max(1, ...totals));
 	const height = $derived(Math.max(288, rows.length * 56));
 	const chartPadding = $derived.by(() => {
@@ -134,7 +126,6 @@
 				<BarChart
 					data={chartRows}
 					x={(d: ChartRow) => String(d.label ?? "")}
-					y={totalValue}
 					yDomain={[0, maxTotal]}
 					padding={chartPadding}
 					series={chartSeries}

@@ -99,7 +99,7 @@
 	<AppSidebar />
 	<Sidebar.Inset class="selection:bg-foreground selection:text-background">
 		<header
-			class="sticky top-0 z-20 flex h-14 items-center gap-2 border-b border-border/50 bg-background/95 px-4 backdrop-blur supports-backdrop-filter:bg-background/80"
+			class="sticky top-0 z-20 flex h-14 items-center gap-2 border-b border-border/50 bg-background/95 px-2 backdrop-blur supports-backdrop-filter:bg-background/80"
 		>
 			<Sidebar.Trigger />
 			<h1 class="m-0 min-w-0 truncate text-base font-semibold">{title}</h1>

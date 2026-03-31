@@ -1,4 +1,4 @@
-# [Plought](https://plought.vercel.app)
+# [Plought](https://plought.app)
 
 ## Reduce Noise in Decision Making
 

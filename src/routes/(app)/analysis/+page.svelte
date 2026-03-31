@@ -326,7 +326,9 @@
 				{/if}
 			</StatCard>
 		</div>
-		<p class="mt-3 mb-0 text-sm text-muted-foreground">{guidance.caveat}</p>
+		{#if guidance.caveat}
+			<p class="mt-3 mb-0 text-sm text-muted-foreground">{guidance.caveat}</p>
+		{/if}
 	</section>
 
 	<section>

@@ -21,7 +21,7 @@ interface ConsensusRank {
 interface GuidanceCopy {
 	summary: string;
 	comparison: string;
-	caveat: string;
+	caveat?: string;
 }
 
 const guidanceByMethod: Record<MethodKey, GuidanceCopy> = {
@@ -339,7 +339,5 @@ export const getGuidanceCopy = ({
 				? `${winner} is currently the top recommendation from the included methods.`
 				: `${winner} currently leads, with ${runner} as the closest runner-up.`,
 		comparison: `${agreementText} This guidance blends the surviving method results instead of relying on one scoring model.`,
-		caveat:
-			"If your priorities change, revisit criteria weights and pairwise judgments, then confirm the summary remains stable.",
 	};
 };

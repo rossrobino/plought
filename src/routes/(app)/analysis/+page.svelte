@@ -365,6 +365,13 @@
 		</div>
 	</section>
 
+	<Scores
+		weightedSum={isMethodIncluded("weightedSum")}
+		pairwise={isMethodIncluded("pairwise")}
+		allocate={isMethodIncluded("allocate")}
+		topsis={isMethodIncluded("topsis")}
+	/>
+
 	<section>
 		<SectionHeader
 			title="Method Details"
@@ -393,13 +400,6 @@
 			</a>
 		</div>
 	</section>
-
-	<Scores
-		weightedSum={isMethodIncluded("weightedSum")}
-		pairwise={isMethodIncluded("pairwise")}
-		allocate={isMethodIncluded("allocate")}
-		topsis={isMethodIncluded("topsis")}
-	/>
 {:else}
 	<section>
 		<SectionHeader

@@ -110,7 +110,7 @@
 			{#if pending}
 				<div class="flex items-center gap-3">
 					<div
-						class="size-4 shrink-0 rounded-full border-2 border-muted border-t-foreground/70 motion-safe:animate-spin"
+						class="size-4 shrink-0 rounded-full border-2 border-muted border-t-foreground/70 motion-safe:animate-spin motion-safe:[animation-duration:650ms]"
 					></div>
 					<Button size="sm" disabled>Apply score</Button>
 				</div>
@@ -206,7 +206,7 @@
 		{#if pending}
 			<div class="flex items-center gap-3">
 				<div
-					class="size-4 shrink-0 rounded-full border-2 border-muted border-t-foreground/70 motion-safe:animate-spin"
+					class="size-4 shrink-0 rounded-full border-2 border-muted border-t-foreground/70 motion-safe:animate-spin motion-safe:[animation-duration:650ms]"
 				></div>
 				<Button size="sm" disabled>Apply allocation</Button>
 			</div>

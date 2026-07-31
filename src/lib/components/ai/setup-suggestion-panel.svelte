@@ -193,7 +193,7 @@
 								</p>
 							</div>
 							<div
-								class="mt-0.5 size-4 shrink-0 rounded-full border-2 border-muted border-t-foreground/70 motion-safe:animate-spin"
+								class="mt-0.5 size-4 shrink-0 rounded-full border-2 border-muted border-t-foreground/70 motion-safe:animate-spin motion-safe:[animation-duration:650ms]"
 							></div>
 						</div>
 

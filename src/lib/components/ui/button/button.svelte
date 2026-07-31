@@ -7,7 +7,7 @@
 	import { type VariantProps, tv } from "tailwind-variants";
 
 	export const buttonVariants = tv({
-		base: "inline-flex shrink-0 items-center justify-center gap-2 rounded-md text-sm font-medium whitespace-nowrap no-underline transition-all select-none outline-none focus-visible:relative focus-visible:z-10 focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50 active:scale-[0.98] active:brightness-95 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+		base: "inline-flex shrink-0 items-center justify-center gap-2 rounded-md text-sm font-medium whitespace-nowrap no-underline transition-[transform,background-color,border-color,color,box-shadow,opacity] duration-150 ease-[var(--ease-out)] select-none outline-none focus-visible:relative focus-visible:z-10 focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50 active:scale-[0.97] motion-reduce:active:scale-100 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
 		variants: {
 			variant: {
 				default:
@@ -20,7 +20,7 @@
 					"border border-border/80 bg-secondary text-secondary-foreground shadow-sm hover:opacity-90",
 				ghost:
 					"border border-transparent shadow-none hover:bg-accent hover:text-accent-foreground",
-				link: "border border-transparent p-0 text-primary shadow-none underline-offset-4 hover:underline active:scale-100 active:brightness-100",
+				link: "border border-transparent p-0 text-primary shadow-none underline-offset-4 hover:underline active:scale-100",
 			},
 			size: {
 				default: "h-14 px-6 has-[>svg]:px-5",

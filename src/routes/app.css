@@ -6,6 +6,9 @@
 :root {
 	color-scheme: light dark;
 	--radius: 0.625rem;
+	--ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+	--ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+	--ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
 	--background: light-dark(
 		color-mix(in oklch, var(--color-white) 85%, var(--color-slate-50) 15%),
 		color-mix(in oklch, var(--color-slate-950) 80%, var(--color-slate-900) 20%)
@@ -74,6 +77,84 @@
 		color-mix(in oklch, var(--color-slate-500) 9%, transparent),
 		color-mix(in oklch, var(--color-slate-400) 15%, transparent)
 	);
+}
+
+@layer components {
+	[data-home-reveal] {
+		opacity: 1;
+		transform: translateY(0);
+		transition:
+			opacity 360ms var(--ease-out),
+			transform 360ms var(--ease-out);
+	}
+
+	[data-home-reveal][data-order="1"] {
+		transition-delay: 50ms;
+	}
+
+	[data-home-reveal][data-order="2"] {
+		transition-delay: 100ms;
+	}
+
+	@starting-style {
+		[data-home-reveal] {
+			opacity: 0;
+			transform: translateY(0.5rem);
+		}
+	}
+
+	[data-home-stage-card] {
+		transition:
+			transform 180ms var(--ease-out),
+			border-color 180ms ease,
+			box-shadow 180ms ease;
+	}
+
+	[data-home-stage-accent] {
+		transform: scaleX(0);
+		transform-origin: left;
+		transition: transform 180ms var(--ease-out);
+	}
+
+	@media (hover: hover) and (pointer: fine) {
+		[data-card-link]:hover [data-home-stage-card] {
+			transform: translateY(-0.125rem);
+			border-color: color-mix(
+				in oklch,
+				var(--color-sky-400) 40%,
+				var(--border)
+			);
+			box-shadow: 0 0.625rem 1.5rem
+				color-mix(in oklch, var(--foreground) 7%, transparent);
+		}
+
+		[data-card-link]:hover [data-home-stage-accent] {
+			transform: scaleX(1);
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		[data-home-reveal] {
+			transform: none;
+			transition: opacity 160ms ease;
+			transition-delay: 0ms;
+		}
+
+		[data-home-stage-card],
+		[data-home-stage-accent] {
+			transition-duration: 0ms;
+		}
+
+		[data-slot="sheet-content"],
+		[data-slot="sheet-overlay"],
+		[data-slot="alert-dialog-content"],
+		[data-slot="alert-dialog-overlay"],
+		[data-slot="popover-content"],
+		[data-slot="select-content"],
+		[data-slot="tooltip-content"] {
+			animation-duration: 1ms !important;
+		}
+	}
 }
 
 @theme inline {

@@ -116,7 +116,11 @@
 			desc={`${info.tagline}. Resume the next step, work through the tools, and review the decision before you commit.`}
 		/>
 
-		<header class="flex h-18 items-center justify-between gap-4">
+		<header
+			class="flex h-18 items-center justify-between gap-4"
+			data-home-reveal
+			data-order="0"
+		>
 			<a
 				href="/"
 				class="rounded-md no-underline outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-4"
@@ -150,6 +154,8 @@
 
 		<section
 			class="relative isolate mt-0 overflow-hidden rounded-2xl border border-border/70 bg-card p-5 shadow-[0_24px_70px_-42px_color-mix(in_oklch,var(--foreground)_55%,transparent)] sm:p-7 lg:p-9"
+			data-home-reveal
+			data-order="1"
 		>
 			<div
 				class="pointer-events-none absolute -top-32 -right-20 -z-10 size-96 rounded-full bg-sky-300/25 blur-3xl dark:bg-sky-600/15"
@@ -330,14 +336,20 @@
 			</div>
 		</section>
 
-		<div class="grid gap-3 md:grid-cols-3 lg:gap-4">
+		<div
+			class="grid gap-3 md:grid-cols-3 lg:gap-4"
+			data-home-reveal
+			data-order="2"
+		>
 			{#each stages as item (item.label)}
 				<a href={item.href} class="group block no-underline" data-card-link>
 					<div
-						class="relative h-full overflow-hidden rounded-xl border border-border/70 bg-card p-5 shadow-xs transition-[transform,box-shadow,border-color] duration-200 group-hover:-translate-y-0.5 group-hover:border-sky-400/40 group-hover:shadow-lg group-hover:shadow-slate-950/5"
+						class="relative h-full overflow-hidden rounded-xl border border-border/70 bg-card p-5 shadow-xs"
+						data-home-stage-card
 					>
 						<div
-							class="absolute inset-x-0 top-0 h-0.5 origin-left scale-x-0 bg-gradient-to-r from-lime-400 to-sky-400 transition-transform duration-200 group-hover:scale-x-100 group-focus-visible:scale-x-100"
+							class="absolute inset-x-0 top-0 h-0.5 bg-gradient-to-r from-lime-400 to-sky-400"
+							data-home-stage-accent
 							aria-hidden="true"
 						></div>
 						<div class="flex items-start justify-between gap-3">

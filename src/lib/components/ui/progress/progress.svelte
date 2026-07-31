@@ -35,8 +35,8 @@
 	<div
 		data-slot="progress-indicator"
 		class={complete
-			? "h-full w-full flex-1 bg-primary transition-all"
-			: "h-full w-full flex-1 bg-amber-400 transition-all dark:bg-amber-300"}
+			? "h-full w-full flex-1 bg-primary transition-transform duration-[260ms] ease-[var(--ease-in-out)] motion-reduce:transition-none"
+			: "h-full w-full flex-1 bg-amber-400 transition-transform duration-[260ms] ease-[var(--ease-in-out)] motion-reduce:transition-none dark:bg-amber-300"}
 		style="transform: translateX(-{100 - percent}%)"
 	></div>
 </ProgressPrimitive.Root>

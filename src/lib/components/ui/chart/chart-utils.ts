@@ -1,8 +1,4 @@
-import {
-	type Component,
-	getContext,
-	setContext,
-} from "svelte";
+import { type Component, getContext, setContext } from "svelte";
 
 export const THEMES = { light: "", dark: ".dark" } as const;
 

@@ -7,12 +7,7 @@
 	import type { ClassValue } from "svelte/elements";
 
 	type ResetVariant =
-		| "default"
-		| "destructive"
-		| "outline"
-		| "secondary"
-		| "ghost"
-		| "link";
+		"default" | "destructive" | "outline" | "secondary" | "ghost" | "link";
 
 	interface Props {
 		className?: ClassValue;

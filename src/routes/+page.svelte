@@ -1,4 +1,6 @@
 <script lang="ts">
+	import textLogoDark from "$lib/assets/plought-text-logo-dark.svg";
+	import textLogoLight from "$lib/assets/plought-text-logo-light.svg";
 	import Head from "$lib/components/head.svelte";
 	import { Button } from "$lib/components/ui/button";
 	import { Progress } from "$lib/components/ui/progress";
@@ -23,6 +25,7 @@
 	import ArrowRightIcon from "@lucide/svelte/icons/arrow-right";
 	import BarChart3Icon from "@lucide/svelte/icons/bar-chart-3";
 	import FlagIcon from "@lucide/svelte/icons/flag";
+	import GithubIcon from "@lucide/svelte/icons/git-pull-request";
 	import ShieldCheckIcon from "@lucide/svelte/icons/shield-check";
 
 	const methodKeys = [
@@ -106,29 +109,74 @@
 <main
 	id="main-content"
 	tabindex="-1"
-	class="mx-auto w-full max-w-7xl px-4 pt-4 pb-10"
+	class="mx-auto w-full max-w-7xl px-4 pb-12 sm:px-6 lg:px-8"
 >
-	<div class="space-y-6">
+	<div class="space-y-5 sm:space-y-7">
 		<Head
 			desc={`${info.tagline}. Resume the next step, work through the tools, and review the decision before you commit.`}
 		/>
 
+		<header class="flex h-18 items-center justify-between gap-4">
+			<a
+				href="/"
+				class="rounded-md no-underline outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-4"
+				aria-label={`${info.name} home`}
+			>
+				<picture>
+					<source media="(prefers-color-scheme: dark)" srcset={textLogoLight} />
+					<img src={textLogoDark} alt={info.name} class="h-6 w-auto" />
+				</picture>
+			</a>
+			<nav class="flex items-center gap-1" aria-label="Primary navigation">
+				<Button href="/blog" variant="ghost" size="sm" class="px-3">
+					Blog
+				</Button>
+				<Button
+					href={info.github}
+					variant="ghost"
+					size="icon-sm"
+					target="_blank"
+					rel="noreferrer"
+					aria-label="View Plought on GitHub"
+				>
+					<GithubIcon class="size-4" />
+				</Button>
+				<Button href={nextStep.href} size="sm" class="ms-1 hidden sm:flex">
+					{nextStep.label}
+					<ArrowRightIcon class="size-4" />
+				</Button>
+			</nav>
+		</header>
+
 		<section
-			class="rounded-lg border border-border bg-[color-mix(in_oklch,var(--color-sky-300)_14%,transparent)] p-5 shadow-sm md:p-6"
+			class="relative isolate mt-0 overflow-hidden rounded-2xl border border-border/70 bg-card p-5 shadow-[0_24px_70px_-42px_color-mix(in_oklch,var(--foreground)_55%,transparent)] sm:p-7 lg:p-9"
 		>
-			<div class="grid gap-6 lg:grid-cols-[1.1fr_0.9fr] lg:items-start">
-				<div>
+			<div
+				class="pointer-events-none absolute -top-32 -right-20 -z-10 size-96 rounded-full bg-sky-300/25 blur-3xl dark:bg-sky-600/15"
+				aria-hidden="true"
+			></div>
+			<div
+				class="pointer-events-none absolute -bottom-40 -left-24 -z-10 size-80 rounded-full bg-lime-300/18 blur-3xl dark:bg-lime-500/10"
+				aria-hidden="true"
+			></div>
+			<div
+				class="grid gap-8 lg:grid-cols-[1.08fr_0.92fr] lg:items-center lg:gap-12"
+			>
+				<div class="py-1 sm:py-3">
 					<SectionHeader
 						as="h1"
-						eyebrow={info.name}
+						eyebrow="A clearer way to choose"
 						eyebrowClass="mb-3"
-						title={info.tagline}
-						titleClass="max-w-[12ch] text-4xl leading-none font-semibold tracking-tight text-balance sm:text-5xl"
+						title="Reduce the noise. Make the decision."
+						titleClass="max-w-[13ch] text-4xl leading-[0.98] font-semibold tracking-[-0.045em] text-balance sm:text-5xl lg:text-6xl"
 						desc={`${info.name} separates setup from evaluation so you can weigh priorities, work through the tools, and review the tradeoffs before you choose an option.`}
-						descClass="mt-4 max-w-xl text-base leading-7"
+						descClass="mt-5 max-w-xl text-base leading-7 sm:text-lg"
 					/>
-					<div class="mt-5 flex flex-wrap gap-3">
-						<Button href={nextStep.href} class="group h-11 px-5 text-sm">
+					<div class="mt-6 flex flex-wrap gap-3">
+						<Button
+							href={nextStep.href}
+							class="group h-11 px-5 text-sm shadow-md shadow-lime-950/10"
+						>
 							{nextStep.label}
 							<ArrowRightIcon
 								class="size-4 transition-transform group-hover:translate-x-0.5 group-focus-visible:translate-x-0.5"
@@ -138,14 +186,14 @@
 							Read the blog
 						</Button>
 					</div>
-					<p class="mt-4 max-w-xl text-sm leading-6 text-muted-foreground">
+					<p class="mt-5 max-w-xl text-sm leading-6 text-muted-foreground">
 						If you need help, Plought can suggest alternatives, criteria, and
 						research from the context you provide.
 					</p>
 				</div>
 
 				<div
-					class="rounded-lg border border-border/70 bg-background/90 p-4 shadow-[0_18px_44px_color-mix(in_oklch,var(--color-slate-950)_10%,transparent)] backdrop-blur"
+					class="rounded-xl border border-border/70 bg-background/88 p-4 shadow-[0_22px_55px_-28px_color-mix(in_oklch,var(--foreground)_45%,transparent)] backdrop-blur-md sm:p-5"
 				>
 					{#if preview.hasMeaningfulProgress}
 						<h3 class="text-2xl font-semibold tracking-tight">
@@ -282,12 +330,16 @@
 			</div>
 		</section>
 
-		<div class="grid gap-3 md:grid-cols-3">
+		<div class="grid gap-3 md:grid-cols-3 lg:gap-4">
 			{#each stages as item (item.label)}
 				<a href={item.href} class="group block no-underline" data-card-link>
 					<div
-						class="h-full rounded-lg border bg-card p-4 shadow-xs transition-colors duration-200 group-hover:bg-accent/35"
+						class="relative h-full overflow-hidden rounded-xl border border-border/70 bg-card p-5 shadow-xs transition-[transform,box-shadow,border-color] duration-200 group-hover:-translate-y-0.5 group-hover:border-sky-400/40 group-hover:shadow-lg group-hover:shadow-slate-950/5"
 					>
+						<div
+							class="absolute inset-x-0 top-0 h-0.5 origin-left scale-x-0 bg-gradient-to-r from-lime-400 to-sky-400 transition-transform duration-200 group-hover:scale-x-100 group-focus-visible:scale-x-100"
+							aria-hidden="true"
+						></div>
 						<div class="flex items-start justify-between gap-3">
 							<div>
 								<p

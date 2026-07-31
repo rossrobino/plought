@@ -99,10 +99,15 @@
 	<AppSidebar />
 	<Sidebar.Inset class="selection:bg-foreground selection:text-background">
 		<header
-			class="sticky top-0 z-20 flex h-14 items-center gap-2 border-b border-border/50 bg-background/95 px-2 backdrop-blur supports-backdrop-filter:bg-background/80"
+			class="sticky top-0 z-20 flex h-15 items-center gap-2 border-b border-border/60 bg-background/88 px-3 backdrop-blur-xl supports-backdrop-filter:bg-background/78 md:px-4"
 		>
 			<Sidebar.Trigger />
-			<h1 class="m-0 min-w-0 truncate text-base font-semibold">{title}</h1>
+			<div class="mx-1 h-5 w-px bg-border/70" aria-hidden="true"></div>
+			<h1
+				class="m-0 min-w-0 truncate text-sm font-semibold tracking-tight sm:text-base"
+			>
+				{title}
+			</h1>
 			{#if flowNav != null}
 				<HeaderFlowNav prev={flowNav.prev} next={flowNav.next} />
 			{/if}
@@ -110,7 +115,7 @@
 		<main
 			id="main-content"
 			tabindex="-1"
-			class="flex w-full min-w-0 flex-1 flex-col px-4 pt-0 pb-4"
+			class="flex w-full min-w-0 flex-1 flex-col px-4 pt-0 pb-5 sm:px-5 md:px-6"
 		>
 			{@render children()}
 		</main>

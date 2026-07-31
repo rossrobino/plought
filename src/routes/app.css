@@ -5,7 +5,7 @@
 
 :root {
 	color-scheme: light dark;
-	--radius: 0.125rem;
+	--radius: 0.625rem;
 	--background: light-dark(
 		color-mix(in oklch, var(--color-white) 85%, var(--color-slate-50) 15%),
 		color-mix(in oklch, var(--color-slate-950) 80%, var(--color-slate-900) 20%)
@@ -159,6 +159,18 @@
 
 	body {
 		@apply bg-background font-sans text-foreground tabular-nums antialiased;
+		background-image:
+			radial-gradient(
+				circle at 12% -10%,
+				color-mix(in oklch, var(--color-sky-300) 10%, transparent),
+				transparent 32rem
+			),
+			radial-gradient(
+				circle at 100% 5%,
+				color-mix(in oklch, var(--color-lime-300) 6%, transparent),
+				transparent 28rem
+			);
+		background-attachment: fixed;
 		min-inline-size: 18rem;
 		overflow-x: auto;
 	}
@@ -193,7 +205,7 @@
 	}
 
 	section {
-		@apply mt-4 min-w-0 rounded-lg border bg-card p-3 shadow-xs;
+		@apply mt-4 min-w-0 rounded-xl border border-border/80 bg-card p-4 shadow-xs;
 	}
 
 	h2 {

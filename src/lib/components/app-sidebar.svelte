@@ -97,10 +97,10 @@
 </script>
 
 <Sidebar.Root variant="inset" collapsible="offcanvas">
-	<Sidebar.Header class="p-3">
+	<Sidebar.Header class="px-3 pt-4 pb-2">
 		<a
 			href="/"
-			class="flex items-center gap-2 rounded-md p-2 text-sidebar-foreground no-underline transition-colors hover:bg-transparent"
+			class="flex items-center gap-2 rounded-lg px-2 py-2.5 text-sidebar-foreground no-underline transition-colors hover:bg-sidebar-accent/45"
 			onclick={closeSidebarOnMobile}
 		>
 			<picture>
@@ -109,7 +109,7 @@
 			</picture>
 		</a>
 	</Sidebar.Header>
-	<Sidebar.Content>
+	<Sidebar.Content class="px-1 pb-3">
 		<Sidebar.Group>
 			<Sidebar.GroupLabel>Setup</Sidebar.GroupLabel>
 			<Sidebar.GroupContent>

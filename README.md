@@ -10,6 +10,15 @@ While _Plought_ can help guide in decision making, and reveal surprising results
 
 Open to contributions.
 
+## WebMCP
+
+Plought exposes browser-native site tools when opened in a WebMCP-compatible
+browser. An agent can read the complete current decision, populate a new
+decision, update any setup or judgment data, replace a snapshot, undo its most
+recent unchanged write, and navigate between Plought sections. Writes update
+the same local state shown in the interface and do not require a remote MCP
+server.
+
 ## Credits
 
 Built with these open-source projects:

@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { goto } from "$app/navigation";
 	import { page } from "$app/state";
 	import AppSidebar from "$lib/components/app-sidebar.svelte";
 	import Head from "$lib/components/head.svelte";
@@ -6,9 +7,38 @@
 	import * as Sidebar from "$lib/components/ui/sidebar";
 	import { apps, info } from "$lib/info";
 	import { decision } from "$lib/state";
+	import { onMount } from "svelte";
 
 	let open = $state(true);
 	let { children } = $props();
+
+	onMount(() => {
+		const context = document.modelContext;
+		if (context == null) {
+			return;
+		}
+
+		let disposed = false;
+		let cleanup: (() => void) | null = null;
+		void import("$lib/webmcp")
+			.then(({ registerPloughtTools }) => {
+				const next = registerPloughtTools(context, goto);
+				if (disposed) {
+					next();
+					return;
+				}
+				cleanup = next;
+			})
+			.catch((error: unknown) => {
+				console.error("Could not register Plought site tools", error);
+			});
+
+		return () => {
+			disposed = true;
+			cleanup?.();
+		};
+	});
+
 	type FlowLink = { href: string; label: string };
 	const flow: FlowLink[] = [
 		{ href: "/setup", label: "Start" },

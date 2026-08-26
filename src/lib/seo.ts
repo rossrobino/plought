@@ -36,6 +36,12 @@ export const seoByPath: Record<string, SeoMeta> = {
 		changefreq: "weekly",
 		priority: 0.7,
 	},
+	"/agents": {
+		title: "Use Plought with your AI",
+		desc: "Let a compatible AI agent help set up, evaluate, and review a decision in Plought.",
+		changefreq: "monthly",
+		priority: 0.7,
+	},
 	"/setup": {
 		title: "Start",
 		desc: "Set your decision title and goal so every criterion and comparison stays aligned.",

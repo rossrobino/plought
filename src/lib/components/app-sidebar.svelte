@@ -7,6 +7,7 @@
 	import { apps as appRegistry, info } from "$lib/info";
 	import { type SetupStepKey, isAppUsed, isSetupStepDone } from "$lib/state";
 	import BarChart3Icon from "@lucide/svelte/icons/bar-chart-3";
+	import BotIcon from "@lucide/svelte/icons/bot";
 	import CheckIcon from "@lucide/svelte/icons/check";
 	import FlagIcon from "@lucide/svelte/icons/flag";
 	import GitCompareIcon from "@lucide/svelte/icons/git-compare";
@@ -217,6 +218,16 @@
 
 		<Sidebar.Separator />
 		<Sidebar.Menu>
+			<Sidebar.MenuItem>
+				<Sidebar.MenuButton tooltipContent="Use Plought with your AI">
+					{#snippet child({ props })}
+						<a {...withMobileClose(props)} href="/agents">
+							<BotIcon />
+							<span>AI agents</span>
+						</a>
+					{/snippet}
+				</Sidebar.MenuButton>
+			</Sidebar.MenuItem>
 			<Sidebar.MenuItem>
 				<Sidebar.MenuButton tooltipContent="GitHub Repository">
 					{#snippet child({ props })}

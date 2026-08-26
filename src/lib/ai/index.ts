@@ -406,7 +406,7 @@ export class AI {
 		parse: (value: unknown) => T;
 	}) {
 		const response = await this.#client.responses.create({
-			model: "gpt-5.4-nano",
+			model: "gpt-5.6-luna",
 			tools: [{ type: "web_search" }],
 			include: ["web_search_call.action.sources"],
 			reasoning: { effort: "low" },

@@ -3,10 +3,12 @@
 	import { Button } from "$lib/components/ui/button";
 	import { Progress } from "$lib/components/ui/progress";
 	import SectionHeader from "$lib/components/ui/section-header.svelte";
+	import { compareEvent } from "$lib/events";
 	import { alternatives, markAppUsed, markMethodUsed } from "$lib/state";
 	import ArrowLeftIcon from "@lucide/svelte/icons/arrow-left";
 	import ArrowRightIcon from "@lucide/svelte/icons/arrow-right";
 	import ShuffleIcon from "@lucide/svelte/icons/shuffle";
+	import { onMount } from "svelte";
 
 	interface Pair {
 		a: number;
@@ -69,6 +71,24 @@
 		touched = createTouched(pairs);
 		current = 0;
 	};
+
+	const touch = (event: Event) => {
+		if (!(event instanceof CustomEvent) || !Array.isArray(event.detail)) {
+			return;
+		}
+		const next = { ...touched };
+		for (const id of event.detail) {
+			if (typeof id === "string") {
+				next[id] = true;
+			}
+		}
+		touched = next;
+	};
+
+	onMount(() => {
+		window.addEventListener(compareEvent, touch);
+		return () => window.removeEventListener(compareEvent, touch);
+	});
 
 	$effect(() => {
 		const nextKey = `${alternatives.current.length}:${pairShapeKey()}`;

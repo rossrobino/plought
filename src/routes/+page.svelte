@@ -153,7 +153,7 @@
 		</header>
 
 		<section
-			class="relative isolate mt-0 overflow-hidden rounded-2xl border border-border/70 bg-card p-5 shadow-[0_24px_70px_-42px_color-mix(in_oklch,var(--foreground)_55%,transparent)] sm:p-7 lg:p-9"
+			class="relative isolate mt-0 overflow-hidden rounded-2xl border border-border/70 bg-card p-5 shadow-sm sm:p-7 lg:p-9"
 			data-home-reveal
 			data-order="1"
 		>
@@ -194,12 +194,14 @@
 					</div>
 					<p class="mt-5 max-w-xl text-sm leading-6 text-muted-foreground">
 						If you need help, Plought can suggest alternatives, criteria, and
-						research from the context you provide.
+						research from the context you provide. You can also
+						<a href="/agents">use Plought with your AI agent</a>
+						when you want a hand.
 					</p>
 				</div>
 
 				<div
-					class="rounded-xl border border-border/70 bg-background/88 p-4 shadow-[0_22px_55px_-28px_color-mix(in_oklch,var(--foreground)_45%,transparent)] backdrop-blur-md sm:p-5"
+					class="rounded-xl border border-border/70 bg-background/88 p-4 shadow-sm backdrop-blur-md sm:p-5"
 				>
 					{#if preview.hasMeaningfulProgress}
 						<h3 class="text-2xl font-semibold tracking-tight">

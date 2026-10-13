@@ -1,6 +1,6 @@
 <script lang="ts">
-	import Criteria from "$lib/components/criteria/criteria.svelte";
-	import { markAppUsed } from "$lib/state";
+	import Criteria from "#lib/components/criteria/criteria.svelte";
+	import { markAppUsed } from "#lib/state.ts";
 </script>
 
 <Criteria

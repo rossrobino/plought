@@ -1,4 +1,4 @@
-import { getAllPostSlugs, getPostBySlug } from "$lib/server/blog";
+import { getAllPostSlugs, getPostBySlug } from "#lib/server/blog.ts";
 import type { EntryGenerator, PageServerLoad } from "./$types";
 import { error } from "@sveltejs/kit";
 

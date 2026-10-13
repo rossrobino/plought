@@ -1,13 +1,13 @@
 <script lang="ts">
-	import Info from "$lib/components/info.svelte";
-	import { Button } from "$lib/components/ui/button";
-	import * as Field from "$lib/components/ui/field";
-	import { Input } from "$lib/components/ui/input";
-	import { ScrollArea } from "$lib/components/ui/scroll-area";
-	import SectionHeader from "$lib/components/ui/section-header.svelte";
-	import { Slider } from "$lib/components/ui/slider";
-	import * as Table from "$lib/components/ui/table";
-	import * as Tooltip from "$lib/components/ui/tooltip";
+	import Info from "#lib/components/info.svelte";
+	import { Button } from "#lib/components/ui/button/index.ts";
+	import * as Field from "#lib/components/ui/field/index.ts";
+	import { Input } from "#lib/components/ui/input/index.ts";
+	import { ScrollArea } from "#lib/components/ui/scroll-area/index.ts";
+	import SectionHeader from "#lib/components/ui/section-header.svelte";
+	import { Slider } from "#lib/components/ui/slider/index.ts";
+	import * as Table from "#lib/components/ui/table/index.ts";
+	import * as Tooltip from "#lib/components/ui/tooltip/index.ts";
 	import {
 		type MethodKey,
 		alternatives,
@@ -15,8 +15,8 @@
 		markMethodUsed,
 		normalizeCriteriaWeights,
 		syncAllocation,
-	} from "$lib/state";
-	import type { Criteria } from "$lib/types";
+	} from "#lib/state.ts";
+	import type { Criteria } from "#lib/types.ts";
 	import MinusIcon from "@lucide/svelte/icons/minus";
 	import PlusIcon from "@lucide/svelte/icons/plus";
 	import XIcon from "@lucide/svelte/icons/x";

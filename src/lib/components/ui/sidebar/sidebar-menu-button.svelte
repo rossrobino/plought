@@ -27,11 +27,11 @@
 </script>
 
 <script lang="ts">
-	import * as Tooltip from "$lib/components/ui/tooltip";
+	import * as Tooltip from "#lib/components/ui/tooltip/index.ts";
 	import {
 		type WithElementRef,
 		type WithoutChildrenOrChild,
-	} from "$lib/utils.js";
+	} from "#lib/utils.ts";
 	import { useSidebar } from "./context.svelte.js";
 	import { mergeProps } from "bits-ui";
 	import type { ComponentProps, Snippet } from "svelte";

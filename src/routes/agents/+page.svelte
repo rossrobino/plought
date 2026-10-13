@@ -1,7 +1,7 @@
 <script lang="ts">
-	import Head from "$lib/components/head.svelte";
-	import { Button } from "$lib/components/ui/button";
-	import { info } from "$lib/info";
+	import Head from "#lib/components/head.svelte";
+	import { Button } from "#lib/components/ui/button/index.ts";
+	import { info } from "#lib/info.ts";
 	import ArrowLeftIcon from "@lucide/svelte/icons/arrow-left";
 	import ArrowRightIcon from "@lucide/svelte/icons/arrow-right";
 	import BotIcon from "@lucide/svelte/icons/bot";

@@ -1,17 +1,17 @@
 <script lang="ts">
-	import Head from "$lib/components/head.svelte";
-	import ScoreBars from "$lib/components/output/charts/score-bars.svelte";
-	import StackedBars from "$lib/components/output/charts/stacked-bars.svelte";
-	import Scores from "$lib/components/scores/scores.svelte";
-	import SectionHeader from "$lib/components/ui/section-header.svelte";
-	import { allocation, alternatives, criteria } from "$lib/state";
+	import Head from "#lib/components/head.svelte";
+	import ScoreBars from "#lib/components/output/charts/score-bars.svelte";
+	import StackedBars from "#lib/components/output/charts/stacked-bars.svelte";
+	import Scores from "#lib/components/scores/scores.svelte";
+	import SectionHeader from "#lib/components/ui/section-header.svelte";
+	import { allocation, alternatives, criteria } from "#lib/state.ts";
 	import {
 		allocationTotal,
 		getAllocateScores,
 		normalizeAllocation,
-	} from "$lib/util/allocate";
-	import { getGuidanceCopy } from "$lib/util/analysis";
-	import { chartColors } from "$lib/util/chart-colors";
+	} from "#lib/util/allocate.ts";
+	import { getGuidanceCopy } from "#lib/util/analysis.ts";
+	import { chartColors } from "#lib/util/chart-colors.ts";
 
 	const allocationMatrix = $derived(
 		normalizeAllocation(

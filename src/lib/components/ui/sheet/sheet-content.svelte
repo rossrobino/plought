@@ -20,7 +20,7 @@
 </script>
 
 <script lang="ts">
-	import { type WithoutChildrenOrChild } from "$lib/utils.js";
+	import { type WithoutChildrenOrChild } from "#lib/utils.ts";
 	import SheetOverlay from "./sheet-overlay.svelte";
 	import SheetPortal from "./sheet-portal.svelte";
 	import XIcon from "@lucide/svelte/icons/x";

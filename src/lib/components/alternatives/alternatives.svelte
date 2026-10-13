@@ -1,20 +1,20 @@
 <script lang="ts">
-	import AddAlternativeButton from "$lib/components/alternatives/add-alternative-button.svelte";
-	import RemoveAlternativeButton from "$lib/components/alternatives/remove-alternative-button.svelte";
-	import Info from "$lib/components/info.svelte";
-	import { Button } from "$lib/components/ui/button";
-	import * as Field from "$lib/components/ui/field";
-	import { Input } from "$lib/components/ui/input";
-	import { ScrollArea } from "$lib/components/ui/scroll-area";
-	import SectionHeader from "$lib/components/ui/section-header.svelte";
-	import * as Table from "$lib/components/ui/table";
-	import * as Tooltip from "$lib/components/ui/tooltip";
+	import AddAlternativeButton from "#lib/components/alternatives/add-alternative-button.svelte";
+	import RemoveAlternativeButton from "#lib/components/alternatives/remove-alternative-button.svelte";
+	import Info from "#lib/components/info.svelte";
+	import { Button } from "#lib/components/ui/button/index.ts";
+	import * as Field from "#lib/components/ui/field/index.ts";
+	import { Input } from "#lib/components/ui/input/index.ts";
+	import { ScrollArea } from "#lib/components/ui/scroll-area/index.ts";
+	import SectionHeader from "#lib/components/ui/section-header.svelte";
+	import * as Table from "#lib/components/ui/table/index.ts";
+	import * as Tooltip from "#lib/components/ui/tooltip/index.ts";
 	import {
 		type MethodKey,
 		alternatives,
 		criteria,
 		markMethodUsed,
-	} from "$lib/state";
+	} from "#lib/state.ts";
 	import SearchIcon from "@lucide/svelte/icons/search";
 
 	interface Props {

@@ -2,7 +2,7 @@
 	import {
 		type WithoutChild,
 		type WithoutChildrenOrChild,
-	} from "$lib/utils.js";
+	} from "#lib/utils.ts";
 	import AlertDialogOverlay from "./alert-dialog-overlay.svelte";
 	import AlertDialogPortal from "./alert-dialog-portal.svelte";
 	import { AlertDialog as AlertDialogPrimitive } from "bits-ui";

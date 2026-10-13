@@ -1,8 +1,8 @@
-import type { Alternative, Criteria } from "$lib/types";
+import type { Alternative, Criteria } from "#lib/types.ts";
 import {
 	getTopsisClosenessFromNormalized,
 	getTopsisNormalized,
-} from "$lib/util/topsis";
+} from "#lib/util/topsis.ts";
 
 type RobustnessMethodKey = "weightedSum" | "topsis" | "combined";
 

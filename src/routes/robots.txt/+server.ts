@@ -1,4 +1,4 @@
-import { info } from "$lib/info";
+import { info } from "#lib/info.ts";
 import type { RequestHandler } from "./$types";
 
 const baseUrl = info.url.replace(/\/$/, "");

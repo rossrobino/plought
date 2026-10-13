@@ -1,11 +1,11 @@
-import type { Criteria } from "$lib/types";
+import type { Criteria } from "#lib/types.ts";
 import {
 	getAllocateScores,
 	normalizeAllocation,
 	normalizeAllocationRow,
 	rebalanceAllocationRow,
 	splitEven,
-} from "$lib/util/allocate";
+} from "#lib/util/allocate.ts";
 import { describe, expect, it } from "vitest";
 
 describe("allocate utilities", () => {

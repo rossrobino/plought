@@ -1,7 +1,7 @@
 <script lang="ts">
-	import type { SuggestionResult } from "$lib/ai/types";
-	import { Button } from "$lib/components/ui/button";
-	import Eyebrow from "$lib/components/ui/eyebrow.svelte";
+	import type { SuggestionResult } from "#lib/ai/types.ts";
+	import { Button } from "#lib/components/ui/button/index.ts";
+	import Eyebrow from "#lib/components/ui/eyebrow.svelte";
 	import CheckIcon from "@lucide/svelte/icons/check";
 	import PlusIcon from "@lucide/svelte/icons/plus";
 

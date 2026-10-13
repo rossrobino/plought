@@ -1,11 +1,14 @@
 <script lang="ts">
-	import Info from "$lib/components/info.svelte";
-	import { ScrollArea } from "$lib/components/ui/scroll-area";
-	import SectionHeader from "$lib/components/ui/section-header.svelte";
-	import * as Table from "$lib/components/ui/table";
-	import { allocation, alternatives, criteria } from "$lib/state";
-	import { getAllocateScores, normalizeAllocation } from "$lib/util/allocate";
-	import { getTopsisCloseness } from "$lib/util/topsis";
+	import Info from "#lib/components/info.svelte";
+	import { ScrollArea } from "#lib/components/ui/scroll-area/index.ts";
+	import SectionHeader from "#lib/components/ui/section-header.svelte";
+	import * as Table from "#lib/components/ui/table/index.ts";
+	import { allocation, alternatives, criteria } from "#lib/state.ts";
+	import {
+		getAllocateScores,
+		normalizeAllocation,
+	} from "#lib/util/allocate.ts";
+	import { getTopsisCloseness } from "#lib/util/topsis.ts";
 
 	type SortBy = "" | "weightedSum" | "pairwise" | "allocate" | "topsis";
 

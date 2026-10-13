@@ -1,4 +1,4 @@
-import type { Alternative, Criteria } from "$lib/types";
+import type { Alternative, Criteria } from "#lib/types.ts";
 import {
 	getAgreementLevel,
 	getConsensusRank,
@@ -7,7 +7,7 @@ import {
 	getMethodRanks,
 	getMethodScores,
 	getSummaryRobustnessMethod,
-} from "$lib/util/analysis";
+} from "#lib/util/analysis.ts";
 import { describe, expect, it } from "vitest";
 
 describe("analysis utilities", () => {

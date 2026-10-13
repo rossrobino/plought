@@ -1,6 +1,6 @@
 <script lang="ts">
-	import * as Tooltip from "$lib/components/ui/tooltip";
-	import { type WithElementRef } from "$lib/utils.js";
+	import * as Tooltip from "#lib/components/ui/tooltip/index.ts";
+	import { type WithElementRef } from "#lib/utils.ts";
 	import {
 		SIDEBAR_COOKIE_MAX_AGE,
 		SIDEBAR_COOKIE_NAME,

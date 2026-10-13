@@ -1,12 +1,12 @@
 <script lang="ts">
-	import textLogoDark from "$lib/assets/plought-text-logo-dark.svg";
-	import textLogoLight from "$lib/assets/plought-text-logo-light.svg";
-	import Head from "$lib/components/head.svelte";
-	import { Button } from "$lib/components/ui/button";
-	import { Progress } from "$lib/components/ui/progress";
-	import SectionHeader from "$lib/components/ui/section-header.svelte";
-	import StatCard from "$lib/components/ui/stat-card.svelte";
-	import { info } from "$lib/info";
+	import textLogoDark from "#lib/assets/plought-text-logo-dark.svg";
+	import textLogoLight from "#lib/assets/plought-text-logo-light.svg";
+	import Head from "#lib/components/head.svelte";
+	import { Button } from "#lib/components/ui/button/index.ts";
+	import { Progress } from "#lib/components/ui/progress/index.ts";
+	import SectionHeader from "#lib/components/ui/section-header.svelte";
+	import StatCard from "#lib/components/ui/stat-card.svelte";
+	import { info } from "#lib/info.ts";
 	import {
 		type MethodKey,
 		allocation,
@@ -16,12 +16,12 @@
 		isAppUsed,
 		isMethodIncluded,
 		isSetupStepDone,
-	} from "$lib/state";
+	} from "#lib/state.ts";
 	import {
 		getHomeNextStep,
 		getHomePreview,
 		homeSetupItems,
-	} from "$lib/util/home";
+	} from "#lib/util/home.ts";
 	import ArrowRightIcon from "@lucide/svelte/icons/arrow-right";
 	import BarChart3Icon from "@lucide/svelte/icons/bar-chart-3";
 	import FlagIcon from "@lucide/svelte/icons/flag";

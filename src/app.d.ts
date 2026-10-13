@@ -1,4 +1,4 @@
-import type { ModelContext } from "$lib/webmcp";
+import type { ModelContext } from "#lib/webmcp.ts";
 
 declare global {
 	interface Document {

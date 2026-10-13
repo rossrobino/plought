@@ -1,5 +1,5 @@
-import { AI } from "$lib/ai";
-import { decisionDefaults } from "$lib/state";
+import { AI } from "#lib/ai/index.ts";
+import { decisionDefaults } from "#lib/state.ts";
 import { describe, expect, it } from "vitest";
 
 const client = new AI("test");

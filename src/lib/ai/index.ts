@@ -1,10 +1,10 @@
-import { OPENAI_API_KEY } from "$env/static/private";
-import { renderMarkdown } from "$lib/ai/markdown.server";
+import { OPENAI_API_KEY } from "$app/env/private";
+import { renderMarkdown } from "#lib/ai/markdown.server.ts";
 import {
 	decisionDefaults,
 	isAlternativePlaceholder,
 	isCriteriaPlaceholder,
-} from "$lib/state";
+} from "#lib/state.ts";
 import type {
 	AllocatePoint,
 	AllocateResearchRequest,

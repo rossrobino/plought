@@ -1,21 +1,21 @@
-import type { SnapshotState } from "$lib/state";
-import { compareEvent } from "$lib/events";
+import type { SnapshotState } from "#lib/state.ts";
+import { compareEvent } from "#lib/events.ts";
 import {
 	exportSnapshotState,
 	importSnapshotState,
 	type MethodKey,
-} from "$lib/state";
+} from "#lib/state.ts";
 import {
 	normalizeAllocation,
 	normalizeAllocationRow,
-} from "$lib/util/allocate";
+} from "#lib/util/allocate.ts";
 import {
 	getAgreementLevel,
 	getConsensusRank,
 	getConsensusScore10,
 	getMethodRanks,
 	getMethodScores,
-} from "$lib/util/analysis";
+} from "#lib/util/analysis.ts";
 import { toJsonSchema } from "@valibot/to-json-schema";
 import * as v from "valibot";
 

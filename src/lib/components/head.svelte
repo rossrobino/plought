@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { page } from "$app/state";
-	import { info } from "$lib/info";
-	import { getSeo } from "$lib/seo";
+	import { info } from "#lib/info.ts";
+	import { getSeo } from "#lib/seo.ts";
 
 	let { title = "", desc = "" } = $props();
 	const fallback = $derived(getSeo(page.url.pathname));

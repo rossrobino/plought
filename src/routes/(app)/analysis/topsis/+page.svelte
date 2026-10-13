@@ -1,11 +1,11 @@
 <script lang="ts">
-	import Head from "$lib/components/head.svelte";
-	import TopsisDistanceMap from "$lib/components/output/charts/topsis-distance-map.svelte";
-	import Scores from "$lib/components/scores/scores.svelte";
-	import SectionHeader from "$lib/components/ui/section-header.svelte";
-	import { alternatives, criteria } from "$lib/state";
-	import { getGuidanceCopy } from "$lib/util/analysis";
-	import { getTopsisDiagnostics } from "$lib/util/topsis";
+	import Head from "#lib/components/head.svelte";
+	import TopsisDistanceMap from "#lib/components/output/charts/topsis-distance-map.svelte";
+	import Scores from "#lib/components/scores/scores.svelte";
+	import SectionHeader from "#lib/components/ui/section-header.svelte";
+	import { alternatives, criteria } from "#lib/state.ts";
+	import { getGuidanceCopy } from "#lib/util/analysis.ts";
+	import { getTopsisDiagnostics } from "#lib/util/topsis.ts";
 
 	const diagnostics = $derived(
 		getTopsisDiagnostics(alternatives.current, criteria.current),

@@ -1,13 +1,13 @@
 <script lang="ts">
-	import { generateScoreResearch } from "$lib/ai/research.remote";
+	import { generateScoreResearch } from "#lib/ai/research.remote.ts";
 	import type {
 		AllocateResearchRequest,
 		AllocateResearchResult,
 		ScoreResearchRequest,
 		ScoreResearchResult,
-	} from "$lib/ai/types";
-	import ResearchPanel from "$lib/components/ai/research-panel.svelte";
-	import Alternatives from "$lib/components/alternatives/alternatives.svelte";
+	} from "#lib/ai/types.ts";
+	import ResearchPanel from "#lib/components/ai/research-panel.svelte";
+	import Alternatives from "#lib/components/alternatives/alternatives.svelte";
 	import {
 		alternatives,
 		criteria,
@@ -16,7 +16,7 @@
 		isCriteriaPlaceholder,
 		markAppUsed,
 		markMethodUsed,
-	} from "$lib/state";
+	} from "#lib/state.ts";
 
 	interface Cell {
 		alternativeIndex: number;

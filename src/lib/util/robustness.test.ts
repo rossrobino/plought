@@ -1,5 +1,5 @@
-import type { Alternative, Criteria } from "$lib/types";
-import { getRobustnessAnalysis, robustnessRuns } from "$lib/util/robustness";
+import type { Alternative, Criteria } from "#lib/types.ts";
+import { getRobustnessAnalysis, robustnessRuns } from "#lib/util/robustness.ts";
 import { describe, expect, it } from "vitest";
 
 describe("robustness analysis", () => {

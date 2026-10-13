@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { goto } from "$app/navigation";
 	import { page } from "$app/state";
-	import { Button } from "$lib/components/ui/button";
-	import { info } from "$lib/info";
+	import { Button } from "#lib/components/ui/button/index.ts";
+	import { info } from "#lib/info.ts";
 
 	const miss = $derived(page.status === 404);
 	const title = $derived(miss ? "404 not found" : "Something went wrong");

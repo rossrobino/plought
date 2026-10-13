@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { type WithoutChild } from "$lib/utils.js";
-	import type { WithoutChildrenOrChild } from "$lib/utils.js";
+	import { type WithoutChild } from "#lib/utils.ts";
+	import type { WithoutChildrenOrChild } from "#lib/utils.ts";
 	import SelectPortal from "./select-portal.svelte";
 	import SelectScrollDownButton from "./select-scroll-down-button.svelte";
 	import SelectScrollUpButton from "./select-scroll-up-button.svelte";

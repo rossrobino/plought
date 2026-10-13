@@ -1,4 +1,4 @@
-import type { SnapshotImportState, SnapshotState } from "$lib/state";
+import type { SnapshotImportState, SnapshotState } from "#lib/state.ts";
 
 export const snapshotSchemaVersion = 2;
 

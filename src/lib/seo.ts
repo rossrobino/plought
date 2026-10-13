@@ -1,4 +1,4 @@
-import { apps } from "$lib/info";
+import { apps } from "#lib/info.ts";
 
 type ChangeFreq = "daily" | "weekly" | "monthly";
 

@@ -1,11 +1,11 @@
 <script lang="ts">
 	import { page } from "$app/state";
-	import textLogoDark from "$lib/assets/plought-text-logo-dark.svg";
-	import textLogoLight from "$lib/assets/plought-text-logo-light.svg";
-	import SnapshotActions from "$lib/components/snapshot/snapshot-actions.svelte";
-	import * as Sidebar from "$lib/components/ui/sidebar";
-	import { apps as appRegistry, info } from "$lib/info";
-	import { type SetupStepKey, isAppUsed, isSetupStepDone } from "$lib/state";
+	import textLogoDark from "#lib/assets/plought-text-logo-dark.svg";
+	import textLogoLight from "#lib/assets/plought-text-logo-light.svg";
+	import SnapshotActions from "#lib/components/snapshot/snapshot-actions.svelte";
+	import * as Sidebar from "#lib/components/ui/sidebar/index.ts";
+	import { apps as appRegistry, info } from "#lib/info.ts";
+	import { type SetupStepKey, isAppUsed, isSetupStepDone } from "#lib/state.ts";
 	import BarChart3Icon from "@lucide/svelte/icons/bar-chart-3";
 	import BotIcon from "@lucide/svelte/icons/bot";
 	import CheckIcon from "@lucide/svelte/icons/check";

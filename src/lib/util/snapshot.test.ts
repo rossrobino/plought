@@ -1,11 +1,11 @@
-import type { SnapshotState } from "$lib/state";
+import type { SnapshotState } from "#lib/state.ts";
 import {
 	createSnapshotFile,
 	parseSnapshotJson,
 	sanitizeSnapshotFilename,
 	serializeSnapshot,
 	snapshotSchemaVersion,
-} from "$lib/util/snapshot";
+} from "#lib/util/snapshot.ts";
 import { describe, expect, it } from "vitest";
 
 const snapshotState: SnapshotState = {

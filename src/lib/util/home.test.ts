@@ -1,11 +1,11 @@
-import { decisionDefaults } from "$lib/state";
-import type { Alternative, Criteria, Decision } from "$lib/types";
+import { decisionDefaults } from "#lib/state.ts";
+import type { Alternative, Criteria, Decision } from "#lib/types.ts";
 import {
 	type HomeAppState,
 	type HomeSetupState,
 	getHomeNextStep,
 	getHomePreview,
-} from "$lib/util/home";
+} from "#lib/util/home.ts";
 import { describe, expect, it } from "vitest";
 
 const decision: Decision = { ...decisionDefaults };

@@ -3,7 +3,7 @@ import {
 	getPostBySlug,
 	parseBlogSource,
 	sortAndFilterPosts,
-} from "$lib/server/blog";
+} from "#lib/server/blog.ts";
 import { describe, expect, it } from "vitest";
 
 describe("blog loader", () => {

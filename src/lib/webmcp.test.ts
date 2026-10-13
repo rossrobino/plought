@@ -1,5 +1,5 @@
-import type { SiteTool } from "$lib/webmcp";
-import { compareEvent } from "$lib/events";
+import type { SiteTool } from "#lib/webmcp.ts";
+import { compareEvent } from "#lib/events.ts";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 class MemoryStorage implements Storage {
@@ -42,8 +42,8 @@ const setWindow = () => {
 	});
 };
 
-let state: typeof import("$lib/state");
-let webmcp: typeof import("$lib/webmcp");
+let state: typeof import("#lib/state.ts");
+let webmcp: typeof import("#lib/webmcp.ts");
 let tools: SiteTool[];
 let navigate: (href: string) => void;
 
@@ -72,8 +72,8 @@ describe("WebMCP", () => {
 	beforeEach(async () => {
 		setWindow();
 		vi.resetModules();
-		state = await import("$lib/state");
-		webmcp = await import("$lib/webmcp");
+		state = await import("#lib/state.ts");
+		webmcp = await import("#lib/webmcp.ts");
 		state.reset();
 		navigate = vi.fn<(href: string) => void>();
 		tools = webmcp.createPloughtTools(navigate);

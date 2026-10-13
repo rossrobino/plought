@@ -1,5 +1,5 @@
-import type { Alternative, Criteria, Decision } from "$lib/types";
-import { normalizeAllocation } from "$lib/util/allocate";
+import type { Alternative, Criteria, Decision } from "#lib/types.ts";
+import { normalizeAllocation } from "#lib/util/allocate.ts";
 import { PersistedState } from "runed";
 
 const methodKeys = ["weightedSum", "pairwise", "topsis", "allocate"] as const;

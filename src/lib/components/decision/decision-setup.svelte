@@ -1,9 +1,9 @@
 <script lang="ts">
-	import * as Field from "$lib/components/ui/field";
-	import { Input } from "$lib/components/ui/input";
-	import SectionHeader from "$lib/components/ui/section-header.svelte";
-	import { Textarea } from "$lib/components/ui/textarea";
-	import { decision, markSetupStepUsed } from "$lib/state";
+	import * as Field from "#lib/components/ui/field/index.ts";
+	import { Input } from "#lib/components/ui/input/index.ts";
+	import SectionHeader from "#lib/components/ui/section-header.svelte";
+	import { Textarea } from "#lib/components/ui/textarea/index.ts";
+	import { decision, markSetupStepUsed } from "#lib/state.ts";
 
 	const markUsed = () => {
 		markSetupStepUsed("start");

@@ -1,5 +1,5 @@
 import { query } from "$app/server";
-import { client } from "$lib/ai";
+import { client } from "#lib/ai/index.ts";
 import { error } from "@sveltejs/kit";
 
 export const generateAlternativeSuggestions = query(

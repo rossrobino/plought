@@ -1,5 +1,5 @@
-import type { AppKey, MethodKey } from "$lib/state";
-import { capitalize } from "$lib/util/capitalize";
+import type { AppKey, MethodKey } from "#lib/state.ts";
+import { capitalize } from "#lib/util/capitalize.ts";
 import GitCompareIcon from "@lucide/svelte/icons/git-compare";
 import HandCoinsIcon from "@lucide/svelte/icons/hand-coins";
 import ScaleIcon from "@lucide/svelte/icons/scale";

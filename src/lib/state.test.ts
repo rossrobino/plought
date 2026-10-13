@@ -36,13 +36,13 @@ const setWindow = () => {
 	});
 };
 
-let state: typeof import("$lib/state");
+let state: typeof import("#lib/state.ts");
 
 describe("state", () => {
 	beforeEach(async () => {
 		setWindow();
 		vi.resetModules();
-		state = await import("$lib/state");
+		state = await import("#lib/state.ts");
 		state.reset();
 	});
 
@@ -323,7 +323,7 @@ describe("state", () => {
 		);
 		window.localStorage.setItem("allocation", JSON.stringify([[60, 40]]));
 		vi.resetModules();
-		state = await import("$lib/state");
+		state = await import("#lib/state.ts");
 
 		expect(state.decision.current).toEqual({
 			title: "Imported",
@@ -373,7 +373,7 @@ describe("state", () => {
 		);
 
 		vi.resetModules();
-		state = await import("$lib/state");
+		state = await import("#lib/state.ts");
 
 		expect(window.localStorage.getItem("rankOrder")).toBeNull();
 		expect(window.localStorage.getItem("appMeta")).not.toContain("rank");

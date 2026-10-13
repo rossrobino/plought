@@ -2,15 +2,15 @@
 	import {
 		generateAlternativeSuggestions,
 		generateCriteriaSuggestions,
-	} from "$lib/ai/suggestions.remote";
+	} from "#lib/ai/suggestions.remote.ts";
 	import type {
 		AlternativeSuggestionRequest,
 		CriteriaSuggestionRequest,
-	} from "$lib/ai/types";
-	import SetupSuggestionResults from "$lib/components/ai/setup-suggestion-results.svelte";
-	import { Button } from "$lib/components/ui/button";
-	import Eyebrow from "$lib/components/ui/eyebrow.svelte";
-	import { Skeleton } from "$lib/components/ui/skeleton";
+	} from "#lib/ai/types.ts";
+	import SetupSuggestionResults from "#lib/components/ai/setup-suggestion-results.svelte";
+	import { Button } from "#lib/components/ui/button/index.ts";
+	import Eyebrow from "#lib/components/ui/eyebrow.svelte";
+	import { Skeleton } from "#lib/components/ui/skeleton/index.ts";
 	import {
 		alternatives,
 		criteria,
@@ -18,7 +18,7 @@
 		decisionDefaults,
 		insertAlternativeSuggestions,
 		insertCriteriaSuggestions,
-	} from "$lib/state";
+	} from "#lib/state.ts";
 
 	type Kind = "alternatives" | "criteria";
 	type Request = AlternativeSuggestionRequest | CriteriaSuggestionRequest;

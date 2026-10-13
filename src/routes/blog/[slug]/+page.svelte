@@ -1,6 +1,6 @@
 <script lang="ts">
-	import Head from "$lib/components/head.svelte";
-	import { info } from "$lib/info";
+	import Head from "#lib/components/head.svelte";
+	import { info } from "#lib/info.ts";
 	import type { PageData } from "./$types";
 
 	const date = new Intl.DateTimeFormat(undefined, {

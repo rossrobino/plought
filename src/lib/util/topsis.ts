@@ -1,4 +1,4 @@
-import type { Alternative, Criteria } from "$lib/types";
+import type { Alternative, Criteria } from "#lib/types.ts";
 
 const getSafeValue = (value: number) => {
 	if (Number.isFinite(value)) {

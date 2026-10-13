@@ -1,8 +1,8 @@
 <script lang="ts">
-	import SetupSuggestionPanel from "$lib/components/ai/setup-suggestion-panel.svelte";
-	import Alternatives from "$lib/components/alternatives/alternatives.svelte";
-	import Head from "$lib/components/head.svelte";
-	import { markSetupStepUsed } from "$lib/state";
+	import SetupSuggestionPanel from "#lib/components/ai/setup-suggestion-panel.svelte";
+	import Alternatives from "#lib/components/alternatives/alternatives.svelte";
+	import Head from "#lib/components/head.svelte";
+	import { markSetupStepUsed } from "#lib/state.ts";
 </script>
 
 <Head title="Alternatives" />

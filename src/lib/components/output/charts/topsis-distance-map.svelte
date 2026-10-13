@@ -1,6 +1,9 @@
 <script lang="ts">
-	import { type ChartConfig, ChartContainer } from "$lib/components/ui/chart";
-	import { chartColors } from "$lib/util/chart-colors";
+	import {
+		type ChartConfig,
+		ChartContainer,
+	} from "#lib/components/ui/chart/index.ts";
+	import { chartColors } from "#lib/util/chart-colors.ts";
 	import { Circle, LineChart, Tooltip } from "layerchart";
 
 	interface Row {

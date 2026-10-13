@@ -1,9 +1,9 @@
 <script lang="ts">
-	import Head from "$lib/components/head.svelte";
-	import Scores from "$lib/components/scores/scores.svelte";
-	import { Button } from "$lib/components/ui/button";
-	import SectionHeader from "$lib/components/ui/section-header.svelte";
-	import StatCard from "$lib/components/ui/stat-card.svelte";
+	import Head from "#lib/components/head.svelte";
+	import Scores from "#lib/components/scores/scores.svelte";
+	import { Button } from "#lib/components/ui/button/index.ts";
+	import SectionHeader from "#lib/components/ui/section-header.svelte";
+	import StatCard from "#lib/components/ui/stat-card.svelte";
 	import {
 		type MethodKey,
 		allocation,
@@ -11,7 +11,7 @@
 		criteria,
 		isMethodIncluded,
 		toggleMethodIncluded,
-	} from "$lib/state";
+	} from "#lib/state.ts";
 	import {
 		getAgreementLevel,
 		getConsensusRank,
@@ -20,13 +20,13 @@
 		getMethodRanks,
 		getMethodScores,
 		getSummaryRobustnessMethod,
-	} from "$lib/util/analysis";
-	import { chartColors } from "$lib/util/chart-colors";
+	} from "#lib/util/analysis.ts";
+	import { chartColors } from "#lib/util/chart-colors.ts";
 	import {
 		getRobustnessAnalysis,
 		robustnessStrength,
 		summaryRobustnessRuns,
-	} from "$lib/util/robustness";
+	} from "#lib/util/robustness.ts";
 
 	let robustness = $state<ReturnType<typeof getRobustnessAnalysis> | null>(
 		null,
@@ -34,7 +34,7 @@
 	let comparison = $state<HTMLElement | null>(null);
 	let showComparisonChart = $state(false);
 	let comparisonChart = $state<Promise<
-		typeof import("$lib/components/output/charts/method-matrix-chart.svelte")
+		typeof import("#lib/components/output/charts/method-matrix-chart.svelte")
 	> | null>(null);
 
 	const methods: {
@@ -237,7 +237,7 @@
 		if (typeof IntersectionObserver !== "function") {
 			showComparisonChart = true;
 			comparisonChart ??=
-				import("$lib/components/output/charts/method-matrix-chart.svelte");
+				import("#lib/components/output/charts/method-matrix-chart.svelte");
 			return;
 		}
 
@@ -248,7 +248,7 @@
 				}
 				showComparisonChart = true;
 				comparisonChart ??=
-					import("$lib/components/output/charts/method-matrix-chart.svelte");
+					import("#lib/components/output/charts/method-matrix-chart.svelte");
 				observer.disconnect();
 			},
 			{ rootMargin: "320px 0px" },

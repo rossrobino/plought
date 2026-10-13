@@ -1,4 +1,4 @@
-import { getAllPostsMeta } from "$lib/server/blog";
+import { getAllPostsMeta } from "#lib/server/blog.ts";
 import type { PageServerLoad } from "./$types";
 
 export const load: PageServerLoad = async () => {

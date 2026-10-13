@@ -5,10 +5,10 @@
 		ResearchSource,
 		ScoreResearchRequest,
 		ScoreResearchResult,
-	} from "$lib/ai/types";
-	import { Button } from "$lib/components/ui/button";
-	import Eyebrow from "$lib/components/ui/eyebrow.svelte";
-	import { Skeleton } from "$lib/components/ui/skeleton";
+	} from "#lib/ai/types.ts";
+	import { Button } from "#lib/components/ui/button/index.ts";
+	import Eyebrow from "#lib/components/ui/eyebrow.svelte";
+	import { Skeleton } from "#lib/components/ui/skeleton/index.ts";
 	import CheckIcon from "@lucide/svelte/icons/check";
 	import XIcon from "@lucide/svelte/icons/x";
 	import { tick } from "svelte";

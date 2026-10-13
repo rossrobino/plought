@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { goto } from "$app/navigation";
-	import * as AlertDialog from "$lib/components/ui/alert-dialog";
-	import { Button } from "$lib/components/ui/button";
-	import { reset } from "$lib/state";
+	import * as AlertDialog from "#lib/components/ui/alert-dialog/index.ts";
+	import { Button } from "#lib/components/ui/button/index.ts";
+	import { reset } from "#lib/state.ts";
 	import RotateCcwIcon from "@lucide/svelte/icons/rotate-ccw";
 	import type { ClassValue } from "svelte/elements";
 

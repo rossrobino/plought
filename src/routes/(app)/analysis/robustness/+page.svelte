@@ -1,19 +1,19 @@
 <script lang="ts">
-	import Head from "$lib/components/head.svelte";
-	import ScoreBars from "$lib/components/output/charts/score-bars.svelte";
-	import * as Field from "$lib/components/ui/field";
-	import { Input } from "$lib/components/ui/input";
-	import { ScrollArea } from "$lib/components/ui/scroll-area";
-	import SectionHeader from "$lib/components/ui/section-header.svelte";
-	import StatCard from "$lib/components/ui/stat-card.svelte";
-	import * as Table from "$lib/components/ui/table";
-	import { alternatives, criteria } from "$lib/state";
-	import { chartColors } from "$lib/util/chart-colors";
+	import Head from "#lib/components/head.svelte";
+	import ScoreBars from "#lib/components/output/charts/score-bars.svelte";
+	import * as Field from "#lib/components/ui/field/index.ts";
+	import { Input } from "#lib/components/ui/input/index.ts";
+	import { ScrollArea } from "#lib/components/ui/scroll-area/index.ts";
+	import SectionHeader from "#lib/components/ui/section-header.svelte";
+	import StatCard from "#lib/components/ui/stat-card.svelte";
+	import * as Table from "#lib/components/ui/table/index.ts";
+	import { alternatives, criteria } from "#lib/state.ts";
+	import { chartColors } from "#lib/util/chart-colors.ts";
 	import {
 		getRobustnessAnalysis,
 		robustnessRuns,
 		robustnessStrength,
-	} from "$lib/util/robustness";
+	} from "#lib/util/robustness.ts";
 
 	let perturbationPct = $state(Math.round(robustnessStrength * 100));
 

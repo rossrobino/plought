@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { type WithoutChild } from "$lib/utils.js";
+	import { type WithoutChild } from "#lib/utils.ts";
 	import { ScrollArea as ScrollAreaPrimitive } from "bits-ui";
 
 	let {

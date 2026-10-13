@@ -5,15 +5,15 @@ import {
 	hasAlternativesContent,
 	hasCriteriaContent,
 	hasDecisionContent,
-} from "$lib/state";
-import type { Alternative, Criteria, Decision } from "$lib/types";
+} from "#lib/state.ts";
+import type { Alternative, Criteria, Decision } from "#lib/types.ts";
 import {
 	getAgreementLevel,
 	getConsensusRank,
 	getConsensusScore10,
 	getMethodRanks,
 	getMethodScores,
-} from "$lib/util/analysis";
+} from "#lib/util/analysis.ts";
 
 interface HomeNextStep {
 	href: string;

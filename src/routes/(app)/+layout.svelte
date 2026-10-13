@@ -1,12 +1,12 @@
 <script lang="ts">
 	import { goto } from "$app/navigation";
 	import { page } from "$app/state";
-	import AppSidebar from "$lib/components/app-sidebar.svelte";
-	import Head from "$lib/components/head.svelte";
-	import HeaderFlowNav from "$lib/components/header-flow-nav.svelte";
-	import * as Sidebar from "$lib/components/ui/sidebar";
-	import { apps, info } from "$lib/info";
-	import { decision } from "$lib/state";
+	import AppSidebar from "#lib/components/app-sidebar.svelte";
+	import Head from "#lib/components/head.svelte";
+	import HeaderFlowNav from "#lib/components/header-flow-nav.svelte";
+	import * as Sidebar from "#lib/components/ui/sidebar/index.ts";
+	import { apps, info } from "#lib/info.ts";
+	import { decision } from "#lib/state.ts";
 	import { onMount } from "svelte";
 
 	let open = $state(true);
@@ -20,7 +20,7 @@
 
 		let disposed = false;
 		let cleanup: (() => void) | null = null;
-		void import("$lib/webmcp")
+		void import("#lib/webmcp.ts")
 			.then(({ registerPloughtTools }) => {
 				const next = registerPloughtTools(context, goto);
 				if (disposed) {

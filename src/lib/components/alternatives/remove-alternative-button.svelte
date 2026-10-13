@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { Button } from "$lib/components/ui/button";
-	import { alternatives, syncAllocation } from "$lib/state";
+	import { Button } from "#lib/components/ui/button/index.ts";
+	import { alternatives, syncAllocation } from "#lib/state.ts";
 	import XIcon from "@lucide/svelte/icons/x";
 
 	interface Props {

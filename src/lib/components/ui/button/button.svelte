@@ -1,5 +1,5 @@
 <script lang="ts" module>
-	import { type WithElementRef } from "$lib/utils.js";
+	import { type WithElementRef } from "#lib/utils.ts";
 	import type {
 		HTMLAnchorAttributes,
 		HTMLButtonAttributes,

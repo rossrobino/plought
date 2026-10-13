@@ -1,6 +1,6 @@
-import { info } from "$lib/info";
-import { seoByPath, seoPaths } from "$lib/seo";
-import { getAllPostsMeta } from "$lib/server/blog";
+import { info } from "#lib/info.ts";
+import { seoByPath, seoPaths } from "#lib/seo.ts";
+import { getAllPostsMeta } from "#lib/server/blog.ts";
 import type { RequestHandler } from "./$types";
 
 const normalizeBase = (value: string) => {

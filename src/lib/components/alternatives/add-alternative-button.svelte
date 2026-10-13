@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { Button } from "$lib/components/ui/button";
-	import { alternatives, criteria, syncAllocation } from "$lib/state";
+	import { Button } from "#lib/components/ui/button/index.ts";
+	import { alternatives, criteria, syncAllocation } from "#lib/state.ts";
 	import PlusIcon from "@lucide/svelte/icons/plus";
 
 	interface Props {

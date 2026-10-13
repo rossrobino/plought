@@ -10,6 +10,26 @@ While _Plought_ can help guide in decision making, and reveal surprising results
 
 Open to contributions.
 
+## Development
+
+Use Node.js 22.17 or newer in the 22.x line, or Node.js 24.x. Install dependencies
+with `npm ci`, copy `.env.example` to `.env` and set `OPENAI_API_KEY`, then run
+`npm run dev`.
+
+Run `npm run check`, `npm run lint`, `npm test`, and `npm run build` to validate
+changes. SvelteKit configuration lives in `vite.config.ts`; internal imports use
+the `#lib/*` mapping in `package.json` with explicit file extensions.
+
+The `typescript` dependency intentionally aliases `@typescript/typescript6`.
+SvelteKit 3.0.1 and svelte-check 4.7.6 require the TypeScript 6 compiler API and do
+not support TypeScript 7 yet.
+
+Analytics and Runed still declare optional SvelteKit 2 peer ranges, so targeted
+overrides keep them on the application's SvelteKit version. Analytics uses its
+generic SDK with `afterNavigate` because its SvelteKit integration imports the
+removed `$app/stores` module. Runed's SvelteKit-specific search-parameter helper
+is not used by this app.
+
 ## WebMCP
 
 Plought exposes browser-native site tools when opened in a WebMCP-compatible

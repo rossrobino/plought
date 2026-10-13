@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { type WithoutChildrenOrChild } from "$lib/utils.js";
+	import { type WithoutChildrenOrChild } from "#lib/utils.ts";
 	import ChevronDownIcon from "@lucide/svelte/icons/chevron-down";
 	import { Select as SelectPrimitive } from "bits-ui";
 

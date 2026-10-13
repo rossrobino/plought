@@ -1,5 +1,5 @@
 <script lang="ts">
-	import Eyebrow from "$lib/components/ui/eyebrow.svelte";
+	import Eyebrow from "#lib/components/ui/eyebrow.svelte";
 	import type { Snippet } from "svelte";
 	import type { ClassValue } from "svelte/elements";
 

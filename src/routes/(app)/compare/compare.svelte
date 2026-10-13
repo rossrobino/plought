@@ -1,10 +1,10 @@
 <script lang="ts">
-	import Info from "$lib/components/info.svelte";
-	import { Button } from "$lib/components/ui/button";
-	import { Progress } from "$lib/components/ui/progress";
-	import SectionHeader from "$lib/components/ui/section-header.svelte";
-	import { compareEvent } from "$lib/events";
-	import { alternatives, markAppUsed, markMethodUsed } from "$lib/state";
+	import Info from "#lib/components/info.svelte";
+	import { Button } from "#lib/components/ui/button/index.ts";
+	import { Progress } from "#lib/components/ui/progress/index.ts";
+	import SectionHeader from "#lib/components/ui/section-header.svelte";
+	import { compareEvent } from "#lib/events.ts";
+	import { alternatives, markAppUsed, markMethodUsed } from "#lib/state.ts";
 	import ArrowLeftIcon from "@lucide/svelte/icons/arrow-left";
 	import ArrowRightIcon from "@lucide/svelte/icons/arrow-right";
 	import ShuffleIcon from "@lucide/svelte/icons/shuffle";

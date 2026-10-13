@@ -1,18 +1,18 @@
 <script lang="ts">
-	import { generateAllocateResearch } from "$lib/ai/research.remote";
+	import { generateAllocateResearch } from "#lib/ai/research.remote.ts";
 	import type {
 		AllocateResearchRequest,
 		AllocateResearchResult,
 		ScoreResearchRequest,
 		ScoreResearchResult,
-	} from "$lib/ai/types";
-	import ResearchPanel from "$lib/components/ai/research-panel.svelte";
-	import Info from "$lib/components/info.svelte";
-	import { Button } from "$lib/components/ui/button";
-	import Eyebrow from "$lib/components/ui/eyebrow.svelte";
-	import SectionHeader from "$lib/components/ui/section-header.svelte";
-	import * as Select from "$lib/components/ui/select";
-	import { Slider } from "$lib/components/ui/slider";
+	} from "#lib/ai/types.ts";
+	import ResearchPanel from "#lib/components/ai/research-panel.svelte";
+	import Info from "#lib/components/info.svelte";
+	import { Button } from "#lib/components/ui/button/index.ts";
+	import Eyebrow from "#lib/components/ui/eyebrow.svelte";
+	import SectionHeader from "#lib/components/ui/section-header.svelte";
+	import * as Select from "#lib/components/ui/select/index.ts";
+	import { Slider } from "#lib/components/ui/slider/index.ts";
 	import {
 		allocation,
 		alternatives,
@@ -22,13 +22,13 @@
 		isCriteriaPlaceholder,
 		markAppUsed,
 		markMethodUsed,
-	} from "$lib/state";
+	} from "#lib/state.ts";
 	import {
 		allocationTotal,
 		normalizeAllocationRow,
 		rebalanceAllocationRow,
 		splitEven,
-	} from "$lib/util/allocate";
+	} from "#lib/util/allocate.ts";
 	import MinusIcon from "@lucide/svelte/icons/minus";
 	import PlusIcon from "@lucide/svelte/icons/plus";
 	import { tick } from "svelte";

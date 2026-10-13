@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { WithoutChildrenOrChild } from "$lib/utils.js";
+	import type { WithoutChildrenOrChild } from "#lib/utils.ts";
 	import TooltipPortal from "./tooltip-portal.svelte";
 	import { Tooltip as TooltipPrimitive } from "bits-ui";
 	import type { ComponentProps } from "svelte";

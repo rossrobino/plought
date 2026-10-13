@@ -1,12 +1,12 @@
 <script lang="ts">
-	import Head from "$lib/components/head.svelte";
-	import ScoreBars from "$lib/components/output/charts/score-bars.svelte";
-	import StackedBars from "$lib/components/output/charts/stacked-bars.svelte";
-	import Scores from "$lib/components/scores/scores.svelte";
-	import SectionHeader from "$lib/components/ui/section-header.svelte";
-	import { alternatives, criteria } from "$lib/state";
-	import { getGuidanceCopy, getMethodScores } from "$lib/util/analysis";
-	import { chartColors } from "$lib/util/chart-colors";
+	import Head from "#lib/components/head.svelte";
+	import ScoreBars from "#lib/components/output/charts/score-bars.svelte";
+	import StackedBars from "#lib/components/output/charts/stacked-bars.svelte";
+	import Scores from "#lib/components/scores/scores.svelte";
+	import SectionHeader from "#lib/components/ui/section-header.svelte";
+	import { alternatives, criteria } from "#lib/state.ts";
+	import { getGuidanceCopy, getMethodScores } from "#lib/util/analysis.ts";
+	import { chartColors } from "#lib/util/chart-colors.ts";
 
 	const scores = $derived(
 		getMethodScores(alternatives.current, criteria.current),

@@ -1,11 +1,29 @@
 <script lang="ts">
-	import { dev } from "$app/environment";
-	import faviconDark from "$lib/assets/favicon-dark.png";
-	import faviconLight from "$lib/assets/favicon-light.png";
+	import { dev } from "$app/env";
+	import { afterNavigate } from "$app/navigation";
+	import { page } from "$app/state";
+	import faviconDark from "#lib/assets/favicon-dark.png";
+	import faviconLight from "#lib/assets/favicon-light.png";
 	import "./app.css";
-	import { injectAnalytics } from "@vercel/analytics/sveltekit";
+	import { inject, pageview } from "@vercel/analytics";
 
-	if (!dev) injectAnalytics({ mode: "production" });
+	if (!dev) {
+		// The Analytics SvelteKit integration still imports the removed $app/stores.
+		inject(
+			{
+				mode: "production",
+				disableAutoTrack: true,
+				framework: "sveltekit",
+				basePath: import.meta.env.VITE_VERCEL_OBSERVABILITY_BASEPATH,
+			},
+			import.meta.env.VITE_VERCEL_OBSERVABILITY_CLIENT_CONFIG,
+		);
+		afterNavigate(() => {
+			if (page.route.id) {
+				pageview({ route: page.route.id, path: page.url.pathname });
+			}
+		});
+	}
 
 	let { children } = $props();
 </script>

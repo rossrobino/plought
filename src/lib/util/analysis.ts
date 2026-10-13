@@ -1,7 +1,7 @@
-import { type MethodKey } from "$lib/state";
-import type { Alternative, Criteria } from "$lib/types";
-import { getAllocateScores, normalizeAllocation } from "$lib/util/allocate";
-import { getTopsisCloseness } from "$lib/util/topsis";
+import { type MethodKey } from "#lib/state.ts";
+import type { Alternative, Criteria } from "#lib/types.ts";
+import { getAllocateScores, normalizeAllocation } from "#lib/util/allocate.ts";
+import { getTopsisCloseness } from "#lib/util/topsis.ts";
 
 type MethodScoreMap = Record<MethodKey, number[]>;
 

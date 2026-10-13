@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { type WithElementRef, type WithoutChildren } from "$lib/utils.js";
+	import { type WithElementRef, type WithoutChildren } from "#lib/utils.ts";
 	import { useChart } from "./chart-utils.js";
 	import {
 		type ChartState,

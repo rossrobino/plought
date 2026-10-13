@@ -1,6 +1,6 @@
-import { AI } from "$lib/ai";
-import { decisionDefaults } from "$lib/state";
-import { allocationTotal, normalizeAllocationRow } from "$lib/util/allocate";
+import { AI } from "#lib/ai/index.ts";
+import { decisionDefaults } from "#lib/state.ts";
+import { allocationTotal, normalizeAllocationRow } from "#lib/util/allocate.ts";
 import { describe, expect, it, vi } from "vitest";
 
 const createClient = (response: {

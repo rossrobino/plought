@@ -1,8 +1,8 @@
 <script lang="ts">
-	import SetupSuggestionPanel from "$lib/components/ai/setup-suggestion-panel.svelte";
-	import Criteria from "$lib/components/criteria/criteria.svelte";
-	import Head from "$lib/components/head.svelte";
-	import { markSetupStepUsed } from "$lib/state";
+	import SetupSuggestionPanel from "#lib/components/ai/setup-suggestion-panel.svelte";
+	import Criteria from "#lib/components/criteria/criteria.svelte";
+	import Head from "#lib/components/head.svelte";
+	import { markSetupStepUsed } from "#lib/state.ts";
 </script>
 
 <Head title="Criteria" />

@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { goto } from "$app/navigation";
-	import Reset from "$lib/components/reset.svelte";
-	import * as AlertDialog from "$lib/components/ui/alert-dialog";
-	import { Button } from "$lib/components/ui/button";
+	import Reset from "#lib/components/reset.svelte";
+	import * as AlertDialog from "#lib/components/ui/alert-dialog/index.ts";
+	import { Button } from "#lib/components/ui/button/index.ts";
 	import {
 		type MethodKey,
 		type SetupStepKey,
@@ -12,13 +12,13 @@
 		importSnapshotState,
 		isMethodUsed,
 		isSetupStepUsed,
-	} from "$lib/state";
+	} from "#lib/state.ts";
 	import {
 		createSnapshotFile,
 		parseSnapshotJson,
 		sanitizeSnapshotFilename,
 		serializeSnapshot,
-	} from "$lib/util/snapshot";
+	} from "#lib/util/snapshot.ts";
 	import FileIcon from "@lucide/svelte/icons/file";
 	import SaveIcon from "@lucide/svelte/icons/save";
 

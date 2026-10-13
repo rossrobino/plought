@@ -1,4 +1,4 @@
-import type { Criteria } from "$lib/types";
+import type { Criteria } from "#lib/types.ts";
 
 export const allocationTotal = 100;
 

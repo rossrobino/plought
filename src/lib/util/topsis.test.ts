@@ -1,10 +1,10 @@
-import type { Alternative, Criteria } from "$lib/types";
+import type { Alternative, Criteria } from "#lib/types.ts";
 import {
 	getTopsisCloseness,
 	getTopsisClosenessFromNormalized,
 	getTopsisDiagnostics,
 	getTopsisNormalized,
-} from "$lib/util/topsis";
+} from "#lib/util/topsis.ts";
 import { describe, expect, it } from "vitest";
 
 describe("topsis utilities", () => {
